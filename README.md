@@ -4,7 +4,6 @@ Institutes require efficient systems to manage campus recruitment activities inv
 ## Frameworks
 - Flask for API
 - VueJS for UI
-- Bootstrap for HTML generation and styling
 - SQLite for database
 - Redis for caching
 - Redis and Celery for batch jobs
