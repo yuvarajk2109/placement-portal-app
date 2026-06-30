@@ -400,9 +400,9 @@ class AdminService:
             
             application = Application.query.get(placement.application_id)            
             student = Student.query.get(application.register_no) if application else None
-            branch = Branch.query.get(student.branch_id) if student else None
+            branch_name = Branch.query(Branch.branch_name).get(student.branch_id) if student else None
             drive = PlacementDrive.query.get(application.drive_id) if application else None
-            company = Company.query.get(drive.company_id) if drive else None
+            company_name = Company.query(Company.company_name).get(drive.company_id) if drive else None
             user = User.query.get(student.user_id) if student else None
 
             return {
@@ -418,13 +418,13 @@ class AdminService:
                     "student_name": f"{student.fname} {student.lname}",
                     "email": user.email if user else None,
                     "cgpa": student.cgpa,
-                    "branch": branch.branch_name, 
+                    "branch": branch_name, 
                     "year_of_study": student.year_of_study
                 } if student else None,
                 "drive": {
                     "drive_id": drive.drive_id,
                     "job_title": drive.job_title,
                     "drive_type": drive.drive_type,
-                    "company_name": company.company_name if company else None
+                    "company_name": company_name if company else None
                 } if drive else None
             }, 200

@@ -8,6 +8,7 @@ from extensions import db, mail
 from models.user import User
 from models.student import Student
 from models.skill import Skill
+from models.branch import Branch
 from models.company import Company
 import logging
 
@@ -225,11 +226,12 @@ class AuthService:
 
         if user.role == 'student' and user.student:
             student = user.student
+            branch_name = Branch.query(Branch.branch_name).get(student.branch_id)
             result["profile"] = {
                 "register_no": student.register_no,
                 "name": f"{student.fname} {student.lname}",
                 "cgpa": student.cgpa,
-                "branch_id": student.branch_id,
+                "branch": branch_name,
                 "year_of_study": student.year_of_study
             }
         elif user.role == 'company' and user.company:
