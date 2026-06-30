@@ -19,12 +19,11 @@ class Student(db.Model):
     year_of_study = db.Column(db.Integer, nullable = False) # only 3 or 4 are allowed to register
     resume_path = db.Column(db.String(255), nullable = True)
     branch_id = db.Column(db.Integer, db.ForeignKey('branch.branch_id'), nullable = False)
-    created_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), nullable = False)
-    updated_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), onupdate = datetime.now(datetime.timezone.utc), nullable = False)
+    created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)
 
     branch = db.relationship('Branch', backref = 'students', lazy = True)
     applications = db.relationship('Application', backref = 'student', lazy = True)
-    placements = db.relationship('Placement', backref = 'student', lazy = True)
     skills = db.relationship('Skill', secondary=student_skill, backref = db.backref('students', lazy = 'dynamic'))
 
     def __repr__(self):

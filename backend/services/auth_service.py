@@ -46,7 +46,7 @@ class AuthService:
             role = 'student',
             is_verified = False,
             otp_code = otp,
-            otp_expires_at = datetime.now(datetime.timezone.utc) + timedelta(minutes = 10)
+            otp_expires_at = datetime.now + timedelta(minutes = 10)
         )
         db.session.add(User)
         db.session.flush()

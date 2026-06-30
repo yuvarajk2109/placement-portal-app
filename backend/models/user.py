@@ -13,8 +13,8 @@ class User(db.Model):
     otp_code = db.Column(db.String(6), nullable = True)
     otp_expires_at = db.Column(db.DateTime, nullable = True)
     is_verified = db.Column(db.Boolean, default = False, nullable = False)
-    created_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), nullable = False)
-    updated_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), onupdate = datetime.now(datetime.timezone.utc), nullable = False)
+    created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)
 
     student = db.relationship('Student', backref='user', uselist = False, lazy = True)
     company = db.relationship('Company', backref='user', uselist = False, lazy = True)

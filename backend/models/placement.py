@@ -10,5 +10,5 @@ class Placement(db.Model):
     drive_type = db.Column(db.String(50), nullable = False)
     salary = db.Column(db.Float, nullable = True)
     joining_date = db.Column(db.Date, nullable = True)
-    created_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), nullable = False)
-    updated_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), onupdate = datetime.now(datetime.timezone.utc), nullable = False)
+    created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)

@@ -17,9 +17,9 @@ def seed_admin():
         )
         db.session.add(admin)
         db.session.commit()
-        print('[SEED] Admin user created:', admin_email)
+        print('[SEED]\tAdmin user created:', admin_email)
     else:
-        print('[SEED] Admin user already exists:', admin_email)
+        print('[SEED]\tAdmin user already exists:', admin_email)
 
 def seed_departments_and_branches():
     departments = [
@@ -51,7 +51,7 @@ def seed_departments_and_branches():
                 new_branch = Branch(branch_name=branch, dept_id=dept.dept_id)
                 db.session.add(new_branch)
     db.session.commit()
-    print('[SEED] Departments and branches seeded successfully.')
+    print('[SEED]\tDepartments and branches seeded successfully.')
 
 def run_seed():
     seed_admin()

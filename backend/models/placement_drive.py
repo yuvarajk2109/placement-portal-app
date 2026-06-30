@@ -16,9 +16,9 @@ class PlacementDrive(db.Model):
 
     VALID_DRIVE_TYPES = [
         '2M Internship',
-        '5M Internship'
-        '6M Internship'
-        '5M Internship + Placement'
+        '5M Internship',
+        '6M Internship',
+        '5M Internship + Placement',
         '6M Internship + Placement',
         '5M Internship + Performance-based Placement',
         '6M Internship + Performance-based Placement',
@@ -36,11 +36,10 @@ class PlacementDrive(db.Model):
     location = db.Column(db.String(255), nullable = True)
     application_deadline = db.Column(db.DateTime, nullable = False)
     status = db.Column(db.String(20), default = 'upcoming', nullable = False) # upcoming, ongoing, completed
-    created_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), nullable = False)
-    updated_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), onupdate = datetime.now(datetime.timezone.utc), nullable = False)
+    created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)
 
-    eligible_brances = db.relationship('DriveBranch', backref = 'placement_drive', lazy = True)
+    eligible_branches = db.relationship('Branch', secondary=drive_branch, backref = 'placement_drives', lazy = True)
     interviews = db.relationship('Interview', backref = 'placement_drive', lazy = True)
     applications = db.relationship('Application', backref = 'placement_drive', lazy = True)
-    placements = db.relationship('Placement', backref = 'placement_drive', lazy = True)
     required_skills = db.relationship('Skill', secondary=drive_skill, backref = db.backref('placement_drives', lazy = 'dynamic'))

@@ -1,4 +1,3 @@
-import os
 import logging
 from flask import Flask
 from config import Config
@@ -17,10 +16,12 @@ def create_app(config_class = Config):
     db.init_app(app)
 
     with app.app_context():
-        import models
         db.create_all()
+        print("[APP]\tAll DB Tables Created.")
         from seed import run_seed
         run_seed()
+        print("[SEED]\tDB Seeding Complete.")
+
 
     return app
 

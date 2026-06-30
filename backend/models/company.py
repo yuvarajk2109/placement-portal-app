@@ -15,11 +15,10 @@ class Company(db.Model):
     hr_email = db.Column(db.String(255), nullable = False)
     hr_phone = db.Column(db.String(15), nullable = True)
     status = db.Column(db.String(20), default = 'pending', nullable = False) # pending, approved, rejected'
-    created_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), nullable = False)
-    updated_at = db.Column(db.DateTime, default = datetime.now(datetime.timezone.utc), onupdate = datetime.now(datetime.timezone.utc), nullable = False)
+    created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
+    updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)
 
     drives = db.relationship('PlacementDrive', backref = 'company', lazy = True)
-    placements = db.relationship('Placement', backref = 'company', lazy = True)
 
     def __repr__(self):
         return f'<Company {self.company_name} ({self.status})>'
