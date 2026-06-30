@@ -215,7 +215,7 @@ class AdminService:
                 "name": f"{student.fname} {student.lname}",
                 "cgpa": student.cgpa,
                 "year_of_study": student.year_of_study,
-                "branch": branch_name,
+                "branch": branch_name if branch_name else None,
                 "is_active": user.is_active if user else False,
                 "is_blacklisted": user.is_blacklisted if user else False,
                 "created_at": student.created_at.isoformat()
@@ -390,41 +390,41 @@ class AdminService:
                 "pages": pagination.pages
             }, 200
         
-        @staticmethod
-        def get_placement_record(placement_id):
-            placement = Placement.query.get(placement_id)
-            if not placement:
-                return {
-                    "error": "Placement not found"
-                }, 404
-            
-            application = Application.query.get(placement.application_id)            
-            student = Student.query.get(application.register_no) if application else None
-            branch_name = Branch.query(Branch.branch_name).get(student.branch_id) if student else None
-            drive = PlacementDrive.query.get(application.drive_id) if application else None
-            company_name = Company.query(Company.company_name).get(drive.company_id) if drive else None
-            user = User.query.get(student.user_id) if student else None
-
+    @staticmethod
+    def get_placement_record(placement_id):
+        placement = Placement.query.get(placement_id)
+        if not placement:
             return {
-                "placement_id": placement.placement_id,
-                "application_id": placement.application_id,
-                "position": placement.position,
-                "drive_type": placement.drive_type,
-                "salary": placement.salary,
-                "joining_date": placement.joining_date.isoformat() if placement.joining_date else None,
-                "created_at": placement.created_at.isoformat(),
-                "student": {
-                    "register_no": student.register_no,
-                    "student_name": f"{student.fname} {student.lname}",
-                    "email": user.email if user else None,
-                    "cgpa": student.cgpa,
-                    "branch": branch_name, 
-                    "year_of_study": student.year_of_study
-                } if student else None,
-                "drive": {
-                    "drive_id": drive.drive_id,
-                    "job_title": drive.job_title,
-                    "drive_type": drive.drive_type,
-                    "company_name": company_name if company else None
-                } if drive else None
-            }, 200
+                "error": "Placement not found"
+            }, 404
+        
+        application = Application.query.get(placement.application_id)            
+        student = Student.query.get(application.register_no) if application else None
+        branch_name = Branch.query(Branch.branch_name).get(student.branch_id) if student else None
+        drive = PlacementDrive.query.get(application.drive_id) if application else None
+        company_name = Company.query(Company.company_name).get(drive.company_id) if drive else None
+        user = User.query.get(student.user_id) if student else None
+
+        return {
+            "placement_id": placement.placement_id,
+            "application_id": placement.application_id,
+            "position": placement.position,
+            "drive_type": placement.drive_type,
+            "salary": placement.salary,
+            "joining_date": placement.joining_date.isoformat() if placement.joining_date else None,
+            "created_at": placement.created_at.isoformat(),
+            "student": {
+                "register_no": student.register_no,
+                "student_name": f"{student.fname} {student.lname}",
+                "email": user.email if user else None,
+                "cgpa": student.cgpa,
+                "branch": branch_name if branch_name else None,
+                "year_of_study": student.year_of_study
+            } if student else None,
+            "drive": {
+                "drive_id": drive.drive_id,
+                "job_title": drive.job_title,
+                "drive_type": drive.drive_type,
+                "company_name": company_name if company_name else None
+            } if drive else None
+        }, 200
