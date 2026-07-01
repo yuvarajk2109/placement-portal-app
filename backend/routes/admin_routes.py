@@ -81,13 +81,13 @@ def list_drives():
 @admin_bp.route('/drives/<int:drive_id>/approve', methods = ['PUT'])
 @role_required('admin')
 def approve_drive(drive_id):
-    result, status = AdminService.update_drive_status('drive_id', 'Approved')
+    result, status = AdminService.update_drive_status(drive_id, 'Approved')
     return jsonify(result), status
 
 @admin_bp.route('/drives/<int:drive_id>/reject', methods = ['PUT'])
 @role_required('admin')
 def reject_drive(drive_id):
-    result, status = AdminService.update_drive_status('drive_id', 'Rejected')
+    result, status = AdminService.update_drive_status(drive_id, 'Rejected')
     return jsonify(result), status
 
 # ==================
