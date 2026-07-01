@@ -27,6 +27,7 @@ def role_required(*allowed_roles):
                 return jsonify({
                     "error": "Access denied. Insufficient role."
                 }), 403
+            kwargs['current_user_id'] = user_id
             return fn(*args, **kwargs)
         return wrapper
     return decorator
@@ -37,15 +38,22 @@ def validate_json(*required_fields):
         def wrapper(*args, **kwargs):
             data = request.get_json(silent = True)
 
-            if not data:
+            if data is None:
                 return jsonify({
                     "error": "Request body MUST be JSON"
                 }), 400
+            
+            if not data:
+                return jsonify({
+                    "error": "Request body cannot be empty."
+                }), 400
+            
             missing = [f for f in required_fields if f not in data]
             if missing:
                 return jsonify({
                     "error": f"Missing required fields: {', '.join(missing)}"
                 }), 400
+            kwargs['data'] = data
             return fn(*args, **kwargs)
         return wrapper
     return decorator

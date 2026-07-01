@@ -52,7 +52,7 @@ class ApplicationService:
     
     @staticmethod
     def update_application_status(user_id, app_id, data):
-        new_status = data.get('application_status')
+        new_status = data['application_status']
         valid_statuses = ['Shortlisted', 'Interview', 'Selected', 'Rejected']
         if new_status not in valid_statuses:
             return {
