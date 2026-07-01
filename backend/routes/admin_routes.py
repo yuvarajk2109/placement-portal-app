@@ -134,22 +134,14 @@ def activate_student(register_no):
 # ==================
 # SKILL MANAGEMENT
 
-# 1. List All Skills
-# 2. Create New Skill
-# 3. Delete a Skill
+# 1. Create New Skill
+# 2. Delete a Skill
 # ==================
-
-@admin_bp.route('/skills', methods = ['GET'])
-@role_required('admin')
-def list_skills():
-    result, status = AdminService.list_skills()
-    return jsonify(result), status
 
 @admin_bp.route('/skills', methods = ['POST'])
 @role_required('admin')
 @validate_json('skill_name')
-def list_skills():
-    data = request.get_json()
+def create_skill(data):
     result, status = AdminService.create_skill(data)
     return jsonify(result), status
 
