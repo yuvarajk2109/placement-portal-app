@@ -35,7 +35,7 @@ class PlacementDrive(db.Model):
     salary_max = db.Column(db.Float, nullable = False)
     location = db.Column(db.String(255), nullable = True)
     application_deadline = db.Column(db.DateTime, nullable = False)
-    status = db.Column(db.String(20), default = 'upcoming', nullable = False) # upcoming, ongoing, completed
+    status = db.Column(db.String(20), default = 'Upcoming', nullable = False) # upcoming, ongoing, completed
     created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)
 
