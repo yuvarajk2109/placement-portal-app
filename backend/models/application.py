@@ -8,7 +8,7 @@ class Application(db.Model):
     register_no = db.Column(db.String(20), db.ForeignKey('student.register_no'), nullable = False)
     drive_id = db.Column(db.Integer, db.ForeignKey('placement_drive.drive_id'), nullable = False)
     applied_date = db.Column(db.DateTime, default = datetime.now, nullable = False)
-    application_status = db.Column(db.String(20), default = 'applied', nullable = False) # applied, shortlisted, rejected, selected
+    application_status = db.Column(db.String(20), default = 'Applied', nullable = False) # Applied, Shortlisted, Withdrawn, Selected, Rejected
     current_round_id = db.Column(db.Integer, db.ForeignKey('interview.interview_id'), nullable = True)
     feedback = db.Column(db.Text, nullable = True)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)

@@ -8,6 +8,7 @@ from models.interview import Interview
 from models.placement import Placement
 from flask_mail import Message as MailMessage
 from textwrap import dedent
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -135,3 +136,158 @@ class ApplicationService:
             "message": f"Application status updated to '{new_status}"
         }, 200
                 
+    @staticmethod
+    def apply_for_drive(user_id, drive_id):
+        student = Student.query.filter_by(user_id = user_id).first()
+        if not student:
+            return {
+                "error": "Student not found"
+            }, 404
+        
+        drive =  PlacementDrive.query.get(drive_id)
+        if not drive:
+            return {
+                "error": "Placement drive not found"
+            }, 404
+        
+        if drive.status != 'Approved':
+            return {
+                "error": "This drive is not open for applications"
+            }, 403
+        
+        if datetime.now() > drive.application_deadline:
+            return {
+                "error": "Application deadline has passed"
+            }, 400
+        
+        if student.cgpa < drive.cgpa_requirement:
+            return {
+                "error": f"Minimum CGPA requirement for this drive is {drive.cgpa_requirement}"
+            }, 400
+        
+        if student.year_of_study == 3 and drive.drive_type != '2M_Internship':
+            return {
+                "error": "Year 3 students can only apply for 2-month internship drives."
+            }, 400
+        
+        if student.year_of_study == 4 and drive.drive_type == '2M_Internship':
+            return {
+                "error": "Year 4 students can't apply for 2-month internship drives."
+            }, 400
+        
+        if student.branch not in drive.eligible_branches:
+            return {
+                "error": f"{student.branch.branch_name} students are not eligible for this drive."
+            }, 403
+        
+        is_placed = Placement.query.join(Application).filter(Application.register_no == student.register_no).first()
+        if is_placed:
+            return {
+                "error": "You've already been placed and can't apply for new drives"
+            }, 403
+        
+        existing = Application.query.filter_by(register_no = student.register_no, drive_id = drive.drive_id).first()
+        if existing:
+            return {
+                "error": "You havr already applied for this drive"
+            }, 409
+        
+        application = Application(
+            register_no = student.register_no,
+            drive_id = drive_id,
+            application_status = 'Applied'
+        )
+        db.session.add(application)
+        db.session.commit()
+
+        company = Company.query.filter_by(company_id = drive.company_id)
+
+        logger.info(f"Student {student.fname} {student.lname} ({student.register_no}) has applied for drive {drive_id} - {drive.job_title} by {company.company_name}")
+        return {
+            "message": "Application submitted successfully",
+            "application_id": application.application_id
+        }, 201
+    
+    @staticmethod
+    def list_student_applications(user_id, page, per_page):
+        student = Student.query.filter_by(user_id = user_id).first()
+        if not student:
+            return {
+                "error": "Student not found"
+            }, 404
+        
+        pagination = Application.query.filter_by(register_no = student.register_no).order_by(Application.applied_date.desc()).paginte(
+            page = page,
+            per_page = per_page,
+            error_out = False
+        )
+        
+        applications = []
+        for application in pagination.items:
+            drive = PlacementDrive.query.get(application.drive_id)
+            company = Company.query.get(drive.company_id) if drive else None
+            applications.append({
+                "application_id": application.application_id,
+                "drive_id": application.drive_id,
+                "job_title": drive.job_title if drive else None,
+                "company_name": company.company_name if company else None,
+                "applied_date": application.applied_date.isoformat(),
+                "status": application.application_status,
+                "feedback": application.feedback
+            })
+
+        return {
+            "applications": applications,
+            "total": pagination.total,
+            "page": pagination.page,
+            "pages": pagination.pages
+        }, 200
+    
+    @staticmethod
+    def get_student_application_details(user_id, application_id):
+        student = Student.query.filter_by(user_id = user_id).first()
+        application = Application.query.get(application_id)
+        
+        if not application or application.register_no != student.register_no:
+            return {
+                "error": "Application not found"
+            }, 403
+        
+        drive = PlacementDrive.query.get(application.drive_id)
+        company = Company.query.get(drive.company_id) if drive else None
+
+        return {
+            "application_id": application.application_id,
+            "drive_id": application.drive_id,
+            "job_title": drive.job_title if drive else None,
+            "company_name": company.company_name if company else None,
+            "applied_date": application.applied_date.isoformat(),
+            "status": application.application_status,
+            "feedback": application.feedback,
+            "current_round": application.current_round_id
+        }, 200
+    
+    @staticmethod
+    def withdraw_application(user_id, application_id):
+        student = Student.query.filter_by(user_id = user_id).first()
+        application = Application.query.get(application_id)
+
+        if not application or application.register_no != student.register_no:
+            return {
+                "error": "Application not found"
+            }, 403
+        
+        if application.application_status not in ('Applied', 'Shortlisted'):
+            return {
+                "error": "Cannot withdraw. Application has progressed beyond initial stages."
+            }, 400
+        
+        application.application_status = 'Withdrawn'
+        db.session.commit()
+        return {
+            "message": "Application withdrawn successfully"
+        }, 200
+        
+
+        
+        
