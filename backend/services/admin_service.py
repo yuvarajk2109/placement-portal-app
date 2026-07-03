@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class AdminService:
 
     @staticmethod
-    def get_dashboard_stats():
+    def get_dashboard():
         total_students = Student.query.count()
         total_companies = Company.query.count()
         pending_companies = Company.query.filter_by(status = 'Pending').count()

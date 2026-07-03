@@ -7,7 +7,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix = '/api/admin')
 @admin_bp.route('/dashboard', methods = ['GET'])
 @role_required('admin')
 def dashboard():
-    result, status = AdminService.get_dashboard_stats()
+    result, status = AdminService.get_dashboard()
     return jsonify(result), status
 
 # ==================
