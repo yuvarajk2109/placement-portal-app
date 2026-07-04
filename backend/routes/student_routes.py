@@ -104,7 +104,7 @@ def list_my_applications(current_user_id):
     result, status = ApplicationService.list_student_applications(current_user_id, page, per_page)
     return jsonify(result), status
 
-@student_bp.route('/applications/<int:app_id', methods = ['GET'])
+@student_bp.route('/applications/<int:app_id>', methods = ['GET'])
 @role_required('student')
 def get_application_detail(current_user_id, app_id):
     result, status = ApplicationService.get_student_application_details(current_user_id, app_id)
@@ -122,7 +122,7 @@ def withdraw_application(current_user_id, app_id):
 # 1. View Placement
 # ================================
 
-@student_bp('/placement', methods = ['GET'])
+@student_bp.route('/placement', methods = ['GET'])
 @role_required('student')
 def get_placement(current_user_id):
     result, status = StudentService.get_placement(current_user_id)

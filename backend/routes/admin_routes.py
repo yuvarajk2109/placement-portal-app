@@ -31,25 +31,25 @@ def list_companies():
     result, status = AdminService.list_companies(status_filter, search, page, per_page)
     return jsonify(result), status
 
-@admin_bp.route('/companies/<int:company_id>/approve', method = ['PUT'])
+@admin_bp.route('/companies/<int:company_id>/approve', methods = ['PUT'])
 @role_required('admin')
 def approve_company(company_id):
     result, status = AdminService.update_company_status(company_id, 'Approved')
     return jsonify(result), status
 
-@admin_bp.route('/companies/<int:company_id>/reject', method = ['PUT'])
+@admin_bp.route('/companies/<int:company_id>/reject', methods = ['PUT'])
 @role_required('admin')
 def reject_company(company_id):
     result, status = AdminService.update_company_status(company_id, 'Rejected')
     return jsonify(result), status
 
-@admin_bp.route('/companies/<int:company_id>', method = ['DELETE'])
+@admin_bp.route('/companies/<int:company_id>', methods = ['DELETE'])
 @role_required('admin')
 def remove_company(company_id):
     result, status = AdminService.remove_company(company_id)
     return jsonify(result), status
 
-@admin_bp.route('/companies/<int:company_id>/blacklist', method = ['PUT'])
+@admin_bp.route('/companies/<int:company_id>/blacklist', methods = ['PUT'])
 @role_required('admin')
 def blacklist_company(company_id):
     result, status = AdminService.toggle_blacklist_company(company_id, blacklist = True)
@@ -109,7 +109,7 @@ def list_students():
     result, status = AdminService.list_students(search, page, per_page)
     return jsonify(result), status
 
-@admin_bp.route('/students/<string:register_no/blacklist', methods = ['PUT'])
+@admin_bp.route('/students/<string:register_no>/blacklist', methods = ['PUT'])
 @role_required('admin')
 def blacklist_student(register_no):
     result, status = AdminService.toggle_blacklist_student(register_no, blacklist = True)

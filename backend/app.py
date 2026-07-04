@@ -1,7 +1,9 @@
 import logging
 from flask import Flask
 from config import Config
-from extensions import db
+from extensions import db, migrate, jwt, mail
+from routes import register_blueprints
+from seed import run_seed
 
 def create_app(config_class = Config):
     app = Flask(__name__)
@@ -14,11 +16,15 @@ def create_app(config_class = Config):
     app.logger.setLevel(logging.INFO)
 
     db.init_app(app)
+    migrate.init_app(app, db)
+    jwt.init_app(app)
+    mail.init_app(app)
+
+    register_blueprints(app)
 
     with app.app_context():
         db.create_all()
         print("[APP]\tAll DB Tables Created.")
-        from seed import run_seed
         run_seed()
         print("[SEED]\tDB Seeding Complete.")
 
