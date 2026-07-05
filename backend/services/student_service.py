@@ -127,7 +127,7 @@ class StudentService:
         
         filename = secure_filename(file.filename)
         extension = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
-        if extension not in Config.ALLOWED_RESUME_EXTENSIONS
+        if extension not in Config.ALLOWED_RESUME_EXTENSIONS:
             return {
                 "error": f"Invalid file type. Allowed extensions: {Config.ALLOWED_RESUME_EXTENSIONS}"
             }, 400
@@ -209,11 +209,10 @@ class StudentService:
 
         drives = []
         for drive in pagination.items:
-            company = Company.query.get(drive.company_id)
             drives.append({
                 "drive_id": drive.drive_id,
                 "job_title": drive.job_title,
-                "company_name": company.company_name if company else None,
+                "company_name": drive.company.company_name if drive.company else None,
                 "drive_type": drive.drive_type,
                 "cgpa_requirement": drive.cgpa_requirement,
                 "salary_min": drive.salary_min,
