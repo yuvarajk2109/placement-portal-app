@@ -1,8 +1,9 @@
 import logging
 from flask import Flask
 from config import Config
-from extensions import db, migrate, jwt, mail
+from extensions import db, migrate, jwt, mail, cors
 from routes import register_blueprints
+from utils.error_handlers import register_error_handlers
 from seed import run_seed
 
 def create_app(config_class = Config):
@@ -19,8 +20,10 @@ def create_app(config_class = Config):
     migrate.init_app(app, db)
     jwt.init_app(app)
     mail.init_app(app)
+    cors.init_app(app)
 
     register_blueprints(app)
+    register_error_handlers(app)
 
     with app.app_context():
         db.create_all()

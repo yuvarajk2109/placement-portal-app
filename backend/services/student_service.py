@@ -1,3 +1,4 @@
+from config import Config
 from extensions import db
 from models.user import User
 from models.student import Student
@@ -8,15 +9,12 @@ from models.application import Application
 from models.placement import Placement
 
 import os
-from flask import current_app
-from werkzeug.utils import secure_filename, send_file
+from flask import send_file
+from werkzeug.utils import secure_filename
 from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
-
-ALLOWED_RESUME_EXTENSIONS = {'pdf', 'doc', 'docx'}
-MAX_RESUME_SIZE = 5 * 1024 * 1024
 
 class StudentService:
 
@@ -28,11 +26,11 @@ class StudentService:
                 "error": "Student not found"
             }, 404
         
-        drive_query = PlacementDrive.query.filter(PlacementDrive.status == 'Approved', PlacementDrive.application_deadline > datetime.now)
+        drive_query = PlacementDrive.query.filter(PlacementDrive.status == 'Approved', PlacementDrive.application_deadline > datetime.now())
         if student.year_of_study == 3:
-            drive_query = drive_query.filter(PlacementDrive.drive_type == '2M_Internship')
+            drive_query = drive_query.filter(PlacementDrive.drive_type == '2M Internship')
         elif student.year_of_study == 4:
-            drive_query = drive_query.filter(PlacementDrive.drive_type != '2M_Internship')
+            drive_query = drive_query.filter(PlacementDrive.drive_type != '2M Internship')
 
         eligible_drives_count = drive_query.count()
 
@@ -40,7 +38,7 @@ class StudentService:
         total_applications = len(applications)
         status_counts = {}
         for application in applications:
-            status_counts[application.application_status] = status_counts.get(application.applicatioN_status, 0) + 1
+            status_counts[application.application_status] = status_counts.get(application.application_status, 0) + 1
         
         is_placed = any(
             Placement.query.filter_by(application_id = application.application_id).first() is not None
@@ -110,7 +108,7 @@ class StudentService:
         if 'skill_ids' in data:
             student.skills.clear()
             if data['skill_ids']:
-                updated_skills = Skill.query.filter(Skill.skill_id.in_(data['skill_ids']))
+                updated_skills = Skill.query.filter(Skill.skill_id.in_(data['skill_ids'])).all()
                 student.skills.extend(updated_skills)
 
         db.session.commit()
@@ -121,35 +119,34 @@ class StudentService:
     
     @staticmethod
     def upload_resume(user_id, file):
-        student = student.query.filter_by(user_id = user_id).first()
+        student = Student.query.filter_by(user_id = user_id).first()
         if not student:
             return {
                 "error": "Student not found"
             }, 404
         
         filename = secure_filename(file.filename)
-        extension = filename.rsplit('.', 1)[-1].lower() if '.' else ''
-        if extension not in ALLOWED_RESUME_EXTENSIONS:
+        extension = filename.rsplit('.', 1)[-1].lower() if '.' in filename else ''
+        if extension not in Config.ALLOWED_RESUME_EXTENSIONS
             return {
-                "error": f"Invalid file type. Allowed extensions: {ALLOWED_RESUME_EXTENSIONS}"
+                "error": f"Invalid file type. Allowed extensions: {Config.ALLOWED_RESUME_EXTENSIONS}"
             }, 400
         
         file.seek(0, os.SEEK_END)
         size = file.tell()
         file.seek(0)
-        if size > MAX_RESUME_SIZE:
+        if size > Config.MAX_RESUME_SIZE:
             return {
-                "error": "File too large. Maximum allowed size is {MAX_RESUME_SIZE}."
+                "error": f"File too large. Maximum allowed size is {Config.MAX_RESUME_SIZE}."
             }, 413
-        
-        upload_directory = os.path.join(current_app.config['UPLOAD_FOLDER'], 'resumes')
-        os.makedirs(upload_directory)
+    
+        os.makedirs(Config.RESUME_FOLDER, exist_ok = True)
 
         if student.resume_path and os.path.exists(student.resume_path):
             os.remove(student.resume_path)
 
         file_name = f"{student.register_no}_resume.{extension}"
-        file_path = os.path.join(upload_directory, file_name)
+        file_path = os.path.join(Config.RESUME_FOLDER, file_name)
         file.save(file_path)
 
         student.resume_path = file_path
@@ -180,6 +177,7 @@ class StudentService:
             download_name = os.path.basename(student.resume_path)
         )
     
+    @staticmethod
     def list_eligible_drives(user_id, search, location, drive_type, min_salary, page, per_page):
         student = Student.query.filter_by(user_id = user_id).first()
         if not student:
@@ -187,17 +185,17 @@ class StudentService:
                 "error": "Student not found"
             }, 404
         
-        query = PlacementDrive.query.filter(PlacementDrive.status == 'Approved', PlacementDrive.application_deadline > datetime.now)
+        query = PlacementDrive.query.filter(PlacementDrive.status == 'Approved', PlacementDrive.application_deadline > datetime.now())
 
         if student.year_of_study == 3:
-            drive_query = drive_query.filter(PlacementDrive.drive_type == '2M_Internship')
+            query = query.filter(PlacementDrive.drive_type == '2M Internship')
         elif student.year_of_study == 4:
-            drive_query = drive_query.filter(PlacementDrive.drive_type != '2M_Internship')
+            query = query.filter(PlacementDrive.drive_type != '2M Internship')
         
         if search:
             query = query.filter(PlacementDrive.job_title.ilike(f"%{search}%"))
         if location:
-            query = query.filter(PlacementDrive.location.ilike(f"{location}%"))
+            query = query.filter(PlacementDrive.location.ilike(f"%{location}%"))
         if drive_type:
             query = query.filter(PlacementDrive.drive_type == drive_type)
         if min_salary is not None:
@@ -300,10 +298,9 @@ class StudentService:
         if not student:
             return {
                 "error": "Student not found"
-            }
+            }, 404
         
-        application_id = Application.query.filter_by(register_no = student.register_no).first()
-        placement = Placement.query.filter_by(application_id = application_id).first()
+        placement = Placement.query.join(Application).filter(Application.register_no == student.register_no ).first()
         if not placement:
             return {
                 "error": "No placement found for this student."
@@ -312,17 +309,17 @@ class StudentService:
         drive = PlacementDrive.query.join(Application).filter(Application.application_id == placement.application_id).first()
         company = Company.query.get(drive.company_id) if drive else None
 
-        placement = {
+        placement_record = {
             "placement_id": placement.placement_id,
             "position": placement.position,
             "drive_type": placement.drive_type,
             "salary": placement.salary,
             "joining_date": placement.joining_date.isoformat() if placement.joining_date else None,
             "job_title": drive.job_title if drive else None,
-            "company_name": company.company_namy if company else None,
+            "company_name": company.company_name if company else None,
             "created_at": placement.created_at.isoformat()
         }
 
         return {
-            "placement": placement
+            "placement": placement_record
         }, 200

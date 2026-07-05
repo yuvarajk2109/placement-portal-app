@@ -92,7 +92,7 @@ def list_drive_applications(current_user_id, drive_id):
     result, status = ApplicationService.list_drive_applications(current_user_id, drive_id, page, per_page)
     return jsonify(result), status
 
-@company_bp.route('/drives/<int:app_id>/status', methods = ['PUT'])
+@company_bp.route('/applications/<int:app_id>/status', methods = ['PUT'])
 @role_required('company')
 @validate_json('application_status')
 def update_application_status(current_user_id, app_id, data):

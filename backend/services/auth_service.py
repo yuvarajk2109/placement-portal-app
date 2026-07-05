@@ -21,7 +21,7 @@ class AuthService:
         year = data.get('year_of_study')
         if year not in (3, 4):
             return {
-                "error": "Only 3rd and 4th yar students are allowed to register."
+                "error": "Only 3rd and 4th year students are allowed to register."
             }, 400
         
         email = data['email']
@@ -47,9 +47,9 @@ class AuthService:
             role = 'student',
             is_verified = False,
             otp_code = otp,
-            otp_expires_at = datetime.now + timedelta(minutes = 10)
+            otp_expires_at = datetime.now() + timedelta(minutes = 10)
         )
-        db.session.add(User)
+        db.session.add(user)
         db.session.flush()
 
         student = Student(
@@ -75,7 +75,7 @@ class AuthService:
         try:
             message = Message(
                 subject = 'Placement Portal - Email Verification',
-                recipients  = email,
+                recipients = [email],
                 body = f'''
                     Your OTP for email verification is {otp}\n
                     The OTP expires in exactly 10 minutes.
@@ -83,8 +83,8 @@ class AuthService:
             )
             mail.send(message)
         except Exception as e:
-            logger.warning("Could NOT send OTP email:", e)
-            logger.info("[DEV] OTP for {email}: {otp}")
+            logger.warning("Could NOT send OTP email:", exc_info=True)
+            logger.info(f"[DEV] OTP for {email}: {otp}")
 
         return {
             "message": "Registration successful. Please verify your email with OTP.",
@@ -100,13 +100,13 @@ class AuthService:
             }, 400
         if user.is_verified:
             return {
-                "error": "User already veriied."
+                "error": "User already verified."
             }, 400
         if user.otp_code != data['otp']:
             return {
                 "error": "Invalid OTP"
             }, 401
-        if user.otp_expires_at < datetime.now(datetime.timezone.utcnow):
+        if user.otp_expires_at < datetime.now():
             return {
                 "error": "OTP has expired"
             }, 401
@@ -146,7 +146,7 @@ class AuthService:
             industry = data.get('industry'),
             website = data.get('website'),
             location = data.get('location'),
-            description = data.get('descrption'),
+            description = data.get('description'),
             hr_name = data.get('hr_name'),
             hr_email = data['hr_email'],
             hr_phone = data.get('hr_phone'),
@@ -168,7 +168,7 @@ class AuthService:
                 "error": "Invalid email"
             }, 401
         
-        if not bcrypt.checkpw(data['password'].encode('utf-8'), user.password_hash.encode('utf-8')):
+        if not bcrypt.checkpw(data['password'].encode('utf-8'), user.password.encode('utf-8')):
             return {
                 "error": "Invalid password"
             }, 401
@@ -183,7 +183,7 @@ class AuthService:
                 "error": "Account is blacklisted"
             }, 403
         
-        if user.is_verified:
+        if not user.is_verified:
             return {
                 "error": "Email not verified. Please verifiy OTP first."
             }, 403
@@ -226,7 +226,7 @@ class AuthService:
 
         if user.role == 'student' and user.student:
             student = user.student
-            branch_name = Branch.query(Branch.branch_name).get(student.branch_id)
+            branch_name = student.branch.branch_name
             result["profile"] = {
                 "register_no": student.register_no,
                 "name": f"{student.fname} {student.lname}",

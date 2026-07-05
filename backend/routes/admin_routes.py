@@ -75,7 +75,7 @@ def list_drives():
     status_filter = request.args.get('status')
     page = request.args.get('page', 1, type = int)
     per_page = request.args.get('per_page', 20, type = int)
-    result, status = AdminService.list_drices(status_filter, page, per_page)
+    result, status = AdminService.list_drives(status_filter, page, per_page)
     return jsonify(result), status
 
 @admin_bp.route('/drives/<int:drive_id>/approve', methods = ['PUT'])
@@ -122,11 +122,13 @@ def unblacklist_student(register_no):
     return jsonify(result), status
 
 @admin_bp.route('/students/<string:register_no>/deactivate', methods = ['PUT'])
+@role_required('admin')
 def deactivate_student(register_no):
     result, status = AdminService.toggle_active_student(register_no, active = False)
     return jsonify(result), status
 
 @admin_bp.route('/students/<string:register_no>/activate', methods = ['PUT'])
+@role_required('admin')
 def activate_student(register_no):
     result, status = AdminService.toggle_active_student(register_no, active = True)
     return jsonify(result), status

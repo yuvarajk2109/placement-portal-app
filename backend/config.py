@@ -6,6 +6,8 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.getenv('SECRET_KEY', 'yuvaraj_k')
     ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    UPLOAD_FOLDER = os.path.join(ROOT_DIR, 'uploads')
+
     DATABASE_PATH = os.path.abspath(os.path.join(ROOT_DIR, "db", "placement_portal.db"))
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{DATABASE_PATH}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -14,9 +16,13 @@ class Config:
     JWT_ACCESS_TOKEN_EXPIRES = 3600
     JWT_REFRESH_TOKEN_EXPIRES = 86400
 
-    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmal.com')
+    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
     MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
     MAIL_USE_TLS = True
-    MAIL_USERNAME = os.getenv('MAIL_USERNAME', '')
-    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', '')
-    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'noreply@placement.edu')
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME', 'Placement Portal Application Admin')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', 'pbqd dxrv olub rqcr')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'starspinix@gmail.com')
+
+    RESUME_FOLDER = os.path.join(UPLOAD_FOLDER, 'resumes')
+    ALLOWED_RESUME_EXTENSIONS = {'pdf', 'doc', 'docx'}
+    MAX_RESUME_SIZE = 5 * 1024 * 1024

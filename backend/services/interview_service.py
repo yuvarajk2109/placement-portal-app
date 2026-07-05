@@ -72,8 +72,8 @@ class InterviewService:
                     "location": interview.location,
                     "created_at": interview.created_at.isoformat()
                 }
-            ]
-            for interview in interviews
+                for interview in interviews
+            ]            
         }, 200
     
     @staticmethod

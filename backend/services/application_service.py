@@ -25,7 +25,7 @@ class ApplicationService:
                 "error": "Access denied"
             }, 403
         
-        pagination = Application.query.filter_by(drive_id = drive_id).order_by(Application.created_at.desc()).paginate(
+        pagination = Application.query.filter_by(drive_id = drive_id).order_by(Application.applied_date.desc()).paginate(
             page = page,
             per_page = per_page,
             error_out = False
@@ -89,7 +89,7 @@ class ApplicationService:
                 }, 400
             application.current_round_id = round_id
 
-        if new_status =='Selected':
+        if new_status == 'Selected':
             existing_placement = Placement.query.filter_by(application_id  = application.application_id).first()
             if not existing_placement:
                 placement = Placement(
@@ -99,6 +99,16 @@ class ApplicationService:
                     salary = drive.salary_max,
                 )
                 db.session.add(placement)
+
+                other_applications = Application.query.filter(
+                    Application.register_no == application.register_no, 
+                    Application.application_id != application.application_id,
+                    Application.application_status.in_(['Applied', 'Shortlisted', 'Interview'])
+                ).all()
+                for application in other_applications:
+                    application.application_status = 'Withdrawn'
+                    application.feedback = 'Automatically withdrawn due to placement being secured in another drive.'
+
 
         db.session.commit()
 
@@ -133,7 +143,7 @@ class ApplicationService:
                 logger.warning(f"Could not send status notification to {user.email}: {e}")
 
         return  {
-            "message": f"Application status updated to '{new_status}"
+            "message": f"Application status updated to '{new_status}'"
         }, 200
                 
     @staticmethod
@@ -165,12 +175,12 @@ class ApplicationService:
                 "error": f"Minimum CGPA requirement for this drive is {drive.cgpa_requirement}"
             }, 400
         
-        if student.year_of_study == 3 and drive.drive_type != '2M_Internship':
+        if student.year_of_study == 3 and drive.drive_type != '2M Internship':
             return {
                 "error": "Year 3 students can only apply for 2-month internship drives."
             }, 400
         
-        if student.year_of_study == 4 and drive.drive_type == '2M_Internship':
+        if student.year_of_study == 4 and drive.drive_type == '2M Internship':
             return {
                 "error": "Year 4 students can't apply for 2-month internship drives."
             }, 400
@@ -189,7 +199,7 @@ class ApplicationService:
         existing = Application.query.filter_by(register_no = student.register_no, drive_id = drive.drive_id).first()
         if existing:
             return {
-                "error": "You havr already applied for this drive"
+                "error": "You have already applied for this drive"
             }, 409
         
         application = Application(
@@ -200,7 +210,7 @@ class ApplicationService:
         db.session.add(application)
         db.session.commit()
 
-        company = Company.query.filter_by(company_id = drive.company_id)
+        company = Company.query.filter_by(company_id = drive.company_id).first()
 
         logger.info(f"Student {student.fname} {student.lname} ({student.register_no}) has applied for drive {drive_id} - {drive.job_title} by {company.company_name}")
         return {
@@ -216,7 +226,7 @@ class ApplicationService:
                 "error": "Student not found"
             }, 404
         
-        pagination = Application.query.filter_by(register_no = student.register_no).order_by(Application.applied_date.desc()).paginte(
+        pagination = Application.query.filter_by(register_no = student.register_no).order_by(Application.applied_date.desc()).paginate(
             page = page,
             per_page = per_page,
             error_out = False

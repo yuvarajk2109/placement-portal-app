@@ -39,6 +39,7 @@ class PlacementDrive(db.Model):
     created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)
 
+    company = db.relationship('Company', backref = 'placement_drive', lazy = True)
     eligible_branches = db.relationship('Branch', secondary=drive_branch, backref = 'placement_drives', lazy = True)
     interviews = db.relationship('Interview', backref = 'placement_drive', lazy = True)
     applications = db.relationship('Application', backref = 'placement_drive', lazy = True)

@@ -64,7 +64,7 @@ class CompanyService:
         if not company:
             return {
                 "error": "Company not found"
-            }
+            }, 404
         
         updatable = [
             'company_name',

@@ -57,7 +57,7 @@ class AdminService:
 
         companies = []
         for company in pagination.items:
-            user = User.query.get(c.user_id)
+            user = User.query.get(company.user_id)
             companies.append({
                 "company_id": company.company_id,
                 "company_name": company.company_name,
@@ -119,7 +119,7 @@ class AdminService:
                 "error": "Company not found"
             }, 404
         
-        user = User.query.get(company_id)
+        user = User.query.get(company.user_id)
         if not user:
             return {
                 "error": "Associated user not found"
@@ -158,7 +158,7 @@ class AdminService:
                 "company_name": company.company_name if company else None,
                 "drive_type": drive.drive_type,
                 "status": drive.status,
-                "deadline": drive.deadline.isoformat() if drive.deadline else None,
+                "deadline": drive.application_deadline.isoformat() if drive.deadline else None,
                 "applications_count": Application.query.filter_by(drive_id = drive.drive_id).count(),
                 "created_at": drive.created_at.isoformat()
             })
@@ -194,8 +194,8 @@ class AdminService:
             search_term = f"%{search}%"
             query = query.filter(
                 db.or_(
-                    Student.first_name.ilike(search_term),
-                    Student.last_name.ilike(search_term),
+                    Student.fname.ilike(search_term),
+                    Student.lname.ilike(search_term),
                     Student.register_no.ilike(search_term)
                 )
             )
@@ -209,7 +209,7 @@ class AdminService:
         students = []
         for student in pagination.items:
             user = User.query.get(student.user_id)
-            branch_name = Branch.query(Branch.branch_name).get(student.branch_id)
+            branch_name = student.branch.branch_name
             students.append({
                 "register_no": student.register_no,
                 "name": f"{student.fname} {student.lname}",
@@ -302,7 +302,7 @@ class AdminService:
         if not skill:
             return {
                 "error": "Skill not found"
-            }
+            }, 404
         
         db.session.delete(skill)
         db.session.commit()
@@ -371,12 +371,12 @@ class AdminService:
                 "created_at": placement.created_at.isoformat()
             })
 
-            return {
-                "placements": placements,
-                "total": pagination.total,
-                "page": pagination.page,
-                "pages": pagination.pages
-            }, 200
+        return {
+            "placements": placements,
+            "total": pagination.total,
+            "page": pagination.page,
+            "pages": pagination.pages
+        }, 200
         
     @staticmethod
     def get_placement_record(placement_id):
@@ -388,7 +388,7 @@ class AdminService:
         
         application = Application.query.get(placement.application_id)            
         student = Student.query.get(application.register_no) if application else None
-        branch_name = Branch.query(Branch.branch_name).get(student.branch_id) if student else None
+        branch_name = student.branch.branch_name if student else None
         drive = PlacementDrive.query.get(application.drive_id) if application else None
         company_name = Company.query(Company.company_name).get(drive.company_id) if drive else None
         user = User.query.get(student.user_id) if student else None
