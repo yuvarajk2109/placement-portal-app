@@ -3,7 +3,9 @@
 </script>
 
 <template>
-  HEY, WELCOME BRUV!
+  <main>
+    <router-view />
+  </main>
 </template>
 
 <style scoped>
