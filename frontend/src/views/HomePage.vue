@@ -8,11 +8,12 @@
     </div>
 </template>
 
-<style>
+<style scoped>
 .home-page {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 100px;
+    margin-top: calc(var(--header-height) + 20px);
+    min-height: calc(100vh - var(--header-height) - 60px);
 }
 </style>

@@ -84,6 +84,15 @@
   --data-mono-neutral-3: #757473;
   --data-mono-neutral-4: #403F3E;
   --data-mono-neutral-5: #141414;
+
+  /* Styles for Layout */
+  --header-height: 60px;
+  --sidebar-width-open: 260px;
+  --sidebar-width-closed: 64px;
+  --notification-z: 9999;
+  --modal-z: 9998;
+  --sidebar-z: 100;
+  --header-z: 200;
 }
 
 /* Colours - Dark Mode */
@@ -208,16 +217,23 @@ a:hover {
   border-radius: 10px;
   cursor: pointer;
   transition: background 0.15s ease, opacity 0.15s ease;
-  color: var(--accent-primary-foreground);
   white-space: nowrap;
 }
 
 .btn.is-primary {
   background: var(--accent-primary-background);
+  color: var(--accent-primary-foreground);
 }
-
 .btn.is-primary:hover:not(:disabled) {
   background: var(--accent-primary-background-interaction);
+}
+
+.btn.is-inverse {  
+  background: var(--accent-primary-foreground);
+  color: var(--accent-primary-background);
+}
+.btn.is-inverse:hover:not(:disabled) {
+  color: var(--surface-container-background-low);
 }
 
 .btn.is-secondary {
@@ -225,15 +241,22 @@ a:hover {
   color: var(--surface-foreground);
   border: 1px solid var(--surface-line);
 }
-
 .btn.is-secondary:hover:not(:disabled) {
+  background: var(--surface-line-subtle);
+}
+
+.btn.is-tertiary {  
+  background: var(--surface-container-background);
+  color: var(--surface-foreground);
+  border: none;
+}
+.btn-is-tertiary:hover:not(:disabled) {
   background: var(--surface-line-subtle);
 }
 
 .btn.is-info {
   background: var(--status-info-background);
 }
-
 .btn.is-info:hover:not(:disabled) {
   background: var(--status-info-container-line);
 }
