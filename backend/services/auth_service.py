@@ -195,8 +195,8 @@ class AuthService:
                     "error": f"Company registration is {company.status}. Please wait for admin approval."
                 }, 403
             
-        access_token = create_access_token(identity = user.user_id)
-        refresh_token = create_refresh_token(identity = user.user_id)
+        access_token = create_access_token(identity = str(user.user_id))
+        refresh_token = create_refresh_token(identity = str(user.user_id))
 
         return {
             "message": "Login successful",

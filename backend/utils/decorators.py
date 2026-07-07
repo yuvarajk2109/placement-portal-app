@@ -23,7 +23,7 @@ def role_required(*allowed_roles):
                 return jsonify({
                     "error": "Account is blacklisted"
                 }), 403
-            if user.role not in allowed_roles:
+            if allowed_roles and user.role not in allowed_roles:
                 return jsonify({
                     "error": "Access denied. Insufficient role."
                 }), 403

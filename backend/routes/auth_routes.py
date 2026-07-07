@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from utils.decorators import validate_json
+from utils.decorators import role_required, validate_json
 from services.auth_service import AuthService
 
 auth_bp = Blueprint('auth', __name__, url_prefix = '/api/auth')
@@ -33,14 +33,14 @@ def login(data):
 @jwt_required(refresh = True)
 def refresh():
     user_id = get_jwt_identity()
-    access_token = create_access_token(identity = user_id)
+    access_token = create_access_token(identity = str(user_id))
     return jsonify({
         "access_token": access_token
     }), 200
 
 @auth_bp.route('/profile', methods = ['GET'])
+@role_required()
 @jwt_required()
-def get_current_user():
-    user_id = get_jwt_identity()
-    result, status_code = AuthService.get_current_user(user_id)
+def get_current_user(current_user_id):
+    result, status_code = AuthService.get_current_user(current_user_id)
     return jsonify(result), status_code
