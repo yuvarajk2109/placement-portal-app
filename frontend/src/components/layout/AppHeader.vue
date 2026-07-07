@@ -1,24 +1,41 @@
 <template>
-    <header class = "app-header">
-        <div class = "header-left">
-            <button class = "btn is-primary is-icon-only">
-                <i class = "fas fa-bars"></i>
+    <header class="app-header">
+        <div class="header-left">
+            <button 
+            class="btn is-primary is-icon-only"
+            @click="$emit('toggle-sidebar')">
+                <i class="fas fa-bars"></i>
             </button>
-            <router-link to = "/"  class = "header-logo">
+            <router-link to="/"  class="header-logo">
                 Placement Portal
             </router-link>
         </div>
-        <div class = "header-right">
-            <button class = "btn is-primary is-icon-only" @click = "toggleTheme()">
-                <i :class = "isDark ? 'fas fa-sun' : 'fas fa-moon'"></i>
+        <div class="header-right">
+            <button class="btn is-primary is-icon-only" @click="toggleTheme()">
+                <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'"></i>
             </button>
+
+            <template v-if="authStore.isLoggedIn">
+                <button 
+                class="btn is-error"
+                @click="handleLogout">
+                    Logout
+                </button>
+            </template>
+            <template v-else>
+                <router-link 
+                to="/login"
+                class="btn is-inverse is-small">
+                    Login
+                </router-link>
+            </template>
         </div>
     </header>
 </template>
 
 <style scoped>
 .app-header {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
@@ -28,7 +45,6 @@
     align-items: center;
     justify-content: space-between;
     padding: 0px 5px;
-    z-index: var(--header-z);
 }
 
 .header-left {
@@ -48,11 +64,23 @@
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-right: 16px;
 }
 </style>
 
 <script setup>
 import { useTheme } from '@/composables/useTheme';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
-const { isDark, toggleTheme } = useTheme()
+const authStore=useAuthStore();
+const router=useRouter();
+
+const { isDark, toggleTheme }=useTheme();
+defineEmits(['toggle-sidebar']);
+
+function handleLogout() {
+    authStore.logout();
+    router.push({ name: 'login' });
+}
 </script>

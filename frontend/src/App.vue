@@ -1,4 +1,5 @@
 <script setup>
+import AppNotification from './components/ui/AppNotification.vue'
 import AppHeader from './components/layout/AppHeader.vue';
 import AppFooter from './components/layout/AppFooter.vue';
 
@@ -6,9 +7,11 @@ import AppFooter from './components/layout/AppFooter.vue';
 
 <template>
 
+  <AppNotification />
+
   <AppHeader />
 
-  <main>
+  <main class="app-main">
     <router-view />
   </main>
 

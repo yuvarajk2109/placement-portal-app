@@ -1,9 +1,9 @@
 <template>
-    <footer class = "app-footer">
-        <span class = "footer-content">
+    <footer class="app-footer">
+        <span class="footer-content">
             Placement Portal            
         </span>
-        <span class = "footer-content">
+        <span class="footer-content">
             &copy; 2026. All Rights Reserved.           
         </span>
     </footer>

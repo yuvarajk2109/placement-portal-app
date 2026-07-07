@@ -1,4 +1,6 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -87,12 +89,14 @@
 
   /* Styles for Layout */
   --header-height: 60px;
+  --footer-height: 50px;
   --sidebar-width-open: 260px;
   --sidebar-width-closed: 64px;
   --notification-z: 9999;
   --modal-z: 9998;
   --sidebar-z: 100;
   --header-z: 200;
+  --footer-z: 200;
 }
 
 /* Colours - Dark Mode */
@@ -178,7 +182,8 @@ body[data-theme="dark"] {
   --data-mono-neutral-5: #757473;
 }
 
-html, body {
+html,
+body {
   font-family: 'Asap', sans-serif;
   background: var(--surface-background);
   color: var(--surface-foreground);
@@ -187,20 +192,51 @@ html, body {
 }
 
 a {
-    color: var(--surface-foreground-link);
-    text-decoration: none;
-    transition: color 0.3s ease;
+  color: var(--surface-foreground-link);
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 a:hover {
-    color: var(--surface-foreground-link-interaction);
+  color: var(--surface-foreground-link-interaction);
+}
+
+/* Typography */
+
+.page-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--surface-foreground);
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--surface-foreground-subtle);
+  margin-bottom: 24px;
+}
+
+.section-heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--surface-foreground);
+  margin-bottom: 16px;
+}
+
+.text-subtle {
+  color: var(--surface-foreground-subtle);
+}
+
+.text-small {
+  font-size: 12px;
 }
 
 .text-center {
   text-align: center;
 }
 
-/* ---- Buttons ---- */
+/* Buttons */
 
 .btn {
   display: inline-flex;
@@ -224,16 +260,18 @@ a:hover {
   background: var(--accent-primary-background);
   color: var(--accent-primary-foreground);
 }
+
 .btn.is-primary:hover:not(:disabled) {
   background: var(--accent-primary-background-interaction);
 }
 
-.btn.is-inverse {  
+.btn.is-inverse {
   background: var(--accent-primary-foreground);
   color: var(--accent-primary-background);
 }
+
 .btn.is-inverse:hover:not(:disabled) {
-  color: var(--surface-container-background-low);
+  background: var(--surface-container-background-low);
 }
 
 .btn.is-secondary {
@@ -241,54 +279,46 @@ a:hover {
   color: var(--surface-foreground);
   border: 1px solid var(--surface-line);
 }
+
 .btn.is-secondary:hover:not(:disabled) {
   background: var(--surface-line-subtle);
 }
 
-.btn.is-tertiary {  
+.btn.is-tertiary {
   background: var(--surface-container-background);
   color: var(--surface-foreground);
   border: none;
 }
+
 .btn-is-tertiary:hover:not(:disabled) {
   background: var(--surface-line-subtle);
 }
 
 .btn.is-info {
   background: var(--status-info-background);
+  color: var(--status-info-foreground);
 }
+
 .btn.is-info:hover:not(:disabled) {
   background: var(--status-info-container-line);
 }
 
-.btn.is-danger {
+.btn.is-error {
   background: var(--status-error-background);
+  color: var(--status-error-foreground);
 }
 
-.btn.is-danger:hover:not(:disabled) {
+.btn.is-error:hover:not(:disabled) {
   background: var(--status-error-container-line);
 }
 
 .btn.is-warning {
   background: var(--status-warning-background);
+  color: var(--status-warning-foreground);
 }
 
 .btn.is-warning:hover:not(:disabled) {
   background: var(--status-warning-container-line);
-}
-
-.btn.is-icon-only {
-  min-height: 48px;
-  min-width: 48px;
-  width: 48px;
-  height: 48px;
-  font-size: 20px;
-  padding: 0;
-  gap: 0;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .btn:disabled {
@@ -312,11 +342,39 @@ a:hover {
   font-size: 15px;
 }
 
+.btn.is-transparent {
+  border: none;
+  background: none;
+  color: var(--surface-foreground);
+}
+
 .full-width-btn {
   width: 100%;
 }
 
-/* ---- Form Elements ---- */
+.btn.is-icon-only {
+  min-height: 48px;
+  min-width: 48px;
+  width: 48px;
+  height: 48px;
+  font-size: 20px;
+  padding: 0;
+  gap: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn.is-icon-only.is-small {
+  min-height: 20px;
+  min-width: 20px;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+}
+
+/* Form Elements */
 
 .form-group {
   margin-bottom: 20px;
@@ -324,10 +382,16 @@ a:hover {
 
 .form-label {
   display: block;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--surface-foreground);
   margin-bottom: 6px;
+}
+
+.required {
+  margin-left: 2px;
+  font-size: 10px;
+  color: var(--surface-line);
 }
 
 .form-input {
@@ -341,12 +405,11 @@ a:hover {
   border: 1px solid var(--surface-line-subtle);
   border-radius: 8px;
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease;
 }
 
 .form-input:focus {
   border-color: var(--accent-primary-background);
-  box-shadow: 0 0 0 3px rgba(54, 135, 39, 0.12);
 }
 
 .form-input::placeholder {
@@ -355,10 +418,6 @@ a:hover {
 
 .form-input.is-error {
   border-color: var(--status-error-background);
-}
-
-.form-input.is-error:focus {
-  box-shadow: 0 0 0 3px rgba(195, 18, 18, 0.12);
 }
 
 .form-textarea {
@@ -378,7 +437,6 @@ a:hover {
 
 .form-textarea:focus {
   border-color: var(--accent-primary-background);
-  box-shadow: 0 0 0 3px rgba(54, 135, 39, 0.12);
 }
 
 .form-select {
@@ -416,7 +474,7 @@ a:hover {
   margin-top: 4px;
 }
 
-/* ---- Status Badges ---- */
+/* Status Badges */
 
 .badge {
   display: inline-flex;
@@ -458,7 +516,7 @@ a:hover {
   border: 1px solid var(--surface-line-subtle);
 }
 
-/* ---- Card ---- */
+/* Card */
 
 .card {
   background: var(--surface-background-bright);
@@ -480,7 +538,7 @@ a:hover {
   color: var(--surface-foreground);
 }
 
-/* ---- Table ---- */
+/* Table */
 
 .data-table {
   width: 100%;
@@ -516,75 +574,7 @@ a:hover {
   gap: 8px;
 }
 
-/* ---- Notification Toast Container ---- */
-
-.notification-container {
-  position: fixed;
-  top: calc(var(--header-height) + 12px);
-  right: 16px;
-  z-index: var(--notification-z);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  max-width: 400px;
-}
-
-.notification-toast {
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 13.5px;
-  font-weight: 400;
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  animation: slideInRight 0.25s ease-out;
-  border-left: 4px solid;
-}
-
-.notification-toast.is-success {
-  background: var(--status-success-container-bg);
-  color: var(--status-success-container-fg);
-  border-left-color: var(--status-success-container-line);
-}
-
-.notification-toast.is-error {
-  background: var(--status-error-container-bg);
-  color: var(--status-error-container-fg);
-  border-left-color: var(--status-error-container-line);
-}
-
-.notification-toast.is-warning {
-  background: var(--status-warning-container-bg);
-  color: var(--status-warning-container-fg);
-  border-left-color: var(--status-warning-container-line);
-}
-
-.notification-toast.is-info {
-  background: var(--status-info-container-bg);
-  color: var(--status-info-container-fg);
-  border-left-color: var(--status-info-container-line);
-}
-
-.notification-toast .close-btn {
-  margin-left: auto;
-  cursor: pointer;
-  background: none;
-  border: none;
-  color: inherit;
-  font-size: 14px;
-  opacity: 0.6;
-}
-
-.notification-toast .close-btn:hover {
-  opacity: 1;
-}
-
-@keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* ---- Modal Overlay ---- */
+/* Modal Overlay */
 
 .modal-overlay {
   position: fixed;
@@ -635,11 +625,16 @@ a:hover {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
-/* ---- Layout: App Shell ---- */
+/* Layout: App Shell */
 
 .app-layout {
   display: flex;
@@ -652,29 +647,88 @@ a:hover {
   margin-left: var(--sidebar-width-closed);
   padding: 32px 40px;
   transition: margin-left 0.25s ease;
+  min-height: calc(100vh - var(--header-height) - var(--footer-height));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .app-main.sidebar-open {
   margin-left: var(--sidebar-width-open);
 }
 
-/* ---- Utility ---- */
+/* Utility */
 
-.flex { display: flex; }
-.flex-col { flex-direction: column; }
-.items-center { align-items: center; }
-.justify-between { justify-content: space-between; }
-.gap-8 { gap: 8px; }
-.gap-12 { gap: 12px; }
-.gap-16 { gap: 16px; }
-.gap-24 { gap: 24px; }
-.mt-8 { margin-top: 8px; }
-.mt-16 { margin-top: 16px; }
-.mt-24 { margin-top: 24px; }
-.mb-16 { margin-bottom: 16px; }
-.mb-24 { margin-bottom: 24px; }
+.flex {
+  display: flex;
+}
 
-/* ---- Stat Cards Grid ---- */
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-8 {
+  gap: 8px;
+}
+
+.gap-12 {
+  gap: 12px;
+}
+
+.gap-16 {
+  gap: 16px;
+}
+
+.gap-24 {
+  gap: 24px;
+}
+
+.mt-8 {
+  margin-top: 8px;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+.mt-24 {
+  margin-top: 24px;
+}
+
+.mt-32 {
+  margin-top: 32px;
+}
+
+.mb-16 {
+  margin-bottom: 16px;
+}
+
+.mb-24 {
+  margin-bottom: 24px;
+}
+
+.mb-32 {
+  margin-bottom: 32px;
+}
+
+/* Auth Page */
+
+.auth-page {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Stat Cards Grid */
 
 .stats-grid {
   display: grid;
@@ -703,25 +757,7 @@ a:hover {
   margin-top: 4px;
 }
 
-/* ---- Welcome Banner ---- */
-
-.welcome-banner {
-  margin-bottom: 32px;
-}
-
-.welcome-text {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--surface-foreground);
-}
-
-.welcome-subtext {
-  font-size: 14px;
-  color: var(--surface-foreground-subtle);
-  margin-top: 4px;
-}
-
-/* ---- Empty State ---- */
+/* Empty State */
 
 .empty-state {
   text-align: center;
@@ -734,7 +770,7 @@ a:hover {
   margin-top: 12px;
 }
 
-/* ---- Loading Spinner ---- */
+/* Loading Spinner */
 
 .loading-spinner {
   display: flex;
@@ -753,10 +789,12 @@ a:hover {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-/* ---- Page Toolbar ---- */
+/* Page Toolbar */
 
 .page-toolbar {
   display: flex;
