@@ -24,12 +24,12 @@ api.interceptors.response.use(
         const originalRequest = error.config;
 
         if (error.response?.status === 401 && !originalRequest._retry) {
-            originalRequest._retry = true'
+            originalRequest._retry = true
         
             const refreshToken = localStorage.getItem('refresh_token')
             if (refreshToken) {
                 try {
-                    const result = await axios.post(api.baseURL + '/auth/refresh', {},
+                    const result = await axios.post(api.get('baseURL') + '/auth/refresh', {},
                         {
                             headers: {
                                 Authorization: `Bearer ${refreshToken}`
