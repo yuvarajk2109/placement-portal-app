@@ -25,8 +25,18 @@
             <template v-else>
                 <router-link 
                 to="/login"
-                class="btn is-inverse is-small">
+                class="btn is-inverse">
                     Login
+                </router-link>
+                <router-link 
+                to="/register/student"
+                class="btn is-inverse">
+                    Register as Student
+                </router-link>
+                <router-link
+                to="/register/company"
+                class="btn is-inverse">
+                    Register as Company
                 </router-link>
             </template>
         </div>

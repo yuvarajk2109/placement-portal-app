@@ -20,7 +20,38 @@ const router = createRouter({
       component: () => import('@/views/admin/AdminDashboard.vue'),
       meta: { requiresAuth: true, role: 'admin' }
     },
-    // {
+    {
+      path: '/register/student',
+      name: 'register-student',
+      component: () => import('@/views/RegisterStudentPage.vue'),
+      meta: { guest: true }
+    },
+     {
+      path: '/register/company',
+      name: 'register-company',
+      component: () => import('@/views/RegisterCompanyPage.vue'),
+    },
+     // {
+    //   path: '',
+    //   name: '',
+    //   component: () => import('@/'),
+    // },
+     // {
+    //   path: '',
+    //   name: '',
+    //   component: () => import('@/'),
+    // },
+     // {
+    //   path: '',
+    //   name: '',
+    //   component: () => import('@/'),
+    // },
+     // {
+    //   path: '',
+    //   name: '',
+    //   component: () => import('@/'),
+    // },
+     // {
     //   path: '',
     //   name: '',
     //   component: () => import('@/'),
