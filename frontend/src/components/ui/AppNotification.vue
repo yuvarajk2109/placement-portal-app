@@ -7,7 +7,7 @@
         :class="`is-${notification.type}`">
             <span>{{ notification.message }}</span>
             <button 
-            class="btn is-transparent is-icon-only is-small close-btn" 
+            class="btn is-icon-only is-small close-btn" 
             :class="`is-${notification.type}`"
             @click="notificationStore.removeNotification(notification.id)">
                 <i class="fas fa-times"></i>
@@ -34,7 +34,7 @@
   font-size: 13.5px;
   font-weight: 400;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   animation: slideInRight 0.25s ease-out;
 }
