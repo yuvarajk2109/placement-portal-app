@@ -13,7 +13,7 @@
                     <div class="flex-1">
                         <label class="form-label" for="branch_id">Branch <span class="required">(required)</span></label>
                         <select id="branch_id" v-model="form.branch_id" @blur="touched.branch_id = true" class="form-select" :class="{ 'is-error': touched.branch_id && errors.branch_id }">
-                            <option value="">Select Branch</option>
+                            <option value="" disabled>Select Branch</option>
                             <option 
                             v-for="branch in branches"
                             :key = "branch.branch_id"
