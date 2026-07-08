@@ -76,7 +76,6 @@
                     <router-link to="/login" class="text-link">Sign in</router-link>
                 </p>
             </div>
-
         </div>
     </div>
 </template>

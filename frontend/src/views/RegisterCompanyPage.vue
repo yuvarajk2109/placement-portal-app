@@ -60,6 +60,14 @@
                     {{ loading ? 'Registering...' : 'Register' }}
                 </button>
             </form>
+            <div class="auth-links mt-16">
+                <p class="text-subtle">
+                    Already have an account?
+                </p>
+                <p class="mt-4">
+                    <router-link to="/login" class="text-link">Sign in</router-link>
+                </p>
+            </div>
         </div>
     </div>
 </template>
