@@ -1,4 +1,5 @@
 from functools import wraps
+import inspect
 from flask import jsonify, request
 from flask_jwt_extended import verify_jwt_in_request, get_jwt_identity
 from models.user import User
@@ -27,7 +28,9 @@ def role_required(*allowed_roles):
                 return jsonify({
                     "error": "Access denied. Insufficient role."
                 }), 403
-            kwargs['current_user_id'] = user_id
+            sig = inspect.signature(fn)
+            if 'current_user_id' in sig.parameters:
+                kwargs['current_user_id'] = user_id
             return fn(*args, **kwargs)
         return wrapper
     return decorator
