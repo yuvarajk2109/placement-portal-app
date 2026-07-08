@@ -18,10 +18,38 @@ class AuthService:
 
     @staticmethod
     def register_student(data):
-        year = data.get('year_of_study')
+        reg_no = data.get('register_no', '')
+        if len(reg_no) != 10 or not reg_no.isdigit():
+            return {
+                "error": "Register number must be exactly 10 digits (YYYYDDDRRR)."
+            }, 400
+        
+        try:
+            join_year = int(reg_no[:4])
+            dept_code = int(reg_no[4:7])
+        except ValueError:
+            return {
+                "error": "Invalid register number format."
+            }, 400
+            
+        current_date = datetime.now()
+        academic_year = current_date.year if current_date.month >= 6 else current_date.year - 1
+        year = academic_year - join_year + 1
+
         if year not in (3, 4):
             return {
                 "error": "Only 3rd and 4th year students are allowed to register."
+            }, 400
+            
+        branch = Branch.query.get(data['branch_id'])
+        if not branch:
+            return {
+                "error": "Invalid branch selected."
+            }, 400
+            
+        if branch.dept_id != dept_code:
+            return {
+                "error": "Branch does not match the department code in the register number."
             }, 400
         
         email = data['email']

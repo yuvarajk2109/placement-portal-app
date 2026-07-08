@@ -6,7 +6,7 @@ from services.auth_service import AuthService
 auth_bp = Blueprint('auth', __name__, url_prefix = '/api/auth')
 
 @auth_bp.route('/register/student', methods = ['POST'])
-@validate_json('email', 'password', 'register_no', 'fname', 'lname', 'dob', 'cgpa', 'branch_id', 'year_of_study')
+@validate_json('email', 'password', 'register_no', 'fname', 'lname', 'dob', 'cgpa', 'branch_id')
 def register_student(data):
     result, status_code = AuthService.register_student(data)
     return jsonify(result), status_code
