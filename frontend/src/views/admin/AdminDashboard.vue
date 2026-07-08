@@ -1,71 +1,95 @@
 <template>
-    <div class="page-title">Welcome, Admin</div>
+    <div class="main-page">
+        <div class="page-title">Welcome, Admin</div>
 
-    <div v-if="loading" class="loading-spinner">
-        <div class="spinner"></div>
-    </div>
-    <div v-else class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-card-value">
-
-            </div>
-            <div class="stat-card-label">
-
-            </div>
+        <div v-if="loading" class="loading-spinner">
+            <div class="spinner"></div>
         </div>
-        <div class="stat-card">
-            <div class="stat-card-value">
-
+        <div v-else class="stats-grid mt-32">
+            <div class="stat-card info">
+                <div class="stat-card-value info">
+                    {{  stats.total_students  }}
+                </div>
+                <div class="stat-card-label info">
+                    Total Students
+                </div>
             </div>
-            <div class="stat-card-label">
-                
+            <div class="stat-card info">
+                <div class="stat-card-value info">
+                    {{ stats.total_companies }}
+                </div>
+                <div class="stat-card-label info">
+                    Total Companies
+                </div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-card-value">
-
+            <div class="stat-card warning">
+                <div class="stat-card-value warning">
+                    {{ stats.pending_companies }}
+                </div>
+                <div class="stat-card-label warning">   
+                    Pending Companies
+                </div>
             </div>
-            <div class="stat-card-label">
-                
+            <div class="stat-card info">
+                <div class="stat-card-value info">
+                    {{ stats.total_drives }}
+                </div>
+                <div class="stat-card-label info">
+                    Total Drives
+                </div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-card-value">
-
+            <div class="stat-card warning">
+                <div class="stat-card-value warning">
+                    {{ stats.pending_drives }}
+                </div>
+                <div class="stat-card-label warning">
+                    Pending Drives
+                </div>
             </div>
-            <div class="stat-card-label">
-                
+            <div class="stat-card info">
+                <div class="stat-card-value info">
+                    {{ stats.total_applications }}
+                </div>
+                <div class="stat-card-label info">
+                    Total Applications
+                </div>
             </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-card-value">
-
-            </div>
-            <div class="stat-card-label">
-                
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-card-value">
-
-            </div>
-            <div class="stat-card-label">
-                
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-card-value">
-
-            </div>
-            <div class="stat-card-label">
-                
+            <div class="stat-card success">
+                <div class="stat-card-value success">
+                    {{ stats.total_placements }}
+                </div>
+                <div class="stat-card-label success">
+                    Total Placements
+                </div>
             </div>
         </div>
     </div>
 </template>
 
+<style scoped>
+.stats-grid {    
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+}
+</style>
+
 <script setup>
+import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
+import { onMounted, ref } from 'vue';
 
 const notify = useNotificationStore();
+const loading = ref(true);
+const stats = ref({});
+
+onMounted(async () => {
+    try {
+        const result = await api.get('/admin/dashboard');
+        stats.value = result.data;
+    } catch (err) {
+        notify.error(err.response?.data?.error || 'Failed to load dashboard');
+    } finally {
+        loading.value = false;
+    }
+})
 </script>
