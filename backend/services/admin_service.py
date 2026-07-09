@@ -192,8 +192,17 @@ class AdminService:
         }, 200
     
     @staticmethod
-    def list_students(search, page, per_page):
-        query = Student.query
+    def list_students(status_filter, search, page, per_page):
+        query = Student.query.join(User)
+        
+        if status_filter == 'Active':
+            query = query.filter(User.is_active == True, User.is_blacklisted == False)
+        elif status_filter == 'Inactive':
+            query = query.filter(User.is_active == False, User.is_blacklisted == False)
+        elif status_filter == 'Blacklisted':
+            query = query.filter(User.is_blacklisted == True)
+        elif status_filter == 'Unblacklisted':
+            query = query.filter(User.is_blacklisted == False)
         
         if search:
             search_term = f"%{search}%"
@@ -279,42 +288,6 @@ class AdminService:
             "message": f"Student {action} successfully"
         }, 200
     
-    
-    @staticmethod
-    def create_skill(data):
-        name = data['skill_name'].strip()
-        if Skill.query.filter(Skill.skill_name.ilike(name)).first():
-            return {
-                "error": "Skill already exists"
-            }, 409
-        
-        skill = Skill(skill_name = name)
-        db.session.add(skill)
-        db.session.commit()
-
-        logger.info(f"Skill created: {name} (id = {skill.skill_id})")
-        return {
-            "message": "Skill created successfully",
-            "skill_id": skill.skill_id,
-            "skill_name": skill.skill_name
-        }, 201
-    
-    @staticmethod
-    def delete_skill(skill_id):
-        skill = Skill.query.get(skill_id)
-        if not skill:
-            return {
-                "error": "Skill not found"
-            }, 404
-        
-        db.session.delete(skill)
-        db.session.commit()
-
-        logger.info(f"Skill {skill.skill_name} (id = {skill_id} deleted)")
-        return {
-            "message": "Skill deleted successfully"
-        }, 200
-    
     @staticmethod
     def list_all_applications(page, per_page):
         pagination = Application.query.order_by(Application.applied_date.desc()).paginate(
@@ -358,15 +331,26 @@ class AdminService:
         for placement in pagination.items:
             application = Application.query.get(placement.application_id)
             student = Student.query.get(application.register_no)
+            student_user = User.query.get(student.user_id) if student else None
+            student_branch = student.branch.branch_name if student and student.branch else None
             drive = PlacementDrive.query.get(application.drive_id) if application else None
             company = Company.query.get(drive.company_id) if drive else None
+            company_user = User.query.get(company.user_id) if company else None
+
             placements.append({
                 "placement_id": placement.placement_id,
                 "application_id": placement.application_id,
                 "register_no": application.register_no if application else None,
                 "student_name": f"{student.fname} {student.lname}" if student else None,
+                "student_email": student_user.email if student_user else None,
+                "student_phone": student.phone if student else None,
+                "student_branch": student_branch,
+                "student_cgpa": student.cgpa if student else None,
                 "job_title": drive.job_title if drive else None,
+                "drive_location": drive.location if drive else None,
                 "company_name": company.company_name if company else None,
+                "company_email": company_user.email if company_user else None,
+                "company_industry": company.industry if company else None,
                 "position": placement.position,
                 "drive_type": placement.drive_type,
                 "salary": placement.salary,

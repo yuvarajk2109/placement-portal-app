@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from utils.decorators import role_required, validate_json
+from utils.decorators import role_required
 from services.admin_service import AdminService
 
 admin_bp = Blueprint('admin', __name__, url_prefix = '/api/admin')
@@ -104,9 +104,10 @@ def reject_drive(drive_id):
 @role_required('admin')
 def list_students():
     search = request.args.get('search')
+    status_filter = request.args.get('status')
     page = request.args.get('page', 1, type = int)
     per_page = request.args.get('per_page', 20, type = int)
-    result, status = AdminService.list_students(search, page, per_page)
+    result, status = AdminService.list_students(status_filter, search, page, per_page)
     return jsonify(result), status
 
 @admin_bp.route('/students/<string:register_no>/blacklist', methods = ['PUT'])
@@ -131,26 +132,6 @@ def deactivate_student(register_no):
 @role_required('admin')
 def activate_student(register_no):
     result, status = AdminService.toggle_active_student(register_no, active = True)
-    return jsonify(result), status
-
-# ==================
-# SKILL MANAGEMENT
-
-# 1. Create New Skill
-# 2. Delete a Skill
-# ==================
-
-@admin_bp.route('/skills', methods = ['POST'])
-@role_required('admin')
-@validate_json('skill_name')
-def create_skill(data):
-    result, status = AdminService.create_skill(data)
-    return jsonify(result), status
-
-@admin_bp.route('/skills/<int:skill_id>', methods = ['DELETE'])
-@role_required('admin')
-def delete_skill(skill_id):
-    result, status = AdminService.delete_skill(skill_id)
     return jsonify(result), status
 
 # ==================
