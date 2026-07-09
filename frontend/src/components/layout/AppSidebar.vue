@@ -76,7 +76,7 @@
 import { useAuthStore } from '@/stores/auth';
 import { computed } from 'vue';
 
-const properties=defineProps({
+const properties = defineProps({
     open: {
         type: Boolean,
         default: false
@@ -118,6 +118,52 @@ const menuItems=computed(() => {
                 icon: 'fas fa-trophy',
                 label: 'Placements'
             },
+        ]
+    } else if (role === 'company') {
+        return [
+            {
+                route: 'company-dashboard',
+                icon: 'fas fa-chart-line',
+                label: 'Dashboard'
+            },
+            {
+                route: 'company-profile',
+                icon: 'fas fa-building',
+                label: 'Profile'
+            },
+            {
+                route: '',
+                icon: 'fas fa-briefcase',
+                label: 'My Drives'
+            }
+        ]
+    } else if (role === 'student') {
+         return [
+            {
+                route: '',
+                icon: 'fas fa-chart-line',
+                label: 'Dashboard'
+            },
+            {
+                route: '',
+                icon: 'fas fa-user',
+                label: 'Profile'
+            },
+            {
+                route: '',
+                icon: 'fas fa-briefcase',
+                label: 'Drives'
+            },
+            {
+                route: '',
+                icon: 'fas fa-file-alt',
+                label: 'Applications'
+            },
+            {
+                route: '',
+                icon: 'fas fa-trophy',
+                label: 'Placement'
+            }
         ]
     }
     return [];

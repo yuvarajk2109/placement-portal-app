@@ -72,12 +72,12 @@ const router = createRouter({
       component: () => import('@/views/company/CompanyDashboard.vue'),
       meta: { requiresAuth: true, role: 'company' }
     },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
+    {
+      path: '/company/profile',
+      name: 'company-profile',
+      component: () => import('@/views/company/CompanyProfile.vue'),
+      meta: { requiresAuth: true, role: 'company' }
+    },
     // {
     //   path: '',
     //   name: '',
