@@ -248,8 +248,6 @@ class AdminService:
             }, 404
         
         user.is_blacklisted = blacklist
-        if blacklist:
-            user.is_active = False
         db.session.commit()
 
         action = "blacklisted" if blacklist else "unblacklisted"
