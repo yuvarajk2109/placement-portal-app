@@ -17,7 +17,7 @@
                 </div>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
-                        <label class="form-label" for="website">Website <span class="required">(required)</span></label>
+                        <label class="form-label" for="website">Website</label>
                         <input id="website" v-model="form.website" type="url" class="form-input">
                     </div>
                     <div class="flex-1">
