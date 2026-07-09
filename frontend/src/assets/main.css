@@ -207,7 +207,7 @@ a:hover {
   font-size: 24px;
   font-weight: 700;
   color: var(--surface-foreground);
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 }
 
 .page-subtitle {
@@ -600,23 +600,23 @@ a:hover {
   text-align: left;
   padding: 10px 16px;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.5px;
-  color: var(--surface-foreground-subtle);
+  color: var(--surface-foreground);
   background: var(--surface-container-background);
   border-bottom: 1px solid var(--surface-line-subtle);
 }
 
 .data-table td {
   padding: 12px 16px;
-  font-size: 13.5px;
+  font-size: 14px;
   color: var(--surface-foreground);
   border-bottom: 1px solid var(--surface-line-subtle);
   vertical-align: middle;
 }
 
 .data-table tr:hover td {
-  background: var(--surface-container-background-low);
+  background: var(--surface-container-background);
 }
 
 .data-table .actions-cell {
@@ -896,30 +896,6 @@ a:hover {
   margin-top: 12px;
 }
 
-/* Loading Spinner */
-
-.loading-spinner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px;
-}
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--surface-line-subtle);
-  border-top-color: var(--accent-primary-background);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 /* Page Toolbar */
 
 .page-toolbar {
@@ -937,18 +913,4 @@ a:hover {
   display: flex;
   gap: 12px;
   align-items: center;
-}
-
-.paginator {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-}
-
-.paginator-items {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-top: 16px;
-  font-size: 13.5px;
 }
