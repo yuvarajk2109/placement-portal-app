@@ -2,9 +2,7 @@
     <div class="main-page">
         <div class="page-title">Welcome, Admin</div>
 
-        <div v-if="loading" class="loading-spinner">
-            <div class="spinner"></div>
-        </div>
+        <AppSpinner v-if="loading" />
         <div v-else class="stats-grid mt-32">
             <div class="stat-card info">
                 <div class="stat-card-value info">
@@ -74,6 +72,7 @@
 </style>
 
 <script setup>
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';

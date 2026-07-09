@@ -1,6 +1,6 @@
 <template>
     <div class="main-page">
-        <h1 class="page-title mb-24">Manage Companies</h1>
+        <h1 class="page-title">Manage Companies</h1>
         <div class="page-toolbar">
             <input class="form-input search-input" placeholder="Search companies..." @input="debouncedFetch">
             <div class="filter-group">
@@ -12,7 +12,7 @@
                 </select>
             </div>
         </div>
-        <div v-if="loading" class="loading-spinner"></div>
+        <AppSpinner v-if="loading" />
         <table v-else-if="companies.length" class="data-table">
             <thead>
                 <tr>
@@ -46,17 +46,17 @@
         <div v-else class="empty-state">
             <p class="empty-state-text">No companies found.</p>
         </div>
-        <div class="paginator">
-            <div v-if="totalPages > 1" class="paginator-items">
-                <button class="btn is-tertiary is-icon-only" :disabled="page <= 1" @click="page--; fetchData();"><i class="fa-solid fa-arrow-left"></i></button>
-                <span>Page {{ page }} of {{ totalPages }}</span>
-                <button class="btn is-tertiary is-icon-only" :disabled="page >= totalPages" @click="page++; fetchData();"><i class="fa-solid fa-arrow-right"></i></button>
-            </div>
-        </div>
+        <AppPagination 
+            v-model:currentPage="page" 
+            :totalPages="totalPages" 
+            @page-change="fetchData" 
+        />
     </div>
 </template>
 
 <script setup>
+import AppPagination from '@/components/ui/AppPagination.vue';
+import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
