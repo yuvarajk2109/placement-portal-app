@@ -35,7 +35,9 @@ class AdminService:
     
     @staticmethod
     def list_companies(status_filter, search, page, per_page):
-        query = Company.query
+        query = Company.query.join(User).filter(
+            db.or_(User.is_active == True, User.is_blacklisted == True)
+        )
 
         if status_filter:
             query = query.filter(Company.status == status_filter)
@@ -101,6 +103,7 @@ class AdminService:
             }, 404
     
         user = User.query.get(company.user_id)
+        
         if user:
             user.is_active = False
         company.status = 'Rejected'
@@ -128,6 +131,8 @@ class AdminService:
         user.is_blacklisted = blacklist
         if blacklist:
             user.is_active = False
+        else:
+            user.is_active = True
         db.session.commit()
 
         action = "blacklisted" if blacklist else "unblacklisted"
