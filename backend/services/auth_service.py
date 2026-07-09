@@ -257,7 +257,7 @@ class AuthService:
         
         if user.role == 'company':
             company = Company.query.filter_by(user_id = user.user_id).first()
-            if company and company.status != 'approved':
+            if company and company.status != 'Approved':
                 return {
                     "error": f"Company registration is {company.status}. Please wait for admin approval."
                 }, 403
