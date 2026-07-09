@@ -1,6 +1,6 @@
 import bcrypt
 from extensions import db
-from models import User, Department, Branch
+from models import User, Department, Branch, Skill
 
 def seed_admin():
     admin = User.query.filter_by(role='admin').first()
@@ -53,6 +53,21 @@ def seed_departments_and_branches():
     db.session.commit()
     print('[SEED]\tDepartments and branches seeded successfully.')
 
+def seed_skills():
+    skills = [
+        "Python", "Java", "C++", "JavaScript", "React", "Vue.js", "Node.js", 
+        "SQL", "MongoDB", "Machine Learning", "Data Analysis", "Cloud Computing", 
+        "AWS", "Docker", "Kubernetes", "DevOps", "Agile Methodologies", 
+        "Communication", "Problem Solving", "Teamwork"
+    ]
+    for skill_name in skills:
+        existing = Skill.query.filter_by(skill_name=skill_name).first()
+        if not existing:
+            db.session.add(Skill(skill_name=skill_name))
+    db.session.commit()
+    print('[SEED]\tSkills seeded successfully.')
+
 def run_seed():
     seed_admin()
-    seed_departments_and_branches()    
+    seed_departments_and_branches()
+    seed_skills()
