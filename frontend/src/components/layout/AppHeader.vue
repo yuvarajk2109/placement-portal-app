@@ -65,7 +65,8 @@
 .header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 20px;
+    margin-left: 8px;
 }
 
 .header-logo {
