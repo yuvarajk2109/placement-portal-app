@@ -39,8 +39,10 @@
                 </tr>
             </tbody>
         </table>
-        <div v-else class="empty-state">
-            <p class="empty-state-text">No drives found.</p>
+         <div v-else class="card">
+            <div class="empty-state">
+                <p class="empty-state-text">No drives found.</p>
+            </div>
         </div>
         <AppPagination 
             v-model:currentPage="page" 

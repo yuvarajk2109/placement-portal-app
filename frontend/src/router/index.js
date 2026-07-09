@@ -48,30 +48,30 @@ const router = createRouter({
       component: () => import('@/views/admin/AdminDrives.vue'),
       meta: { requiresAuth: true, role: 'admin' }
     },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
+    {
+      path: '/admin/students',
+      name: 'admin-students',
+      component: () => import('@/views/admin/AdminStudents.vue'),
+      meta: { requiresAuth: true, role: 'admin' }
+    },
+    {
+      path: '/admin/applications',
+      name: 'admin-applications',
+      component: () => import('@/views/admin/AdminApplications.vue'),
+      meta: { requiresAuth: true, role: 'admin' }
+    },
+    {
+      path: '/admin/placements',
+      name: 'admin-placements',
+      component: () => import('@/views/admin/AdminPlacements.vue'),
+      meta: { requiresAuth: true, role: 'admin' }
+    },
+    {
+      path: '/company',
+      name: 'company-dashboard',
+      component: () => import('@/views/company/CompanyDashboard.vue'),
+      meta: { requiresAuth: true, role: 'company' }
+    },
     // {
     //   path: '',
     //   name: '',
