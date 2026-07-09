@@ -104,17 +104,17 @@ const menuItems=computed(() => {
                 label: 'Drives'
             },
             { 
-                route: '',
+                route: 'admin-students',
                 icon: 'fas fa-user-graduate',
                 label: 'Students'
             },
             { 
-                route: '',
+                route: 'admin-applications',
                 icon: 'fas fa-file-alt',
                 label: 'Applications'
             },
             { 
-                route: '',
+                route: 'admin-placements',
                 icon: 'fas fa-trophy',
                 label: 'Placements'
             },
