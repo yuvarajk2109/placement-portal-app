@@ -3,7 +3,7 @@
         <div class="auth-card card">
             <h1 class="page-title text-center mb-24">Company Registration</h1>
 
-            <form>
+            <form @submit.prevent="handleRegister">
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="company_name">Company Name <span class="required">(required)</span></label>
@@ -82,6 +82,7 @@
 import { useNotificationStore } from '@/stores/notification';
 import { computed, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import api from '@/services/api';
 
 const router = useRouter();
 const notify = useNotificationStore();
@@ -97,13 +98,14 @@ const form = reactive({
     hr_phone: '',
     hr_email: '',
     email: '',
-    password: '',
-    backendError: null
+    password: ''
 })
 
+const backendError = ref(null)
+
 watch(form, () => {
-    if (form.backendError) {
-        form.backendError = null
+    if (backendError.value) {
+        backendError.value = null
     }
 }, { deep: true });
 
@@ -117,19 +119,19 @@ const touched = reactive({
 const errors = computed(() => {
     const e = {};
 
-    if (form.backendError) {
-        e[form.backendError.field] = form.backendError.message;
+    if (backendError.value) {
+        e[backendError.value.field] = backendError.value.message;
     }
 
     if (!form.hr_email) {
         e.hr_email = 'HR Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email).test(form.hr_email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.hr_email)) {
         e.hr_email = 'Enter a valid email address';
     }
 
     if (!form.email) {
         e.email = 'Login email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email).test(form.hr_email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) {
         e.email = 'Enter a valid email address';
     }
 
@@ -154,15 +156,15 @@ async function handleRegister() {
         notify.success('Registration successful! Awaiting admin approval.');
         router.push('/login');
     } catch (err) {
-        const backendError = err.response?.data?.error || '';
+        const backendErrorText = err.response?.data?.error || '';
         
-        if (backendError.toLowerCase().includes('email')) {
-            form.backendError = {
+        if (backendErrorText.toLowerCase().includes('email')) {
+            backendError.value = {
                 field: 'email',
-                message: backendError
+                message: backendErrorText
             }
         } else {
-            notify.error(backendError || 'Registration failed');
+            notify.error(backendErrorText || 'Registration failed');
         }
     } finally {
         loading.value = false;

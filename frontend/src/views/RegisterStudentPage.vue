@@ -107,13 +107,14 @@ const form = reactive({
     phone: '',
     email: '',
     cgpa: '',
-    password: '',
-    backendError: null
+    password: ''
 });
 
+const backendError = ref(null);
+
 watch(form, () => {
-    if (form.backendError) {
-        form.backendError = null;
+    if (backendError.value) {
+        backendError.value = null;
     }
 }, { deep: true });
 
@@ -140,8 +141,8 @@ onMounted(async () => {
 const errors = computed(() => {
     const e = {};
 
-    if (form.backendError) {
-        e[form.backendError.field] = form.backendError.message;
+    if (backendError.value) {
+        e[backendError.value.field] = backendError.value.message;
     }
 
     if (form.register_no && (form.register_no.length !== 10 || !/^\d{10}$/.test(form.register_no))) {
@@ -203,24 +204,24 @@ async function handleRegister() {
             }
         })
     } catch (err) {
-        const backendError = err.response?.data?.error || '';
-        if (backendError.toLowerCase().includes('register number')) {
-            form.backendError = {
+        const backendErrorText = err.response?.data?.error || '';
+        if (backendErrorText.toLowerCase().includes('register number')) {
+            backendError.value = {
                 field: 'register_no',
-                message: backendError
+                message: backendErrorText
             }
-        } else if (backendError.toLowerCase().includes('branch')) {
-            form.backendError = {
+        } else if (backendErrorText.toLowerCase().includes('branch')) {
+            backendError.value = {
                 field: 'branch_id',
-                message: backendError
+                message: backendErrorText
             }
-        } else if (backendError.toLowerCase().includes('email')) {
-            form.backendError = {
+        } else if (backendErrorText.toLowerCase().includes('email')) {
+            backendError.value = {
                 field: 'email',
-                message: backendError
+                message: backendErrorText
             }
         } else {
-            notify.error(backendError || 'Registration failed');
+            notify.error(backendErrorText || 'Registration failed');
         }
     } finally {
         loading.value = false;
