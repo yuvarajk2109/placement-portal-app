@@ -17,6 +17,12 @@ def verify_otp(data):
     result, status_code = AuthService.verify_otp(data)
     return jsonify(result), status_code
 
+@auth_bp.route('/resend-otp', methods = ['POST'])
+@validate_json('email')
+def resend_otp(data):
+    result, status_code = AuthService.resend_otp(data)
+    return jsonify(result), status_code
+
 @auth_bp.route('/register/company', methods = ['POST'])
 @validate_json('email', 'password', 'company_name', 'hr_email')
 def register_company(data):

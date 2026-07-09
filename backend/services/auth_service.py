@@ -85,7 +85,7 @@ class AuthService:
             register_no = data['register_no'],
             fname = data['fname'],
             lname = data['lname'],
-            dob = data['dob'],
+            dob = datetime.strptime(data["dob"], "%Y-%m-%d").date(),
             phone = data.get('phone'),
             cgpa = data['cgpa'],
             year_of_study = year,
@@ -146,6 +146,45 @@ class AuthService:
 
         return {
             "message": "Email verified successfully"
+        }, 200
+        
+    @staticmethod
+    def resend_otp(data):
+        email = data.get('email')
+        
+        user = User.query.filter_by(email = email).first()
+        if not user:
+            return {
+                "error": "User not found"
+            }, 404
+            
+        if user.is_verified:
+            return {
+                "error": "Email is already verified. Please login."
+            }, 400
+            
+        otp = ''.join(random.choices(string.digits, k = 6))
+        
+        user.otp_code = otp
+        user.otp_expires_at = datetime.now() + timedelta(minutes = 10)
+        db.session.commit()
+        
+        try:
+            message = Message(
+                subject = 'Placement Portal - New OTP',
+                recipients = [email],
+                body = f'''
+                    Your new OTP for email verification is {otp}\n
+                    The OTP expires in exactly 10 minutes.
+                '''
+            )
+            mail.send(message)
+        except Exception as e:
+            logger.warning("Could NOT send resend OTP email:", exc_info=True)
+            logger.info(f"[DEV] Resend OTP for {email}: {otp}")
+            
+        return {
+            "message": "A new OTP has been sent to your email."
         }, 200
     
     @staticmethod

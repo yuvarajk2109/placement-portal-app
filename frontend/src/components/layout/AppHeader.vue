@@ -29,6 +29,11 @@
                     Login
                 </router-link>
                 <router-link 
+                to="/verify-otp"
+                class="btn is-inverse">
+                    Verify OTP
+                </router-link>
+                <router-link 
                 to="/register/student"
                 class="btn is-inverse">
                     Register as Student
