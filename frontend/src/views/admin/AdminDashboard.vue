@@ -67,7 +67,7 @@
 <style scoped>
 .stats-grid {    
   display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 }
 </style>
 
