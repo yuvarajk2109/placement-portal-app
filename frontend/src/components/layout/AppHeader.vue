@@ -87,16 +87,19 @@
 <script setup>
 import { useTheme } from '@/composables/useTheme';
 import { useAuthStore } from '@/stores/auth';
+import { useNotificationStore } from '@/stores/notification';
 import { useRouter } from 'vue-router';
 
-const authStore=useAuthStore();
-const router=useRouter();
+const authStore = useAuthStore();
+const notify = useNotificationStore();
+const router = useRouter();
 
 const { isDark, toggleTheme }=useTheme();
 defineEmits(['toggle-sidebar']);
 
 function handleLogout() {
     authStore.logout();
+    notify.success("Logout successful");
     router.push({ name: 'login' });
 }
 </script>
