@@ -142,7 +142,19 @@ class DriveService:
             }
             for skill in drive.required_skills
         ]
+
         applications_count = len(drive.applications)
+
+        interviews = [
+            {
+                "interview_id": interview.interview_id,
+                "round_number": interview.round_number,
+                "round_title": interview.round_title,
+                "interview_date": interview.interview_date.isoformat() if interview.interview_date else None,
+                "location": interview.location,
+            }
+            for interview in drive.interviews
+        ]
 
         return {
             "drive_id": drive.drive_id,
@@ -159,16 +171,7 @@ class DriveService:
             "eligible_branches": branches,
             "required_skills": required_skills,
             "applications_count": applications_count,
-            "interviews": [
-                {
-                    "interview_id": interview.interview_id,
-                    "round_number": interview.round_number,
-                    "round_title": interview.round_title,
-                    "interview_date": interview.interview_date.isoformat() if interview.interview_date else None,
-                    "location": interview.location,
-                }
-                for interview in drive.interviews
-            ]
+            "interviews": interviews
         }, 200
     
     @staticmethod
