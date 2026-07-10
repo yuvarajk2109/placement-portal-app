@@ -1,7 +1,7 @@
 <template>
     <div class="main-page">
         <h1 class="page-title">Manage Students</h1>
-        <div class="page-toolbar">
+        <div v-if="students.length > 0" class="page-toolbar">
             <input v-model="search" class="form-input search-input" placeholder="Search by name or register no..." @input="debouncedFetch">
             <div class="filter-group">
                 <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">

@@ -1,7 +1,7 @@
 <template>
     <div class="main-page">
         <h1 class="page-title">Manage Companies</h1>
-        <div class="page-toolbar">
+        <div v-if="companies.length > 0" class="page-toolbar">
             <input class="form-input search-input" placeholder="Search companies..." @input="debouncedFetch">
             <div class="filter-group">
                 <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
