@@ -7,40 +7,40 @@
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="register_no">Register Number <span class="required">(required)</span></label>
-                        <input id="register_no" v-model="form.register_no" @blur="touched.register_no = true" type="text" class="form-input" :class="{ 'is-error': touched.register_no && errors.register_no }" maxlength = "10">
-                        <span v-if="touched.register_no && errors.register_no" class="form-error-text">{{ errors.register_no }}</span>
+                        <input id="register_no" v-model="form.register_no" @blur="validator.register_no.$touch()" type="text" class="form-input" :class="{ 'is-error': validator.register_no.$error }" maxlength="10">
+                        <span v-if="validator.register_no.$error" class="form-error-text">{{ validator.register_no.$errors[0].$message }}</span>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="branch_id">Branch <span class="required">(required)</span></label>
-                        <select id="branch_id" v-model="form.branch_id" @blur="touched.branch_id = true" class="form-select" :class="{ 'is-error': touched.branch_id && errors.branch_id }">
+                        <select id="branch_id" v-model="form.branch_id" @blur="validator.branch_id.$touch()" class="form-select" :class="{ 'is-error': validator.branch_id.$error }">
                             <option value="" disabled>Select Branch</option>
                             <option 
                             v-for="branch in branches"
-                            :key = "branch.branch_id"
-                            :value = "branch.branch_id">
+                            :key="branch.branch_id"
+                            :value="branch.branch_id">
                                 {{ branch.branch_name }}
                             </option>
                         </select>
-                        <span v-if="touched.branch_id && errors.branch_id" class="form-error-text">{{ errors.branch_id }}</span>
+                        <span v-if="validator.branch_id.$error" class="form-error-text">{{ validator.branch_id.$errors[0].$message }}</span>
                     </div>
                 </div>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="fname">First Name <span class="required">(required)</span></label>
-                        <input id="fname" v-model="form.fname"  @blur="touched.fname = true" type="text" class="form-input" :class="{ 'is-error': touched.fname && errors.fname }">
-                        <span v-if="touched.fname && errors.fname" class="form-error-text">{{ errors.fname }}</span>
+                        <input id="fname" v-model="form.fname" @blur="validator.fname.$touch()" type="text" class="form-input" :class="{ 'is-error': validator.fname.$error }">
+                        <span v-if="validator.fname.$error" class="form-error-text">{{ validator.fname.$errors[0].$message }}</span>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="lname">Last Name <span class="required">(required)</span></label>
-                        <input id="lname" v-model="form.lname" @blur="touched.lname = true" type="text" class="form-input" :class="{ 'is-error': touched.lname && errors.lname }">
-                        <span v-if="touched.lname && errors.lname" class="form-error-text">{{  errors.lname }}</span>
+                        <input id="lname" v-model="form.lname" @blur="validator.lname.$touch()" type="text" class="form-input" :class="{ 'is-error': validator.lname.$error }">
+                        <span v-if="validator.lname.$error" class="form-error-text">{{ validator.lname.$errors[0].$message }}</span>
                     </div>
                 </div>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="dob">Date of Birth <span class="required">(required)</span></label>
-                        <input id="dob" v-model="form.dob" @blur="touched.dob = true" type="date" class="form-input" :class="{ 'is-error': touched.dob && errors.dob }">
-                        <span v-if="touched.dob && errors.dob" class="form-error-text">{{ errors.dob }}</span>
+                        <input id="dob" v-model="form.dob" @blur="validator.dob.$touch()" type="date" class="form-input" :class="{ 'is-error': validator.dob.$error }">
+                        <span v-if="validator.dob.$error" class="form-error-text">{{ validator.dob.$errors[0].$message }}</span>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="phone">Phone Number</label>
@@ -50,21 +50,21 @@
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="email">University Email Address <span class="required">(required)</span></label>
-                        <input id="email" v-model="form.email" @blur="touched.email = true" type="email" class="form-input" :class="{ 'is-error': touched.email && errors.email }">
-                        <span v-if="touched.email && errors.email" class="form-error-text">{{ errors.email }}</span>
+                        <input id="email" v-model="form.email" @blur="validator.email.$touch()" type="email" class="form-input" :class="{ 'is-error': validator.email.$error }">
+                        <span v-if="validator.email.$error" class="form-error-text">{{ validator.email.$errors[0].$message }}</span>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="cgpa">Current CGPA (as of latest even semester)<span class="required">(required)</span></label>
-                        <input id="cgpa" v-model="form.cgpa" @blur="touched.cgpa = true" type="text" class="form-input" :class="{ 'is-error': touched.cgpa && errors.cgpa }">
-                        <span v-if="touched.cgpa && errors.cgpa" class="form-error-text">{{ errors.cgpa }}</span>
+                        <input id="cgpa" v-model="form.cgpa" @blur="validator.cgpa.$touch()" type="text" class="form-input" :class="{ 'is-error': validator.cgpa.$error }">
+                        <span v-if="validator.cgpa.$error" class="form-error-text">{{ validator.cgpa.$errors[0].$message }}</span>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="password">Password <span class="required">(required)</span></label>
-                    <input id="password" v-model="form.password" @blur="touched.password" type="password" class="form-input" :class="{ 'is-error': touched.password && errors.password }">
-                    <span v-if="touched.password && errors.password" class="form-error-text">{{ errors.password }}</span>
+                    <input id="password" v-model="form.password" @blur="validator.password.$touch()" type="password" class="form-input" :class="{ 'is-error': validator.password.$error }">
+                    <span v-if="validator.password.$error" class="form-error-text">{{ validator.password.$errors[0].$message }}</span>
                 </div>
-                <button type="submit" class="btn is-primary is-large full-width-btn" :disabled="loading || !isFormValid">
+                <button type="submit" class="btn is-primary is-large full-width-btn" :disabled="loading || validator.$invalid">
                     {{ loading ? 'Registering...' : 'Register' }}
                 </button>
             </form>
@@ -89,10 +89,10 @@
 <script setup>
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
+import { useVuelidate } from '@vuelidate/core';
+import { helpers, maxValue, minLength, minValue, required } from '@vuelidate/validators';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-
-
 const router = useRouter();
 const notify = useNotificationStore();
 const loading = ref(false);
@@ -110,24 +110,11 @@ const form = reactive({
     password: ''
 });
 
-const backendError = ref(null);
+const $externalResults = ref({});
 
 watch(form, () => {
-    if (backendError.value) {
-        backendError.value = null;
-    }
+    $externalResults.value = {};
 }, { deep: true });
-
-const touched = reactive({
-    register_no: false,
-    branch_id: false,
-    fname: false,
-    lname: false,
-    dob: false,
-    email: false,
-    cgpa: false,
-    password: false
-});
 
 onMounted(async () => {
     try {
@@ -138,90 +125,70 @@ onMounted(async () => {
     }
 })
 
-const errors = computed(() => {
-    const e = {};
+const isValidRegisterNo = helpers.regex(/^\d{10}$/);
+const isValidEmail = helpers.regex(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/);
 
-    if (backendError.value) {
-        e[backendError.value.field] = backendError.value.message;
+const matchesDepartment = (value) => {
+    if (!form.register_no || form.register_no.length !== 10 || !/^\d{10}$/.test(form.register_no)) return true;
+    const dept_id = parseInt(form.register_no.substring(4,7));
+    const selected_branch = branches.value.find(b => b.branch_id === value);
+    if (!selected_branch) return true;
+    return selected_branch.dept_id === dept_id;
+};
+
+const rules = computed(() => ({
+    register_no: { 
+        required: helpers.withMessage('Register no. is required', required),
+        valid: helpers.withMessage('Invalid register no.', isValidRegisterNo)
+    },
+    branch_id: { 
+        required: helpers.withMessage('Please select a branch', required),
+        matchesDept: helpers.withMessage('Branch doesn\'t match department ID in register no.', matchesDepartment)
+    },
+    fname: { required: helpers.withMessage('First name is required', required) },
+    lname: { required: helpers.withMessage('Last name is required', required) },
+    dob: { required: helpers.withMessage('Date of Birth is required', required) },
+    email: { 
+        required: helpers.withMessage('Email is required', required),
+        valid: helpers.withMessage('Enter a valid email address', isValidEmail)
+    },
+    cgpa: { 
+        required: helpers.withMessage('CGPA is required', required),
+        min: helpers.withMessage('Invalid CGPA', minValue(0)),
+        max: helpers.withMessage('Invalid CGPA', maxValue(10))
+    },
+    password: { 
+        required: helpers.withMessage('Password is required', required),
+        min: helpers.withMessage('Must be at least 6 characters', minLength(6))
     }
+}));
 
-    if (form.register_no && (form.register_no.length !== 10 || !/^\d{10}$/.test(form.register_no))) {
-        e.register_no = 'Invalid register no.';
-    } else if (!form.register_no) {
-        e.register_no = 'Register no. is required'
-    }
-
-    if (!form.branch_id) {
-        e.branch_id = 'Please select a branch';
-    } else if (form.register_no.length === 10 && /^\d{10}$/.test(form.register_no)) {
-        const dept_id = parseInt(form.register_no.substring(4,7));
-        const selected_branch = branches.value.find(b => b.branch_id === form.branch_id);
-        if (selected_branch && selected_branch.dept_id !== dept_id) {
-            e.branch_id = 'Branch doesn\'t match department ID in register no.';
-        }
-    }
-
-    if (!form.fname) e.fname = 'First name is required';
-    if (!form.lname) e.lname = 'Last name is required';
-    if (!form.dob) e.dob = 'Date of Birth is required';
-
-    if (!form.email) {
-        e.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) {
-        e.email = 'Enter a valid email address';
-    }
-
-    if (!form.cgpa) {
-        e.cgpa = 'CGPA is required';
-    } else if (parseFloat(form.cgpa) < 0 || parseFloat(form.cgpa) > 10) {
-        e.cgpa = 'Invalid CGPA';
-    }
-
-    if (!form.password) {
-        e.password = 'Password is required';
-    } else if (form.password.length < 6) {
-        e.password = 'Must be at least 6 characters';
-    }
-
-    return e;
-})
-
-const isFormValid = computed(() =>
-    Object.keys(errors.value).length === 0
-);
+const validator = useVuelidate(rules, form, { $externalResults });
 
 async function handleRegister() {
-    Object.keys(touched).forEach(k => touched[k] = true);
-    if (!isFormValid.value) return;
+    validator.value.$touch();
+    if (validator.value.$invalid) return;
+    
     loading.value = true;
     try {
         await api.post('/auth/register/student', form);
         notify.success('Registration successful. Please check your email for OTP verification.');
         router.push({
             name: 'verify-otp',
-            query: {
-                email: form.email
-            }
-        })
+            query: { email: form.email }
+        });
     } catch (err) {
-        const backendErrorText = err.response?.data?.error || '';
-        if (backendErrorText.toLowerCase().includes('register number')) {
-            backendError.value = {
-                field: 'register_no',
-                message: backendErrorText
-            }
-        } else if (backendErrorText.toLowerCase().includes('branch')) {
-            backendError.value = {
-                field: 'branch_id',
-                message: backendErrorText
-            }
-        } else if (backendErrorText.toLowerCase().includes('email')) {
-            backendError.value = {
-                field: 'email',
-                message: backendErrorText
-            }
+        const backendError = err.response?.data?.error || '';
+        const lowercaseError = backendError.toLowerCase();
+        
+        if (lowercaseError.includes('register number')) {
+            $externalResults.value = { register_no: backendError };
+        } else if (lowercaseError.includes('branch')) {
+            $externalResults.value = { branch_id: backendError };
+        } else if (lowercaseError.includes('email')) {
+            $externalResults.value = { email: backendError };
         } else {
-            notify.error(backendErrorText || 'Registration failed');
+            notify.error(backendError || 'Registration failed');
         }
     } finally {
         loading.value = false;
