@@ -706,6 +706,7 @@ a:hover {
 .app-main {
   flex: 1;
   margin-left: var(--sidebar-width-closed);
+  border-left: 2px solid var(--surface-line-subtle);
   padding: 32px 40px;
   transition: margin-left 0.25s ease;
   min-height: calc(100vh - var(--header-height) - var(--footer-height));

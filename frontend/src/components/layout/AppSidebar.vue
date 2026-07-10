@@ -27,10 +27,10 @@
     bottom: var(--footer-height);
     width: var(--sidebar-width-closed);
     background: var(--surface-background);
-    border-right: 2px solid var(--surface-line-subtle);
     z-index: var(--sidebar-z);
     transition: width 0.25s ease;
     overflow: hidden;
+    height: calc(100vh - var(--header-height) - var(--footer-height));
 }
 
 .sidebar.is-open {
