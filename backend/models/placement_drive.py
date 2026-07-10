@@ -29,13 +29,13 @@ class PlacementDrive(db.Model):
     company_id = db.Column(db.Integer, db.ForeignKey('company.company_id'), nullable = False)
     job_title = db.Column(db.String(255), nullable = False)
     job_desc = db.Column(db.Text, nullable = False)
-    drive_type = db.Column(db.String(100), nullable = False)
+    drive_type = db.Column(db.String(255), nullable = False)
     cgpa_requirement = db.Column(db.Float, default = 0.0, nullable = False)
     salary_min = db.Column(db.Float, nullable = True)
     salary_max = db.Column(db.Float, nullable = False)
     location = db.Column(db.String(255), nullable = True)
     application_deadline = db.Column(db.DateTime, nullable = False)
-    status = db.Column(db.String(20), default = 'Upcoming', nullable = False) # upcoming, ongoing, completed
+    status = db.Column(db.String(20), default = 'Pending', nullable = False) # upcoming, ongoing, completed
     created_at = db.Column(db.DateTime, default = datetime.now, nullable = False)
     updated_at = db.Column(db.DateTime, default = datetime.now, onupdate = datetime.now, nullable = False)
     

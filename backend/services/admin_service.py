@@ -163,7 +163,7 @@ class AdminService:
                 "company_name": company.company_name if company else None,
                 "drive_type": drive.drive_type,
                 "status": drive.status,
-                "deadline": drive.application_deadline.isoformat() if drive.deadline else None,
+                "deadline": drive.application_deadline.isoformat() if drive.application_deadline else None,
                 "applications_count": Application.query.filter_by(drive_id = drive.drive_id).count(),
                 "created_at": drive.created_at.isoformat()
             })

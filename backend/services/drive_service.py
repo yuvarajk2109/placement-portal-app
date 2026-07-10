@@ -35,17 +35,23 @@ class DriveService:
                 "error": "Invalid date format for application_deadline. Use ISO format (YYYY-MM-DDTHH:MM:SS)"
             }, 400
         
+        salary_min = data.get("salary_min")
+        if salary_min in ("", None):
+            salary_min = None
+        else:
+            salary_min = float(salary_min)
+        
         drive = PlacementDrive(
             company_id = company.company_id,
             job_title = data['job_title'],
             job_desc = data['job_desc'],
             drive_type = data['drive_type'],
             cgpa_requirement = data['cgpa_requirement'],
-            salary_min = data.get('salary_min'),
+            salary_min = salary_min,
             salary_max = data['salary_max'],
             location = data.get('location'),
             application_deadline = deadline,
-            status = 'Upcoming'
+            status = 'Pending'
         )
         db.session.add(drive)
         db.session.flush()

@@ -20,7 +20,7 @@ class CompanyService:
         drive_ids = [drive.drive_id for drive in drives]
 
         total_drives = len(drives)
-        active_drives = sum(1 for drive in drives if drive.status == 'Active')
+        active_drives = sum(1 for drive in drives if drive.status == 'Approved')
         pending_drives = sum(1 for drive in drives if drive.status == 'Pending')
 
         total_applications = Application.query.filter(Application.drive_id .in_(drive_ids)).count() if drive_ids else 0
@@ -50,6 +50,7 @@ class CompanyService:
             "company_name": company.company_name,
             "industry": company.industry,
             "website": company.website,
+            "location": company.location,
             "description": company.description,
             "hr_name": company.hr_name,
             "hr_email": company.hr_email,
