@@ -1,6 +1,17 @@
 <template>
     <div class="multiselect-container">
-        <button type="button" v-for="option in options" :key="option[id]" class="btn is-small" :class="isSelected(option) ? 'is-primary' : 'is-secondary'" @click="toggleSelection(option)">{{ option[value] }}</button>
+        <button 
+            type="button" 
+            v-for="option in options" 
+            :key="option[id]" 
+            class="btn is-small" 
+            :class="
+                properties.readonly
+                ? 'is-info'
+                : (isSelected(option) ? 'is-primary' : 'is-secondary')"
+            @click="toggleSelection(option)">
+            {{ option[value] }}
+        </button>
     </div>
 </template>
 
@@ -9,6 +20,12 @@
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
+}
+
+.is-readonly {
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.8;
 }
 </style>
 
@@ -29,6 +46,10 @@ const properties = defineProps({
     id: {
         type: String,
         required: true
+    },
+    readonly: {
+        type: Boolean,
+        default: false
     }
 });
 
@@ -39,6 +60,8 @@ function isSelected(option) {
 }
 
 function toggleSelection(option) {
+    if (properties.readonly) return;
+
     const id = option[properties.id];
     const index = properties.modelValue.indexOf(id);
     const newIds = [...properties.modelValue];
