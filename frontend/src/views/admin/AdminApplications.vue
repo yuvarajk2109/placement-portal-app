@@ -21,8 +21,8 @@
                     <td>{{ application.register_no }}</td>
                     <td>{{ application.company_name }}</td>
                     <td>{{ application.job_title }}</td>
-                    <td><span class="status" :class="statusMessage(application.status)">{{ application.status }}</span></td>
-                    <td>{{ new Date(application.applied_date).toLocaleDateString() }}</td>
+                    <td><span class="status" :class="statusClass(application.status)">{{ application.status }}</span></td>
+                    <td>{{ formatDate(application.applied_date) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -31,11 +31,17 @@
                 <p class="empty-state-text">No applications found.</p>
             </div>
         </div>
+        <AppPagination 
+            v-model:currentPage="page" 
+            :totalPages="totalPages" 
+            @page-change="fetchData" 
+        />
     </div>
 </template>
 
 <script setup>
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { formatDate } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
@@ -51,10 +57,7 @@ onMounted(fetchData);
 async function fetchData() {
     loading.value = true;
     try {
-        const params = {
-            page: page.value,
-            per_page: 20
-        };
+        const params = { page: page.value, per_page: 20 };
         const result = await api.get('/admin/applications', { params });
         applications.value = result.data.applications;
         totalPages.value = result.data.pages;
@@ -65,7 +68,7 @@ async function fetchData() {
     }
 }
 
-function statusMessage(status) {
+function statusClass(status) {
     return {
         Applied: 'is-info',
         Shortlisted: 'is-info',

@@ -31,7 +31,7 @@
                     <td>{{ company.industry || '-' }}</td>
                     <td>{{ company.location || '-'}}</td>
                     <td>{{ company.hr_email }}</td>
-                    <td><span class="status" :class="statusMessage(company.status)">{{ company.status }}</span></td>
+                    <td><span class="status" :class="statusClass(company.status)">{{ company.status }}</span></td>
                     <td><span class="status" :class="company.is_blacklisted ? 'is-error': 'is-neutral'">{{ company.is_blacklisted? 'Yes' : 'No' }}</span></td>
                     <td class="actions-cell">
                         <button v-if="company.status === 'Pending'" class="btn is-primary" @click="updateStatus(company.company_id, 'approve')">Approve</button>
@@ -43,7 +43,7 @@
                 </tr>
             </tbody>
         </table>
-         <div v-else class="card">
+        <div v-else class="card">
             <div class="empty-state">
                 <p class="empty-state-text">No companies found.</p>
             </div>
@@ -141,7 +141,7 @@ async function removeCompany(id) {
     }
 }
 
-function statusMessage(status) {
+function statusClass(status) {
     return {
         Pending: 'is-warning',
         Approved: 'is-success',

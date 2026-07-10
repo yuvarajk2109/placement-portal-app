@@ -30,8 +30,8 @@
                     <td>{{ drive.company_name }}</td>
                     <td><span class="status is-info">{{ drive.drive_type }}</span></td>
                     <td>{{ drive.applications_count }}</td>
-                    <td><span class="status" :class="statusMessage(drive.status)">{{ drive.status }}</span></td>
-                    <td>{{ new Date(drive.created_at).toLocaleDateString() }}</td>
+                    <td><span class="status" :class="statusClass(drive.status)">{{ drive.status }}</span></td>
+                    <td>{{ formatDate(drive.created_at) }}</td>
                     <td class="actions-cell">
                         <button v-if="drive.status === 'Pending'" class="btn is-primary" @click="updateStatus(drive.drive_id, 'approve')">Approve</button>
                         <button v-if="drive.status === 'Pending'" class="btn is-warning" @click="updateStatus(drive.drive_id, 'reject')">Reject</button>
@@ -39,7 +39,7 @@
                 </tr>
             </tbody>
         </table>
-         <div v-else class="card">
+        <div v-else class="card">
             <div class="empty-state">
                 <p class="empty-state-text">No drives found.</p>
             </div>
@@ -54,6 +54,7 @@
 
 <script setup>
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { formatDate } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
@@ -92,7 +93,7 @@ async function updateStatus(id, action) {
     }
 }
 
-function statusMessage(status) {
+function statusClass(status) {
     return {
         Pending: 'is-warning',
         Approved: 'is-success',

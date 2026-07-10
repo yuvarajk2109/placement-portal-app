@@ -45,6 +45,16 @@
                 </tr>
             </tbody>
         </table>
+        <div v-else class="card">
+            <div class="empty-state">
+                <p class="empty-state-text">No students found. Inform them to register ASAP!</p>
+            </div>
+        </div>
+        <AppPagination 
+            v-model:currentPage="page" 
+            :totalPages="totalPages" 
+            @page-change="fetchData" 
+        />
     </div>
 </template>
 

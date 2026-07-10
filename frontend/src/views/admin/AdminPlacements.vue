@@ -23,7 +23,7 @@
                     <td>{{ placement.position }}</td>
                     <td><span class="status is-info">{{ placement.drive_type }}</span></td>
                     <td>{{ placement.salary }}</td>
-                    <td>{{ new Date(placement.created_at).toLocaleDateString() }}</td>
+                    <td>{{ formatDate(placement.created_at) }}</td>
                 </tr>
             </tbody>
         </table>
@@ -100,7 +100,7 @@
             </div>
             <div class="flex justify-between">
                 <span class="text-subtle">Placement Date</span>
-                <span>{{ new Date(selectedPlacement.created_at).toLocaleDateString() }}</span>
+                <span>{{ formatDate(selectedPlacement.created_at) }}</span>
             </div>
         </div>
         <template #footer>
@@ -113,6 +113,7 @@
 import AppModal from '@/components/ui/AppModal.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { formatDate } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
@@ -130,10 +131,7 @@ onMounted(fetchData);
 async function fetchData() {
     loading.value = true;
     try {
-        const params = {
-            page: page.value,
-            per_page: 20
-        };
+        const params = { page: page.value, per_page: 20 };
         const result = await api.get('/admin/placements', { params });
         placements.value = result.data.placements || [];
         totalPages.value = result.data.pages;
