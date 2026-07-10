@@ -132,9 +132,9 @@ const menuItems=computed(() => {
                 label: 'Profile'
             },
             {
-                route: '',
+                route: 'company-drives',
                 icon: 'fas fa-briefcase',
-                label: 'My Drives'
+                label: 'Drives'
             }
         ]
     } else if (role === 'student') {
