@@ -626,8 +626,11 @@ a:hover {
 }
 
 .data-table .actions-cell {
-  display: flex;
-  gap: 8px;
+  white-space: nowrap;
+}
+
+.data-table .actions-cell>.btn+.btn {
+  margin-left: 8px;
 }
 
 /* Modal Overlay */
