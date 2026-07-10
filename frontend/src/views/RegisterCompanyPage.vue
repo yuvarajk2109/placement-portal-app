@@ -27,7 +27,7 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="description">Company Description</label>
-                    <textarea id="description" v-model="form.description" class="form-input" rows="3"></textarea>
+                    <textarea id="description" v-model="form.description" class="form-textarea"></textarea>
                 </div>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
