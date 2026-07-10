@@ -22,7 +22,8 @@
 <style scoped>
 .app-modal {
     min-width: 500px;
-    max-width: 700px;
+    width: 800px;
+    max-width: 1000px;
 }
 .modal-body {
     margin-top: 16px;
