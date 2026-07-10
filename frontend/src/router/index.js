@@ -90,6 +90,18 @@ const router = createRouter({
       component: () => import('@/views/company/CompanyDriveDetail.vue'),
       meta: { requiresAuth: true, role: 'company' }
     },
+    {
+      path: '/company/drives/:id/applications',
+      name: 'company-drive-applications',
+      component: () => import('@/views/company/CompanyDriveApplications.vue'),
+      meta: { requiresAuth: true, role: 'company' }
+    },
+    {
+      path: '/company/drives/:id/interviews',
+      name: 'company-drive-interviews',
+      component: () => import('@/views/company/CompanyDriveInterviews.vue'),
+      meta: { requiresAuth: true, role: 'company' }
+    },
     // {
     //   path: '',
     //   name: '',

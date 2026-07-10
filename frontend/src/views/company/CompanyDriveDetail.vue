@@ -14,18 +14,16 @@
                 <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="statusClass(drive.status)">{{ drive.status }}</span></p>
             </div>
             <div class="flex gap-16 mb-24">
-                <!-- <router-link 
+                <router-link 
                 :to="{ name: 'company-drive-applications', params: { id: driveId } }" 
                 class="btn is-primary">
                     View Applications ({{ drive.applications_count }})
-                </router-link> -->
-                <button     
-                class="btn is-primary">
-                    View Applications ({{ drive.applications_count }})
-                </button>
-                <button class="btn is-info">
+                </router-link>
+                <router-link 
+                :to="{ name: 'company-drive-interviews', params: { id: driveId } }" 
+                class="btn is-info">
                     Manage Interviews
-                </button>
+                </router-link>
             </div>
             <div class="card mb-24">
                 <h2 class="card-title mb-16">Drive Details</h2>
@@ -89,7 +87,25 @@
                 />
             </div>
             <div v-if="drive.interviews?.length > 0" class="card mb-24">
-                
+                <h2 class="card-title mb-16">Interview Rounds</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="interview in drive.interviews" :key="interview.interview_id">
+                            <td>{{ interview.round_number }}</td>
+                            <td>{{ interview.round_title }}</td>
+                            <td>{{ formatDateTime(interview.interview_date) }}</td>
+                            <td>{{ interview.location || '-' }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
