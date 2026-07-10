@@ -78,18 +78,18 @@ const router = createRouter({
       component: () => import('@/views/company/CompanyProfile.vue'),
       meta: { requiresAuth: true, role: 'company' }
     },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
+    {
+      path: '/company/drives',
+      name: 'company-drives',
+      component: () => import('@/views/company/CompanyDrives.vue'),
+      meta: { requiresAuth: true, role: 'company' }
+    },
+    {
+      path: '/company/drives/:id',
+      name: 'company-drive-detail',
+      component: () => import('@/views/company/CompanyDriveDetail.vue'),
+      meta: { requiresAuth: true, role: 'company' }
+    },
     // {
     //   path: '',
     //   name: '',
