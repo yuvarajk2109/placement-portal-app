@@ -1,29 +1,58 @@
 <template>
     <div class="main-page">
        <h1 class="page-title text-center">Company Profile</h1>
-       <!-- <AppSpinner v-if="loading" /> -->
-       <div class="card">
+       <AppSpinner v-if="loading" />
+       <div v-else class="card">
             <form>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="company_name">Company Name</label>
-                        <input id="company_name" class="form-input">
+                        <input id="company_name" v-model="form.company_name" class="form-input" readonly>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="industry">Industry</label>
-                        <input id="industry" class="form-input">
+                        <input id="industry" v-model="form.industry" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group flex gap-16">
+                    <div class="flex-1">
+                        <label class="form-label" for="status">Company Status</label>
+                        <input id="status" v-model="form.status" class="form-input" readonly>
+                    </div>
+                    <div class="flex-1">
+                        <label class="form-label" for="created_at">Created At</label>
+                        <input id="created_at" v-model="form.created_at" class="form-input" readonly>
                     </div>
                 </div>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="website">Website URL</label>
-                        <input id="website" class="form-input">
+                        <input id="website" v-model="form.website" class="form-input">
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="location">Location</label>
-                        <input id="location" class="form-input">
+                        <input id="location" v-model="form.location" class="form-input">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="form-label" for="description">Description</label>
+                    <textarea id = "description" v-model="form.description" class="form-textarea"></textarea>
+                </div>
+                <div class="form-group flex gap-16">
+                    <div class="flex-1">
+                        <label class="form-label" for="hr_name">HR Name</label>
+                        <input id="hr_name" v-model="form.hr_name" class="form-input">
+                    </div>
+                    <div class="flex-1">
+                        <label class="form-label" for="hr_phone">HR Phone</label>
+                        <input id="hr_phone" v-model="form.hr_phone" class="form-input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="hr_email">HR Email</label>
+                    <input id="hr_email" v-model="form.hr_email" class="form-input">
+                </div>
+                <button type="submit" class="btn is-primary is-large full-width-btn" @click="saveProfile" :disabled="saving">{{ saving ? 'Saving...' : 'Save Changes' }}</button>
             </form>
        </div>
     </div>
@@ -38,6 +67,53 @@
 
 <script setup>
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import { formatDateTime } from '@/utils/formatters';
+import api from '@/services/api';
+import { useNotificationStore } from '@/stores/notification';
+import { onMounted, reactive, ref } from 'vue';
 
+const notify = useNotificationStore();
+const loading = ref(true);
+const saving = ref(false);
 
+const form = reactive({
+    company_name: '',
+    industry: '',
+    website: '',
+    location: '',
+    description: '',
+    hr_name: '',
+    hr_phone: '',
+    hr_email: '',
+    status: '',
+    created_at: ''
+})
+
+onMounted(fetchProfile);
+
+async function fetchProfile() {
+    try {
+        const result = await api.get('/company/profile');
+        Object.assign(form, result.data);
+        form.created_at = formatDateTime(result.data.created_at)
+    } catch (err) {
+        notify.error(err.response?.data?.error || 'Failed to load profile');
+    } finally {
+        loading.value = false;
+    }
+}
+
+async function saveProfile() {
+    saving.value = true;
+    try {
+        await api.put('/company/profile', form);
+        notify.success('Profile updated successfully');
+    } catch (err) {
+        notify.error(err.response?.data?.error || 'Failed to update profile');
+    } finally {
+        saving.value = false;
+        loading.value = true;
+        fetchProfile();
+    }
+}
 </script>
