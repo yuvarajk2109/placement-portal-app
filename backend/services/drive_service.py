@@ -128,8 +128,20 @@ class DriveService:
                 }, 403
             
         company = Company.query.get(drive.company_id)
-        branches = [branch.branch_name for branch in drive.eligible_branches]
-        required_skills = [skill.skill_name for skill in drive.required_skills]
+        branches = [
+            {
+                'branch_id': branch.branch_id,
+                'branch_name': branch.branch_name
+            }
+            for branch in drive.eligible_branches
+        ]
+        required_skills = [
+            {
+                'skill_id': skill.skill_id,
+                'skill_name': skill.skill_name
+            }
+            for skill in drive.required_skills
+        ]
         applications_count = len(drive.applications)
 
         return {
