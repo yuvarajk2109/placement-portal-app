@@ -429,6 +429,12 @@ a:hover {
   border-color: var(--status-error-background);
 }
 
+.form-input:read-only {
+  cursor: not-allowed;
+  background: var(--surface-background);
+  border: 1px solid var(--surface-line-subtle);
+}
+
 .form-textarea {
   width: 100%;
   min-height: 100px;
