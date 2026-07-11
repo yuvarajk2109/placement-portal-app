@@ -256,6 +256,11 @@ a:hover {
   white-space: nowrap;
 }
 
+.btn:not(.is-icon-only) > i  {
+    position: relative;
+    top: 1px;
+}
+
 .btn.is-primary {
   background: var(--accent-primary-background);
   color: var(--accent-primary-foreground);
@@ -739,6 +744,10 @@ a:hover {
 
 .items-center {
   align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
 }
 
 .justify-between {
