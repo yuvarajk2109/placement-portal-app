@@ -68,14 +68,7 @@
                         <label class="form-label" for="drive_type">Drive Type <span class="required">(required)</span></label>
                         <select id="drive_type" v-model="newDrive.drive_type" @blur="validator.drive_type.$touch()" class="form-select" :class="{'is-error': validator.drive_type.$error}">
                             <option value="" disabled>Select drive type...</option>
-                            <option value="2M Internship">2M Internship</option>
-                            <option value="5M Internship">5M Internship</option>
-                            <option value="6M Internship">6M Internship</option>
-                            <option value="5M Internship + Placement">5M Internship + Placement</option>
-                            <option value="6M Internship + Placement">6M Internship + Placement</option>
-                            <option value="5M Internship + Performance-based Placement">5M Internship + Performance-based Placement</option>
-                            <option value="6M Internship + Performance-based Placement">6M Internship + Performance-based Placement</option>
-                            <option value="Direct Placement">Direct Placement</option>
+                            <option v-for="type in driveTypes" :key="type" :value="type">{{ type }}</option>
                         </select>
                         <span v-if="validator.drive_type.$error" class="form-error-text">{{ validator.drive_type.$errors[0].$message }}</span>
                     </div>
@@ -153,6 +146,7 @@ const loading = ref(true);
 const creating = ref(false);
 const showCreateModal = ref(false);
 const drives = ref([]);
+const driveTypes = ref([]);
 const branches = ref([]);
 const skills = ref([]);
 const page = ref(1);
@@ -213,12 +207,14 @@ const driveTemplate = {
 onMounted(async () => {
   await fetchDrives();
   try {
-    const [branchResult, skillResult] = await Promise.all([
+    const [branchResult, skillResult, driveTypeResult] = await Promise.all([
         api.get('/shared/branches'),
-        api.get('/shared/skills')
+        api.get('/shared/skills'),
+        api.get('/shared/drive-types')
     ]);
     branches.value = branchResult.data.branches;
     skills.value = skillResult.data.skills;
+    driveTypes.value = driveTypeResult.data.drive_types;
   } catch (err) {
     notify.error('Failed to load branches/skills data');
   }
