@@ -1,47 +1,45 @@
 <template>
-    <div class="main-page">
-        <div class="flex items-center justify-between mb-24">
-            <h1 class="page-title mb-4">Manage Interviews</h1>
-            <span class="flex gap-8">
-                <button type="button" class="btn is-primary" @click="showModal = true">
-                    <i class="fa-solid fa-plus"></i> 
-                    Schedule New Interview
-                </button>
-                <router-link 
-                    :to="{ name: 'company-drive-detail', params: { id: driveId }}"
-                    class="btn is-secondary">
-                    Go Back
-                </router-link>
-            </span>
-        </div>
-        <div class="card">
+    <div class="main-page">   
+        <div class="card">            
+            <div class="flex justify-between mb-24">
+                <h2 class="card-title">Interview Rounds</h2>
+                <span class="flex gap-8">
+                    <button type="button" class="btn is-primary" @click="showModal = true">
+                        <i class="fa-solid fa-plus"></i> 
+                        Schedule New Interview
+                    </button>
+                </span>
+            </div>
             <AppSpinner v-if="loading" />
-            <table v-else-if="interviews.length > 0" class="data-table">
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Title</th>
-                        <th>Date</th>
-                        <th>Location</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="interview in interviews" :key="interview.interview_id">
-                        <td>{{ interview.round_number }}</td>
-                        <td>{{ interview.round_title }}</td>
-                        <td>{{ interview.interview_date ? formatDateTime(interview.interview_date) : '-' }}</td>
-                        <td>{{ interview.location || '-' }}</td>
-                        <td class="actions-cell">
-                            <button class="btn is-secondary" @click="editInterview(interview)">Edit</button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div v-else class="empty-state">
+            <template v-else-if="interviews.length > 0">                
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Round</th>
+                            <th>Title</th>
+                            <th>Date</th>
+                            <th>Location</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="interview in interviews" :key="interview.interview_id">
+                            <td>{{ interview.round_number }}</td>
+                            <td>{{ interview.round_title }}</td>
+                            <td>{{ interview.interview_date ? formatDateTime(interview.interview_date) : '-' }}</td>
+                            <td>{{ interview.location || '-' }}</td>
+                            <td class="actions-cell">
+                                <button class="btn is-secondary" @click="editInterview(interview)">Edit</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>        
+            </template>
+            <div class="empty-state">
                 <p class="empty-state-text">No interviews scheduled yet. Schedule a new interview!</p>
             </div>
         </div>
+       
 
         <AppModal v-model="showModal" size="small">
             <template #title>{{ editingId ? 'Edit Interview' : 'Schedule New Interview' }}</template>
@@ -83,12 +81,18 @@ import { useRoute } from 'vue-router';
 
 const route = useRoute();
 const notify = useNotificationStore();
-const driveId = route.params.id;
 const loading = ref(true);
 const submitting = ref(false);
 const showModal = ref(false);
 const editingId = ref(null);
 const interviews = ref([]);
+
+const props = defineProps({
+    driveId: {
+        type: [String],
+        required: true
+    }
+});
 
 const interviewForm = reactive({
     round_title: '',
@@ -121,7 +125,7 @@ onMounted(fetchInterviews);
 async function fetchInterviews() {
     loading.value = true;
     try {
-        const result = await api.get(`/company/drives/${driveId}/interviews`);
+        const result = await api.get(`/company/drives/${props.driveId}/interviews`);
         interviews.value = result.data.interviews;
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to load interviews');

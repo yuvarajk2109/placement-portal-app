@@ -14,15 +14,11 @@
                 <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="statusClass(drive.status)">{{ drive.status }}</span></p>
             </div>
             <div class="flex gap-16 mb-24">
-                <router-link 
+                <router-link
+                v-if="drive.applications_count > 0" 
                 :to="{ name: 'company-drive-applications', params: { id: driveId } }" 
                 class="btn is-primary">
                     View Applications ({{ drive.applications_count }})
-                </router-link>
-                <router-link 
-                :to="{ name: 'company-drive-interviews', params: { id: driveId } }" 
-                class="btn is-info">
-                    Manage Interviews
                 </router-link>
             </div>
             <div class="card mb-24">
@@ -86,8 +82,16 @@
                     :readonly="true"
                 />
             </div>
-            <div v-if="drive.interviews?.length > 0" class="card mb-24">
-                <h2 class="card-title mb-16">Interview Rounds</h2>
+            <CompanyDriveInterviews :drive-id="driveId"/>
+            <!-- <div v-if="drive.interviews?.length > 0" class="card mb-24">
+                <div class="flex justify-between mb-16">
+                    <h2 class="card-title">Interview Rounds</h2>
+                     <router-link 
+                        :to="{ name: 'company-drive-interviews', params: { id: driveId } }" 
+                        class="btn is-info">
+                        Manage Interviews
+                </router-link>
+                </div>
                 <table class="data-table">
                     <thead>
                         <tr>
@@ -106,7 +110,7 @@
                         </tr>
                     </tbody>
                 </table>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>
@@ -127,6 +131,7 @@ import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import CompanyDriveInterviews from './CompanyDriveInterviews.vue';
 
 const route = useRoute();
 const router = useRouter();
