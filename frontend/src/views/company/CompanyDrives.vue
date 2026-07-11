@@ -19,8 +19,13 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="drive in drives" :key="drive.drive_id">
-                    <td><router-link :to="{ name: 'company-drive-detail', params: { id: drive.drive_id } }" class="text-link">{{ drive.job_title }}</router-link></td>
+                <tr 
+                    v-for="drive in drives" 
+                    :key="drive.drive_id" 
+                    class="clickable-row"
+                    @click="$router.push({ name: 'company-drive-detail', params: { id: drive.drive_id } })"> 
+                    <!-- <router-link :to="{ name: 'company-drive-detail', params: { id: drive.drive_id } }" class="text-link" /> -->
+                    <td>{{ drive.job_title }}</td>
                     <td><span class="status is-info">{{ drive.drive_type }}</span></td>
                     <td>{{ drive.cgpa_requirement }}</td>
                     <td>{{ drive.location }}</td>
@@ -256,7 +261,8 @@ async function closeDrive(id) {
         title: 'Close Drive',
         message: 'Close this drive? No more applications will be accepted.',
         type: 'warning',
-        confirmText: 'Close'
+        confirmText: 'Close',
+        cancelText: 'Cancel'
     })
     if (!confirmed) return;
     try {
