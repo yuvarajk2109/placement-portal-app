@@ -26,3 +26,14 @@ class Config:
     RESUME_FOLDER = os.path.join(UPLOAD_FOLDER, 'resumes')
     ALLOWED_RESUME_EXTENSIONS = {'pdf', 'doc', 'docx'}
     MAX_RESUME_SIZE = 5 * 1024 * 1024
+
+    VALID_DRIVE_TYPES = [
+        '2M Internship',
+        '5M Internship',
+        '6M Internship',
+        '5M Internship + Placement',
+        '6M Internship + Placement',
+        '5M Internship + Performance-based Placement',
+        '6M Internship + Performance-based Placement',
+        'Direct Placement'
+    ]

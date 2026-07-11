@@ -1,4 +1,4 @@
-from extensions import db
+from config import Config
 from models.skill import Skill
 from models.branch import Branch
 
@@ -29,4 +29,10 @@ class SharedService:
                 }
                 for branch in branches
             ]
+        }, 200
+    
+    @staticmethod
+    def list_drive_types():
+        return {
+            "drive_types": Config.VALID_DRIVE_TYPES
         }, 200

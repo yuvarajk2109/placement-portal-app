@@ -1,3 +1,4 @@
+from config import Config
 from extensions import db
 from models.branch import Branch
 from models.skill import Skill
@@ -23,9 +24,9 @@ class DriveService:
                 "error": "Only approved companies can create placement drives"
             }, 403
         
-        if data['drive_type'] not in PlacementDrive.VALID_DRIVE_TYPES:
+        if data['drive_type'] not in Config.VALID_DRIVE_TYPES:
             return {
-                "error": f"Invalid drive type. Valid types are: {PlacementDrive.VALID_DRIVE_TYPES}"
+                "error": f"Invalid drive type. Valid types are: {Config.VALID_DRIVE_TYPES}"
             }, 400
         
         try:
@@ -210,9 +211,9 @@ class DriveService:
                 }, 400
             
         if 'drive_type' in data:
-            if data['drive_type'] not in PlacementDrive.VALID_DRIVE_TYPES:
+            if data['drive_type'] not in Config.VALID_DRIVE_TYPES:
                 return {
-                    "error": f"Invalid drive type. Valid types are: {PlacementDrive.VALID_DRIVE_TYPES}"
+                    "error": f"Invalid drive type. Valid types are: {Config.VALID_DRIVE_TYPES}"
                 }, 400
             drive.drive_type = data['drive_type']
 

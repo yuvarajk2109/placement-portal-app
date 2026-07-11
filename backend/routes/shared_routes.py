@@ -12,3 +12,8 @@ def list_skills():
 def list_branches():
     result, status = SharedService.list_branches()
     return jsonify(result), status
+
+@shared_bp.route('/drive-types', methods=['GET'])
+def list_drive_types():
+    result, status = SharedService.list_drive_types()
+    return jsonify(result), status

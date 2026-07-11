@@ -14,17 +14,6 @@ drive_branch = db.Table('drive_branch',
 class PlacementDrive(db.Model):
     __tablename__ = 'placement_drive'
 
-    VALID_DRIVE_TYPES = [
-        '2M Internship',
-        '5M Internship',
-        '6M Internship',
-        '5M Internship + Placement',
-        '6M Internship + Placement',
-        '5M Internship + Performance-based Placement',
-        '6M Internship + Performance-based Placement',
-        'Direct Placement'
-    ]
-
     drive_id = db.Column(db.Integer, primary_key = True, autoincrement = True)
     company_id = db.Column(db.Integer, db.ForeignKey('company.company_id'), nullable = False)
     job_title = db.Column(db.String(255), nullable = False)
