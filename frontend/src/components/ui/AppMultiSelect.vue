@@ -8,7 +8,7 @@
             :class="
                 properties.readonly
                 ? 'is-primary'
-                : (isSelected(option) ? 'is-primary' : 'is-secondary')"
+                : (isSelected(option) ? 'is-info' : 'is-secondary')"
             @click="toggleSelection(option)">
             {{ option[value] }}
         </button>
