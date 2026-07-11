@@ -35,7 +35,7 @@
                     </tbody>
                 </table>        
             </template>
-            <div class="empty-state">
+            <div v-else class="empty-state">
                 <p class="empty-state-text">No interviews scheduled yet. Schedule a new interview!</p>
             </div>
         </div>
