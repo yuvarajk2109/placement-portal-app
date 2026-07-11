@@ -40,7 +40,7 @@
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    padding: 12px 8px;
+    padding: 12px 0px;
     gap: 4px;
 }
 
@@ -49,7 +49,6 @@
     align-items: center;
     gap: 12px;
     padding: 10px 16px;
-    border-radius: 8px;
     color: var(--surface-foreground);
     text-decoration: none;
     font-size: 14px;
@@ -65,10 +64,13 @@
     flex-shrink: 0
 }
 
-.sidebar-link:hover,
+.sidebar-link:hover {
+    color: var(--surface-line);
+}
+
+
 .sidebar-link.active {
-    background: var(--accent-primary-background);
-    color: var(--accent-primary-foreground);
+    color: var(--accent-primary-background);
 }
 </style>
 
@@ -140,12 +142,12 @@ const menuItems=computed(() => {
     } else if (role === 'student') {
          return [
             {
-                route: '',
+                route: 'student-dashboard',
                 icon: 'fas fa-chart-line',
                 label: 'Dashboard'
             },
             {
-                route: '',
+                route: 'student-profile',
                 icon: 'fas fa-user',
                 label: 'Profile'
             },
