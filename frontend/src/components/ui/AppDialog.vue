@@ -15,7 +15,7 @@
             {{ dialog.options.message }}
         </div>
         <div class="modal-footer">
-            <button class="btn is-secondary" @click="dialog.cancel()">
+            <button class="btn is-secondary" :class="cancelButtonClass" @click="dialog.cancel()">
                     {{ dialog.options.cancelText }}
                 </button>
                 <button class="btn" :class="confirmButtonClass" @click="dialog.proceed()">
@@ -56,6 +56,15 @@ const confirmButtonClass = computed(() => {
         case 'warning': return 'is-warning'
         case 'success': return 'is-success'
         default: return 'is-info'
+    }
+})
+
+const cancelButtonClass = computed(() => {
+    switch(dialog.options.type) {
+        case 'error': return 'is-success'
+        case 'warning': return 'is-success'
+        case 'success': return 'is-secondary'
+        default: return 'is-secondary'
     }
 })
 </script>
