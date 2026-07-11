@@ -4,10 +4,10 @@
             type="button" 
             v-for="option in options" 
             :key="option[id]" 
-            class="btn is-small" 
+            class="btn is-small is-readonly" 
             :class="
                 properties.readonly
-                ? 'is-info'
+                ? 'is-primary'
                 : (isSelected(option) ? 'is-primary' : 'is-secondary')"
             @click="toggleSelection(option)">
             {{ option[value] }}
@@ -24,8 +24,6 @@
 
 .is-readonly {
     cursor: default;
-    pointer-events: none;
-    opacity: 0.8;
 }
 </style>
 
