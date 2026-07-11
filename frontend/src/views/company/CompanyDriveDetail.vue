@@ -7,7 +7,7 @@
                     <h1 class="page-title mb-4">{{ drive.job_title }}</h1>
                     <router-link 
                         to="/company/drives"
-                        class="btn is-primary">
+                        class="btn is-secondary">
                         Go Back
                     </router-link>
                 </div>
