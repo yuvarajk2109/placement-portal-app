@@ -66,6 +66,8 @@ class StudentService:
         
         user = User.query.get(user_id)
 
+        resume = os.path.basename(student.resume_path) if student.resume_path else None
+
         return {
             "register_no": student.register_no,
             "email": user.email if user else None,
@@ -76,13 +78,8 @@ class StudentService:
             "cgpa": student.cgpa,
             "year_of_study": student.year_of_study,
             "branch_name": student.branch.branch_name if student.branch else None,
-            "resume_uploaded": student.resume_path is not None,
-            "skills": [
-                {
-                    "skill_id": skill.skill_id,
-                    "skill_name": skill.skill_name
-                } for skill in student.skills
-            ],
+            "resume": resume,
+            "skill_ids": [skill.skill_id for skill in student.skills],
             "created_at": student.created_at.isoformat()
         }, 200
     
