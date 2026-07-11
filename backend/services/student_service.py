@@ -69,7 +69,8 @@ class StudentService:
         return {
             "register_no": student.register_no,
             "email": user.email if user else None,
-            "student_name": f"{student.fname} {student.lname}",
+            "fname": student.fname,
+            "lname": student.lname,
             "dob": student.dob.isoformat() if student.dob else None,
             "phone": student.phone,
             "cgpa": student.cgpa,
@@ -78,6 +79,7 @@ class StudentService:
             "resume_uploaded": student.resume_path is not None,
             "skills": [
                 {
+                    "skill_id": skill.skill_id,
                     "skill_name": skill.skill_name
                 } for skill in student.skills
             ],
