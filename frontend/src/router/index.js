@@ -120,12 +120,12 @@ const router = createRouter({
       component: () => import('@/views/student/StudentDrives.vue'),
       meta: { requiresAuth: true, role: 'student' }
     },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
+    {
+      path: '/student/drives/:id',
+      name: 'student-drive-detail',
+      component: () => import('@/views/student/StudentDriveDetail.vue'),
+      meta: { requiresAuth: true, role: 'student' }
+    },
     // {
     //   path: '',
     //   name: '',
