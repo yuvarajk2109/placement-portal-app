@@ -25,6 +25,10 @@
 .is-readonly {
     cursor: default;
 }
+
+.is-readonly:hover {
+    transform: translateY(-1px);
+}
 </style>
 
 <script setup>

@@ -90,8 +90,8 @@
   /* Styles for Layout */
   --header-height: 60px;
   --footer-height: 60px;
-  --sidebar-width-open: 200px;
-  --sidebar-width-closed: 64px;
+  --sidebar-width-open: 175px;
+  --sidebar-width-closed: 50px;
   --notification-z: 9999;
   --modal-z: 9998;
   --sidebar-z: 100;
@@ -211,9 +211,9 @@ a:hover {
 }
 
 .page-subtitle {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 400;
-  color: var(--surface-foreground-subtle);
+  color: var(--surface-foreground);
   margin-bottom: 24px;
 }
 
@@ -258,7 +258,7 @@ a:hover {
 
 .btn:not(.is-icon-only) > i  {
     position: relative;
-    top: 1px;
+    top: 2px;
 }
 
 .btn.is-primary {
@@ -630,6 +630,10 @@ a:hover {
   background: var(--surface-container-background);
 }
 
+.data-table .clickable-row {
+  cursor: pointer;
+}
+
 .data-table .actions-cell {
   white-space: nowrap;
 }
@@ -850,6 +854,10 @@ a:hover {
   border: 1px solid var(--surface-line-subtle);
   border-radius: 12px;
   padding: 20px;
+}
+
+.stat-card:hover {
+  transform: translateY(-1px);
 }
 
 .stat-card-value {
