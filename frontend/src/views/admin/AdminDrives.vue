@@ -2,14 +2,12 @@
     <div class="main-page">
         <h1 class="page-title">Manage Drives</h1>
         <div v-if="drives.length > 0" class="page-toolbar">
-            <div class="filter-group">
-                <select class="form-select" v-model="statusFilter" @change="page = 1; fetchData();">
-                    <option value="">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
-            </div>
+            <select class="form-select" v-model="statusFilter" @change="page = 1; fetchData();">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
         </div>
         <AppSpinner v-if="loading" />
         <table v-else-if="drives.length > 0" class="data-table">

@@ -3,15 +3,13 @@
         <h1 class="page-title">Manage Students</h1>
         <div v-if="students.length > 0" class="page-toolbar">
             <input v-model="search" class="form-input search-input" placeholder="Search by name or register no..." @input="debouncedFetch">
-            <div class="filter-group">
-                <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
-                    <option value="">All Statuses</option>
-                    <option value="Active">Active</option>
-                    <option value="Inactive">Inactive</option>
-                    <option value="Blacklisted">Blacklisted</option>
-                    <option value="Unblacklisted">Unblacklisted</option>
-                </select>
-            </div>
+            <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
+                <option value="">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+                <option value="Blacklisted">Blacklisted</option>
+                <option value="Unblacklisted">Unblacklisted</option>
+            </select>
         </div>
         <AppSpinner v-if="loading"/>
         <table v-else-if="students.length > 0" class="data-table">

@@ -3,14 +3,12 @@
         <h1 class="page-title">Manage Companies</h1>
         <div v-if="companies.length > 0" class="page-toolbar">
             <input class="form-input search-input" placeholder="Search companies..." @input="debouncedFetch">
-            <div class="filter-group">
-                <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
-                    <option value="">All Statuses</option>
-                    <option value="Pending">Pending</option>
-                    <option value="Approved">Approved</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
-            </div>
+            <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Approved">Approved</option>
+                <option value="Rejected">Rejected</option>
+            </select>
         </div>
         <AppSpinner v-if="loading" />
         <table v-else-if="companies.length" class="data-table">
