@@ -152,7 +152,7 @@ const menuItems=computed(() => {
                 label: 'Profile'
             },
             {
-                route: '',
+                route: 'student-drives',
                 icon: 'fas fa-briefcase',
                 label: 'Drives'
             },

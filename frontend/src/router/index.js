@@ -114,12 +114,12 @@ const router = createRouter({
       component: () => import('@/views/student/StudentProfile.vue'),
       meta: { requiresAuth: true, role: 'student' }
     },
-    // {
-    //   path: '',
-    //   name: '',
-    //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
-    // },
+    {
+      path: '/student/drives',
+      name: 'student-drives',
+      component: () => import('@/views/student/StudentDrives.vue'),
+      meta: { requiresAuth: true, role: 'student' }
+    },
     // {
     //   path: '',
     //   name: '',
