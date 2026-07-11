@@ -83,34 +83,6 @@
                 />
             </div>
             <CompanyDriveInterviews :drive-id="driveId"/>
-            <!-- <div v-if="drive.interviews?.length > 0" class="card mb-24">
-                <div class="flex justify-between mb-16">
-                    <h2 class="card-title">Interview Rounds</h2>
-                     <router-link 
-                        :to="{ name: 'company-drive-interviews', params: { id: driveId } }" 
-                        class="btn is-info">
-                        Manage Interviews
-                </router-link>
-                </div>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Round</th>
-                            <th>Title</th>
-                            <th>Date</th>
-                            <th>Location</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="interview in drive.interviews" :key="interview.interview_id">
-                            <td>{{ interview.round_number }}</td>
-                            <td>{{ interview.round_title }}</td>
-                            <td>{{ formatDateTime(interview.interview_date) }}</td>
-                            <td>{{ interview.location || '-' }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div> -->
         </div>
     </div>
 </template>
