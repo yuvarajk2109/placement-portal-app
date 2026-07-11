@@ -3,11 +3,11 @@
        <h1 class="page-title text-center">Company Profile</h1>
        <AppSpinner v-if="loading" />
        <div v-else class="card">
-            <form>
+            <form @submit.prevent="saveProfile">
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="company_name">Company Name</label>
-                        <input id="company_name" v-model="form.company_name" class="form-input" readonly>
+                        <input id="company_name" v-model="profile.company_name" class="form-input" readonly>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="industry">Industry</label>
@@ -17,11 +17,11 @@
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="status">Company Status</label>
-                        <input id="status" v-model="form.status" class="form-input" readonly>
+                        <input id="status" v-model="profile.status" class="form-input" readonly>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="created_at">Created At</label>
-                        <input id="created_at" v-model="form.created_at" class="form-input" readonly>
+                        <input id="created_at" v-model="profile.created_at" class="form-input" readonly>
                     </div>
                 </div>
                 <div class="form-group flex gap-16">
@@ -75,9 +75,9 @@ import { onMounted, reactive, ref } from 'vue';
 const notify = useNotificationStore();
 const loading = ref(true);
 const saving = ref(false);
+const profile = ref({});
 
 const form = reactive({
-    company_name: '',
     industry: '',
     website: '',
     location: '',
@@ -85,8 +85,6 @@ const form = reactive({
     hr_name: '',
     hr_phone: '',
     hr_email: '',
-    status: '',
-    created_at: ''
 })
 
 onMounted(fetchProfile);
@@ -94,8 +92,9 @@ onMounted(fetchProfile);
 async function fetchProfile() {
     try {
         const result = await api.get('/company/profile');
+        profile.value = result.data;
+        profile.value.created_at = formatDateTime(profile.value.created_at)
         Object.assign(form, result.data);
-        form.created_at = formatDateTime(result.data.created_at)
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to load profile');
     } finally {
