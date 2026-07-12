@@ -40,7 +40,6 @@
             </div>
         </div>
        
-
         <AppModal v-model="showModal" size="small">
             <template #title>{{ editingId ? 'Edit Interview' : 'Schedule New Interview' }}</template>
             <form id="interview-form" @submit.prevent="submitInterview">
@@ -87,7 +86,7 @@ const showModal = ref(false);
 const editingId = ref(null);
 const interviews = ref([]);
 
-const props = defineProps({
+const properties = defineProps({
     driveId: {
         type: [String],
         required: true
@@ -125,7 +124,7 @@ onMounted(fetchInterviews);
 async function fetchInterviews() {
     loading.value = true;
     try {
-        const result = await api.get(`/company/drives/${props.driveId}/interviews`);
+        const result = await api.get(`/company/drives/${properties.driveId}/interviews`);
         interviews.value = result.data.interviews;
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to load interviews');
@@ -158,7 +157,7 @@ async function submitInterview() {
             await api.put(`/company/interviews/${editingId.value}`, interviewForm);
             notify.success('Interview updated successfully');
         } else {
-            await api.post(`/company/drives/${driveId}/interviews`, interviewForm);
+            await api.post(`/company/drives/${properties.driveId}/interviews`, interviewForm);
             notify.success('Interview scheduled successfully.');
         }
         closeModal();
