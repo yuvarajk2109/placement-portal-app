@@ -22,7 +22,7 @@
                 </router-link>
             </div>
             <div class="card mb-24">
-                <h2 class="card-title mb-16">Drive Details</h2>
+                <h2 class="card-title">Drive Details</h2>
                 <div class="stats-grid">
                     <div class="stat-card info">
                         <div class="stat-card-value info">
@@ -59,11 +59,11 @@
                 </div>
             </div>
             <div class="card mb-24">
-                <h2 class="card-title mb-16">Job Description</h2>
+                <h2 class="card-title">Job Description</h2>
                 <p class="text-subtle">{{ drive.job_desc }}</p>
             </div>
             <div class="card mb-24">
-                <h2 class="card-title mb-16">Eligible Branches</h2>
+                <h2 class="card-title">Eligible Branches</h2>
                 <AppMultiSelect
                     :model-value="drive.eligible_branches.map(branch => branch.branch_id)"
                     :options="drive.eligible_branches"
@@ -73,7 +73,7 @@
                 />
             </div>
             <div class="card mb-24">
-                <h2 class="card-title mb-16">Required Skills</h2>
+                <h2 class="card-title">Required Skills</h2>
                 <AppMultiSelect
                     :model-value="drive.required_skills.map(skill => skill.skill_id)"
                     :options="drive.required_skills"

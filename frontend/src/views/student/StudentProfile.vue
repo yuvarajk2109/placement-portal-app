@@ -4,7 +4,7 @@
         <AppSpinner v-if="loading" />
         <template v-else>
             <div class="card">
-                <h2 class="card-title mb-16">Account Information</h2>
+                <h2 class="card-title">Account Information</h2>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label for="register_no" class="form-label">Register No.</label>
@@ -31,7 +31,7 @@
                 </div>      
             </div>  
             <div class="card">
-                <h2 class="card-title mb-16">Editable Details</h2>
+                <h2 class="card-title">Editable Details</h2>
                 <form @submit.prevent="saveProfile">
                     <div class="form-group flex gap-16">
                         <div class="flex-1">
