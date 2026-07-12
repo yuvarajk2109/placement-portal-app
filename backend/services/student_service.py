@@ -1,3 +1,5 @@
+from sqlalchemy import and_
+
 from config import Config
 from extensions import db
 from models.user import User
@@ -177,14 +179,17 @@ class StudentService:
         )
     
     @staticmethod
-    def list_eligible_drives(user_id, search, location, drive_type, min_salary, page, per_page):
+    def list_eligible_drives(user_id, search, location, drive_type, min_salary, application_status, page, per_page):
         student = Student.query.filter_by(user_id = user_id).first()
         if not student:
             return {
                 "error": "Student not found"
             }, 404
         
-        query = PlacementDrive.query.filter(PlacementDrive.status == 'Approved', PlacementDrive.application_deadline > datetime.now())
+        query = (
+            db.session.query(PlacementDrive, Application.application_status)
+            .outerjoin(Application, and_(PlacementDrive.drive_id == Application.drive_id, Application.register_no == student.register_no)))
+        query = query.filter(PlacementDrive.status == 'Approved', PlacementDrive.application_deadline > datetime.now())
 
         if student.year_of_study == 3:
             query = query.filter(PlacementDrive.drive_type == '2M Internship')
@@ -199,6 +204,11 @@ class StudentService:
             query = query.filter(PlacementDrive.drive_type == drive_type)
         if min_salary is not None:
             query = query.filter(PlacementDrive.salary_max >= min_salary)
+        if application_status:
+            if application_status == "Not Applied":
+                query = query.filter(Application.application_status.is_(None))
+            else:
+                query = query.filter(Application.application_status == application_status)
 
         pagination = query.order_by(PlacementDrive.application_deadline.asc()).paginate(
             page = page,
@@ -207,7 +217,7 @@ class StudentService:
         )
 
         drives = []
-        for drive in pagination.items:
+        for drive, application_status in pagination.items:
             drives.append({
                 "drive_id": drive.drive_id,
                 "job_title": drive.job_title,
@@ -218,13 +228,7 @@ class StudentService:
                 "salary_max": drive.salary_max,
                 "location": drive.location,
                 "application_deadline": drive.application_deadline.isoformat() if drive.application_deadline else None,
-                "required_skills": [
-                    {
-                        "skill_id": skill.skill_id,
-                        "skill_name": skill.skill_name
-                    }
-                    for skill in drive.required_skills
-                ]
+                "application_status": application_status
             })
 
         return {
