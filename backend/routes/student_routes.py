@@ -70,9 +70,10 @@ def list_eligible_drives(current_user_id):
     location = request.args.get('location')
     drive_type = request.args.get('drive_type')
     min_salary = request.args.get('min_salary', type = float)
+    application_status = request.args.get('application_status')
     page = request.args.get('page', 1, type = int)
     per_page = request.args.get('per_page', 20, type = int)
-    result, status = StudentService.list_eligible_drives(current_user_id, search, location, drive_type, min_salary, page, per_page)
+    result, status = StudentService.list_eligible_drives(current_user_id, search, location, drive_type, min_salary, application_status, page, per_page)
     return jsonify(result), status
 
 @student_bp.route('/drives/<int:drive_id>', methods = ['GET'])
