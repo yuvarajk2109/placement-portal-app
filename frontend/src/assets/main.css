@@ -256,9 +256,9 @@ a:hover {
   white-space: nowrap;
 }
 
-.btn:not(.is-icon-only) > i  {
-    position: relative;
-    top: 2px;
+.btn:not(.is-icon-only)>i {
+  position: relative;
+  top: 2px;
 }
 
 .btn.is-primary {
@@ -495,7 +495,8 @@ a:hover {
 .form-select::picker-icon {
   font-family: 'Font Awesome 6 Free';
   font-weight: 900;
-  content: '\f078'; /* fa-chevron-down */
+  content: '\f078';
+  /* fa-chevron-down */
   font-size: 12px;
   color: var(--surface-foreground-subtle);
   display: block;
@@ -518,8 +519,8 @@ a:hover {
   color: var(--surface-foreground);
 }
 
-.form-select option:hover:not(:disabled) {
-  background: var(--surface-line-subtle);
+.form-select option:hover:not(:disabled):not(:checked) {
+  background: var(--surface-background);
 }
 
 .form-select option:disabled {
@@ -953,5 +954,9 @@ a:hover {
 }
 
 .search-input {
-  width: 280px;
+  width: 250px;
+}
+
+.search-input.small {
+  width: 150px
 }
