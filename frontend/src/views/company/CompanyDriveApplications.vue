@@ -30,13 +30,14 @@
                         <td>{{ application.cgpa }}</td>
                         <td>{{ formatDateTime(application.applied_date) }}</td>
                         <td><span class="status" :class="statusClass(application.application_status)">{{ application.application_status }}</span></td>
-                        <td>{{ application.current_round }}</td>
-                        <td>{{ application.feedback }}</td>
+                        <td>{{ application.current_round || '-' }}</td>
+                        <td>{{ application.feedback || 'None'}}</td>
                         <td class="actions-cell">
-                            <select class="form-select" @change="updateStatus(application.student_name, application.application_id, $event.target?.value); $event.target.value = ''">
+                            <select v-if="application.application_status != 'Withdrawn'" class="form-select" @change="updateStatus(application.student_name, application.application_id, $event.target?.value); $event.target.value = ''">
                                 <option value="">Update...</option>
                                 <option v-for="action in getAvailableActions(application)" :type="action" :value="action">{{ action }}</option>
                             </select>
+                            <span v-else>None</span>
                         </td>
                     </tr>
                 </tbody>
