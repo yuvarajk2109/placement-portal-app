@@ -39,7 +39,7 @@
 </style>
 
 <script setup>
-const props = defineProps({
+const properties = defineProps({
     currentPage: {
         type: Number,
         required: true
@@ -53,7 +53,7 @@ const props = defineProps({
 const emit = defineEmits(['update:currentPage', 'page-change'])
 
 function changePage(newPage) {
-    if (newPage >= 1 && newPage <= props.totalPages) {
+    if (newPage >= 1 && newPage <= properties.totalPages) {
         emit('update:currentPage', newPage)
         emit('page-change', newPage)
     }
