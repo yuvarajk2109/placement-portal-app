@@ -4,12 +4,16 @@
         <div class="flex items-center justify-between mb-8">
             <div class="page-toolbar">
                 <input class="form-input search-input" placeholder="Search by job title..." v-model="filters.search" @input="debouncedFetch">
-                <input class="form-input search-input" placeholder="Location..." v-model="filters.location" @input="debouncedFetch">
+                <input class="form-input search-input small" placeholder="Location..." v-model="filters.location" @input="debouncedFetch">
+                <input v-model="filters.min_salary" type="number" class="form-input search-input small" placeholder="Min Salary (LPA)" @input="debouncedFetch" />
                 <select class="form-select" v-model="filters.drive_type" @change="page = 1; fetchDrives()">
                     <option value="">All Types</option>
                     <option v-for="type in driveTypes" :key="type" :value="type">{{ type }}</option>
                 </select>
-                <input v-model="filters.min_salary" type="number" class="form-input search-input" placeholder="Min Salary (LPA)" @input="debouncedFetch" />
+                <select class="form-select" v-model="filters.application_status" @change="page = 1; fetchDrives()">
+                    <option value="">All Statuses</option>
+                    <option v-for="status in applicationStatuses" :key="status" :value="status">{{ status }}</option>
+                </select>
             </div> 
             <button type="button" class="btn is-secondary mb-16" @click="resetFilters">Reset Filters</button>
         </div>
@@ -23,6 +27,7 @@
                     <th>CGPA Requirement</th>
                     <th>Location</th>
                     <th>Deadline</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -37,6 +42,7 @@
                     <td>{{ drive.cgpa_requirement }}</td>
                     <td>{{ drive.location }}</td>
                     <td>{{ drive.application_deadline ? formatDateTime(drive.application_deadline) : '' }}</td>
+                    <td><span class="status" :class="statusClass(drive.application_status)">{{ drive.application_status }}</span></td>
                 </tr>
             </tbody>
         </table>                    
@@ -64,19 +70,22 @@ const notify = useNotificationStore();
 const loading = ref(true);
 const drives = ref([]);
 const driveTypes = ref([]);
+const applicationStatuses = ref([]);
 const page = ref(1);
 const totalPages = ref(1);
 const filters = reactive({
     search: '',
     location: '',
     drive_type: '',
-    min_salary: ''
+    min_salary: '',
+    application_status: ''
 })
 const emptyFilters = {
     search: '',
     location: '',
     drive_type: '',
-    min_salary: ''
+    min_salary: '',
+    application_status: ''
 }
 
 let debounceTimer = null;
@@ -95,13 +104,16 @@ async function fetchDrives() {
         if (filters.location) params.location = filters.location;
         if (filters.drive_type) params.drive_type = filters.drive_type;
         if (filters.min_salary) params.min_salary = filters.min_salary;
-        const [driveResult, driveTypeResult] = await Promise.all([
+        if (filters.application_status) params.application_status = filters.application_status;
+        const [driveResult, driveTypeResult, applicationStatusResult] = await Promise.all([
             api.get('/student/drives', { params }),
-            api.get('/shared/drive-types')
+            api.get('/shared/drive-types'),
+            api.get('/shared/application-statuses')
         ]);
         drives.value = driveResult.data.drives;
         totalPages.value = driveResult.data.pages;
         driveTypes.value = driveTypeResult.data.drive_types;
+        applicationStatuses.value = applicationStatusResult.data.application_statuses;
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to load drives');
     } finally {
@@ -112,6 +124,16 @@ async function fetchDrives() {
 function resetFilters() {
     Object.assign(filters, emptyFilters);
     fetchDrives();
+}
+
+function statusClass(status) {
+    return {
+        Applied: 'is-info',
+        Shortlisted: 'is-warning',
+        Selected: 'is-success',
+        Rejected: 'is-error',
+        Withdrawn: 'is-neutral'
+    } [status] || 'is-neutral'
 }
 
 </script>

@@ -5,13 +5,16 @@
             <div class="full-width mb-24">
                 <div class="flex items-center justify-between">
                     <h1 class="page-title mb-4">{{ drive.job_title }}</h1>
+                    <div class="flex gap-16">                        
+                    <button class="btn is-primary" v-if="!drive.already_applied" :disabled="applying" @click="applyForDrive">{{ applying ? 'Applying' : 'Apply for Drive' }}</button>
                     <router-link 
                         to="/student/drives"
                         class="btn is-secondary">
                         Go Back
                     </router-link>
+                    </div>
                 </div>
-                <p class="page-subtitle">{{ drive.company_name }}</p>
+                <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="statusClass(drive.application_status)">{{ drive.application_status }}</span></p>
             </div>
             <div class="card mb-24">
                 <h2 class="card-title mb-16">Drive Details</h2>
@@ -100,6 +103,7 @@ const router = useRouter();
 const notify = useNotificationStore();
 const driveId = route.params.id;
 const loading = ref(true);
+const applying = ref(false);
 const drive = ref(null);
 
 onMounted(fetchDrive);
@@ -115,5 +119,28 @@ async function fetchDrive() {
     } finally {
         loading.value = false;
     }
+}
+
+async function applyForDrive() {
+    applying.value = true;
+    try {
+        await api.post(`/student/drives/${driveId}/apply`);
+        notify.success('Your application has been submitted!');
+        fetchDrive();
+    } catch (err) {
+        notify.error(err.response?.data?.error || 'Failed to apply');
+    } finally {
+        applying.value = false;
+    }
+}
+
+function statusClass(status) {
+    return {
+        Applied: 'is-info',
+        Shortlisted: 'is-warning',
+        Selected: 'is-success',
+        Rejected: 'is-error',
+        Withdrawn: 'is-neutral'
+    } [status] || 'is-neutral'
 }
 </script>
