@@ -17,3 +17,13 @@ def list_branches():
 def list_drive_types():
     result, status = SharedService.list_drive_types()
     return jsonify(result), status
+
+@shared_bp.route('/application-statuses', methods=['GET'])
+def list_application_statuses():
+    result, status = SharedService.list_application_statuses()
+    return jsonify(result), status
+
+@shared_bp.route('/application-actions', methods=['GET'])
+def list_application_actions():
+    result, status = SharedService.list_application_actions()
+    return jsonify(result), status

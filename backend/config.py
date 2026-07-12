@@ -37,3 +37,20 @@ class Config:
         '6M Internship + Performance-based Placement',
         'Direct Placement'
     ]
+
+    STUDENT_APPLICATION_STATUSES = [
+        'Applied',
+        'Shortlisted',
+        'Selected for Next Round'
+        'Selected',
+        'Rejected',
+        'Withdrawn',
+        'Not Applied'
+    ]
+
+    APPLICATION_ACTIONS = [
+        'Shortlisted', 
+        'Selected for Next Round', 
+        'Selected', 
+        'Rejected'
+    ]

@@ -36,3 +36,15 @@ class SharedService:
         return {
             "drive_types": Config.VALID_DRIVE_TYPES
         }, 200
+    
+    @staticmethod
+    def list_application_statuses():
+        return {
+            "application_statuses": Config.STUDENT_APPLICATION_STATUSES
+        }, 200
+    
+    @staticmethod
+    def list_application_actions():
+        return {
+            "application_actions": Config.APPLICATION_ACTIONS
+        }, 200
