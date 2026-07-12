@@ -157,14 +157,9 @@ const menuItems=computed(() => {
                 label: 'Drives'
             },
             {
-                route: '',
+                route: 'student-applications',
                 icon: 'fas fa-file-alt',
                 label: 'Applications'
-            },
-            {
-                route: '',
-                icon: 'fas fa-trophy',
-                label: 'Placement'
             }
         ]
     }

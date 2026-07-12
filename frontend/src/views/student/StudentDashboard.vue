@@ -3,14 +3,22 @@
         <h1 class="page-title">Student Dashboard</h1>
         <AppSpinner v-if="loading" />
         <div v-else>
-            <div v-if="stats.is_placed" class="placed-card card mb-24">
-                <p class="mb-16">Congratulations! You have been placed! Go get all the staff some chocolates (we don't recommend sweets as we have to eat them immediately. Chocolates, though, we can savour and relish and enjoy later!)</p>
-                <router-link class="btn is-primary">View Placement <i class="fas fa-arrow-right"></i></router-link>
-            </div>
-            <p class="page-subtitle">Welcome, {{ stats.student_name }}</p>
-            <!-- <p class="page-subtitle mb-4">Year {{ stats.year_of_study }}</p>
-            <p class="page-subtitle">CGPA: {{ stats.cgpa }}</p> -->
-            <div class="stats-grid">
+            <p class="page-subtitle">{{ stats.is_placed ? 'Congratulations' : 'Welcome' }}, {{ stats.student_name }}!</p>
+            <template v-if="stats.is_placed">
+                <div class="placed-card card mb-24">
+                    <div>
+                        <i class="fa-regular fa-circle-check large-icon"></i>
+                    </div>
+                    <div>
+                         <p>You have been placed!</p>
+                        <p>Go share this wonderful news to your family and get everyone some chocolates!</p>
+                        <p class="info">P.S. We don't recommend sweets as we have to eat them immediately. Chocolates, though, we can savour and relish and enjoy later!)</p>
+                    </div>                    
+                </div>   
+                <StudentPlacement />
+            </template>
+              
+            <div v-else class="stats-grid">
                 <div class="stat-card info">
                     <div class="stat-card-value info">
                         {{ stats.year_of_study }}
@@ -58,9 +66,20 @@
 
 <style scoped>
 .placed-card {
+    display: flex;
+    align-items: center;
+    gap: 24px;
     border-color: var(--status-success-container-line);
     background: var(--status-success-container-bg);
     color: var(--status-success-container-fg);
+}
+
+.large-icon {
+    font-size: 4rem;
+}
+
+.info {
+    color: var(--status-info-container-fg);
 }
 
 .stats-grid {
@@ -74,6 +93,7 @@ import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
+import StudentPlacement from './StudentPlacement.vue';
 
 const notify = useNotificationStore();
 const loading = ref(true);

@@ -126,11 +126,23 @@ const router = createRouter({
       component: () => import('@/views/student/StudentDriveDetail.vue'),
       meta: { requiresAuth: true, role: 'student' }
     },
+    {
+      path: '/student/applications',
+      name: 'student-applications',
+      component: () => import('@/views/student/StudentApplications.vue'),
+      meta: { requiresAuth: true, role: 'student' }
+    },
     // {
-    //   path: '',
-    //   name: '',
+    //   path: '/student/applications/:id',
+    //   name: 'student-application-detail',
     //   component: () => import('@/'),
-    //   meta: { requiresAuth: true, role: '' }
+    //   meta: { requiresAuth: true, role: 'student' }
+    // },
+    // {
+    //   path: '/student/placement',
+    //   name: 'student-placement',
+    //   component: () => import('@/'),
+    //   meta: { requiresAuth: true, role: 'student' }
     // },
   ]
 })
