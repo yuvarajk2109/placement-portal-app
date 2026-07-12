@@ -1,3 +1,6 @@
+from sqlalchemy import and_
+
+from config import Config
 from extensions import db, mail
 from models.user import User
 from models.student import Student
@@ -41,6 +44,7 @@ class ApplicationService:
                 "cgpa": student.cgpa if student else None,
                 "applied_date": application.applied_date.isoformat(),
                 "application_status": application.application_status,
+                "current_round": application.current_round.round_title if application.current_round else None,
                 "feedback": application.feedback
             })
 
@@ -54,10 +58,10 @@ class ApplicationService:
     @staticmethod
     def update_application_status(user_id, app_id, data):
         new_status = data['application_status']
-        valid_statuses = ['Shortlisted', 'Interview', 'Selected', 'Rejected']
-        if new_status not in valid_statuses:
+        
+        if new_status not in Config.APPLICATION_ACTIONS:
             return {
-                "error": f"Invalid status. Valid statuses are: {', '.join(valid_statuses)}"
+                "error": f"Invalid action. Valid actions are: {', '.join(Config.APPLICATION_ACTIONS)}"
             }, 400
         
         application = Application.query.get(app_id)
@@ -75,19 +79,23 @@ class ApplicationService:
         
         application.application_status = new_status
         application.feedback = data.get('feedback', application.feedback)
+        
+        if new_status == 'Shortlisted':
+            if application.current_round_id:
+                application.current_round_id = None
+                application.feedback = None
 
-        if new_status == 'Interview':
-            round_id = data.get('interview_round_id')
-            if not round_id:
-                return {
-                    "error": "interview_round_id is required when setting status to 'Interview'"
-                }, 400
-            interview = Interview.query.get(round_id)
-            if not interview or interview.drive_id != drive.drive_id:
-                return {
-                    "error": "Invalid interview_round_id"
-                }, 400
-            application.current_round_id = round_id
+        if new_status == 'Selected for Next Round':
+            if application.current_round_id is None:
+                next_round = (Interview.query.filter_by(drive_id = application.drive_id).order_by(Interview.interview_id.asc()).first())
+            else:
+                current_round = Interview.query.get(application.current_round_id)
+                next_round = (Interview.query.filter(Interview.drive_id == drive.drive_id, Interview.round_number > current_round.round_number).order_by(Interview.round_number.asc()).first())
+            if next_round is None:
+                new_status = "Selected"
+                application.application_status = new_status
+            else:
+                application.current_round_id = next_round.interview_id
 
         if new_status == 'Selected':
             existing_placement = Placement.query.filter_by(application_id  = application.application_id).first()
@@ -118,7 +126,7 @@ class ApplicationService:
             try:
                 status_messages = {
                     'Shortlisted': f"Your have been shortlisted for {company.company_name}'s drive for the role of {drive.job_title}.",
-                    'Interview': f"You have been shortlisted for an interview for {company.company_name}'s drive for the role of {drive.job_title}. Please check your dashboard for details.",
+                    'Selected for Next Round': f"You have been selected for an interview for {company.company_name}'s drive for the role of {drive.job_title}. Please check your dashboard for details.",
                     'Selected': f"Congratulations! You have been selected for {company.company_name}'s drive for the role of {drive.job_title}.",
                     'Rejected': f"We regret to inform you that your application for {company.company_name}'s drive for the role of {drive.job_title} has been rejected."
                 }
