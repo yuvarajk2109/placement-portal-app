@@ -278,11 +278,18 @@ class ApplicationService:
             "application_id": application.application_id,
             "drive_id": application.drive_id,
             "job_title": drive.job_title if drive else None,
+            "job_desc": drive.job_desc if drive else None,
+            "salary_min": drive.salary_min if drive else None,
+            "salary_max": drive.salary_max if drive else None,
+            "location": drive.location if drive else None,
             "company_name": company.company_name if company else None,
             "applied_date": application.applied_date.isoformat(),
             "status": application.application_status,
             "feedback": application.feedback,
-            "current_round": application.current_round_id
+            "current_round_id": application.current_round_id,
+            "current_round_number": application.current_round.round_number if application.current_round else None,
+            "current_round_title": application.current_round.round_title if application.current_round else None,
+            "current_round_location": application.current_round.location if application.current_round else None
         }, 200
     
     @staticmethod
