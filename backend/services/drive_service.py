@@ -180,7 +180,7 @@ class DriveService:
         company = Company.query.filter_by(user_id = user_id).first()
         drive = PlacementDrive.query.get(drive_id)
 
-        if not company or not drive or drive.company_id != company.company_id:
+        if not company or company.status == 'Pending' or not drive or drive.company_id != company.company_id:
             return {
                 "error": "Access denied"
             }, 403
@@ -188,6 +188,11 @@ class DriveService:
         if drive.status not in {'Pending', 'Approved'}:
             return {
                 "error": "Cannot update a closed or rejected drive"
+            }, 400
+        
+        if drive.status == 'Approved' and drive.application_deadline < datetime.now():
+            return {
+                "error": "Can't update a drive which has begun"
             }, 400
         
         updatable = [
@@ -226,12 +231,14 @@ class DriveService:
             drive.required_skills.clear()
             new_skills = Skill.query.filter(Skill.skill_id.in_(data['skill_ids'])).all()
             drive.required_skills.extend(new_skills)
+        
+        drive.status = 'Pending'
 
         db.session.commit()
 
         logger.info(f"Company {company.company_name} updated drive '{drive.job_title}' (ID: {drive.drive_id})")
         return {
-            "message": "Drive updated successfully"
+            "message": "Drive updated successfully, requires admin approval."
         }, 200
     
     @staticmethod

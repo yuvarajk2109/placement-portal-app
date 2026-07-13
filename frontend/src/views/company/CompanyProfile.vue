@@ -17,7 +17,7 @@
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="status">Company Status</label>
-                        <input id="status" v-model="profile.status" class="form-input" readonly>
+                        <input id="status" v-model="profile.status" class="form-input" :class="statusClass(profile.status)" readonly>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="created_at">Created At</label>
@@ -71,8 +71,12 @@ import { formatDateTime } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, reactive, ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
+const authStore = useAuthStore();
 const notify = useNotificationStore();
+const router = useRouter();
 const loading = ref(true);
 const saving = ref(false);
 const profile = ref({});
@@ -105,14 +109,33 @@ async function fetchProfile() {
 async function saveProfile() {
     saving.value = true;
     try {
-        await api.put('/company/profile', form);
-        notify.success('Profile updated successfully');
+        const result = await api.put('/company/profile', form);
+        notify.success(result.data?.message || 'Profile updated successfully');
+        if (result.data?.logout) {
+            handleLogout();
+        } else {
+            fetchProfile();
+        }    
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to update profile');
     } finally {
         saving.value = false;
         loading.value = true;
-        fetchProfile();
     }
+}
+
+function statusClass(status) {
+    return {
+        Pending: 'is-warning',
+        Approved: 'is-success',
+        Rejected: 'is-error',
+        Closed: 'is-secondary'
+    } [status] || 'is-info'
+}
+
+function handleLogout() {
+    authStore.logout();
+    notify.success("Logout successful");
+    router.push({ name: 'home' });
 }
 </script>

@@ -78,12 +78,22 @@ class CompanyService:
             'hr_phone'
         ]
 
+        old_status = company.status
+
         for field in updatable:
             if field in data:
                 setattr(company, field, data[field])
+                if field == 'hr_email':
+                    company.status = 'Pending'
+        
+        message = "Profile updated successfully"
+        condition = (old_status != company.status and company.status == 'Pending')
+        if condition:
+            message += ". Since HR email has been updated, you will require admin approval, and will be logged out"        
 
         db.session.commit()
         logger.info(f"Company '{company.company_name}' profile updated successfully.")
         return {
-            "message": "Profile updated successfully"
+            "message": message,
+            "logout": True if condition else False
         }, 200
