@@ -19,7 +19,7 @@
                     {{ modelValue ? 'Change' : 'Browse' }}
                 </button>
 
-                <a v-if="file" target="_blank" class="btn is-secondary" @click="$emit('download')">
+                <a v-if="file && !modelValue" target="_blank" class="btn is-secondary" @click="$emit('download')">
                     <i class="fas fa-download"></i>
                     Download
                 </a>
