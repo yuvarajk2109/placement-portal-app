@@ -23,7 +23,7 @@ class CompanyService:
         active_drives = sum(1 for drive in drives if drive.status == 'Approved')
         pending_drives = sum(1 for drive in drives if drive.status == 'Pending')
 
-        total_applications = Application.query.filter(Application.drive_id .in_(drive_ids)).count() if drive_ids else 0
+        total_applications = Application.query.filter(Application.drive_id .in_(drive_ids), Application.application_status != 'Inactive').count() if drive_ids else 0
         total_selected = Application.query.filter(Application.drive_id.in_(drive_ids), Application.application_status == 'Selected').count() if drive_ids else 0
 
         return {

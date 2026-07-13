@@ -93,7 +93,10 @@ class DriveService:
 
         drives = []
         for drive in pagination.items:
-            applications_count = len(drive.applications)
+            applications_count = Application.query.filter(
+                Application.drive_id == drive.drive_id,
+                Application.application_status != 'Inactive'
+            ).count() 
             drives.append({
                 "drive_id": drive.drive_id,
                 "job_title": drive.job_title,
@@ -144,7 +147,10 @@ class DriveService:
             for skill in drive.required_skills
         ]
 
-        applications_count = len(drive.applications)
+        applications_count = Application.query.filter(
+                Application.drive_id == drive.drive_id,
+                Application.application_status != 'Inactive'
+            ).count() 
 
         interviews = [
             {
@@ -233,12 +239,15 @@ class DriveService:
             drive.required_skills.extend(new_skills)
         
         drive.status = 'Pending'
+        applications = Application.query.filter_by(drive_id = drive.drive_id).all()
+        for application in applications:
+            application.application_status = 'Inactive'
 
         db.session.commit()
 
         logger.info(f"Company {company.company_name} updated drive '{drive.job_title}' (ID: {drive.drive_id})")
         return {
-            "message": "Drive updated successfully, requires admin approval."
+            "message": "Drive updated successfully, requires admin approval. All applications marked as Inactive."
         }, 200
     
     @staticmethod

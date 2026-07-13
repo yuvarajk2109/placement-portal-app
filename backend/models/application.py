@@ -15,7 +15,3 @@ class Application(db.Model):
 
     current_round = db.relationship('Interview', backref = 'applications', lazy = True)
     placement = db.relationship('Placement', backref = 'application', uselist = False, lazy = True)
-
-    __table_args__ = (
-        db.UniqueConstraint('register_no', 'drive_id', name='unique_application_per_student_per_drive'),
-    )

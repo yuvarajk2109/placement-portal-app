@@ -1,5 +1,3 @@
-from sqlalchemy import and_
-
 from config import Config
 from extensions import db, mail
 from models.user import User
@@ -9,7 +7,7 @@ from models.placement_drive import PlacementDrive
 from models.application import Application
 from models.interview import Interview
 from models.placement import Placement
-from flask_mail import Message as MailMessage
+from flask_mail import Message
 from textwrap import dedent
 from datetime import datetime
 import logging
@@ -28,7 +26,7 @@ class ApplicationService:
                 "error": "Access denied"
             }, 403
         
-        pagination = Application.query.filter_by(drive_id = drive_id).order_by(Application.applied_date.desc()).paginate(
+        pagination = Application.query.filter(Application.drive_id == drive_id, Application.application_status != 'Inactive').order_by(Application.applied_date.desc()).paginate(
             page = page,
             per_page = per_page,
             error_out = False
@@ -130,20 +128,20 @@ class ApplicationService:
                     'Selected': f"Congratulations! You have been selected for {company.company_name}'s drive for the role of {drive.job_title}.",
                     'Rejected': f"We regret to inform you that your application for {company.company_name}'s drive for the role of {drive.job_title} has been rejected."
                 }
-                message = MailMessage(
+                message = Message(
                     subject = f"Placement Portal - Application Update: {drive.job_title} at {company.company_name}",
                     recipients = [user.email],
                     body = dedent(
-                        f"""
-                        Dear {student.fname},
-                        {status_messages.get(new_status, "Your application status has been updated.")}
-                        Company: {company.company_name}
-                        Role: {drive.job_title}
-                        Feedback: {application.feedback or 'N/A'}
+f"""
+Dear {student.fname},
+{status_messages.get(new_status, "Your application status has been updated.")}
+Company: {company.company_name}
+Role: {drive.job_title}
+Feedback: {application.feedback or 'N/A'}
 
-                        Regards,
-                        Placement Portal Team
-                        """
+Regards,
+Placement Portal Team
+"""
                     )
                 )
                 mail.send(message)
@@ -204,7 +202,10 @@ class ApplicationService:
                 "error": "You've already been placed and can't apply for new drives"
             }, 403
         
-        existing = Application.query.filter_by(register_no = student.register_no, drive_id = drive.drive_id).first()
+        existing = Application.query.filter(
+            Application.register_no == student.register_no, 
+            Application.drive_id == drive.drive_id,
+            Application.application_status != 'Inactive').first()
         if existing:
             return {
                 "error": "You have already applied for this drive"

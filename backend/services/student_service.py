@@ -188,7 +188,10 @@ class StudentService:
         
         query = (
             db.session.query(PlacementDrive, Application.application_status)
-            .outerjoin(Application, and_(PlacementDrive.drive_id == Application.drive_id, Application.register_no == student.register_no)))
+            .outerjoin(Application, and_(
+                PlacementDrive.drive_id == Application.drive_id, 
+                Application.register_no == student.register_no,
+                Application.application_status != 'Inactive')))
         query = query.filter(PlacementDrive.status == 'Approved', PlacementDrive.application_deadline > datetime.now())
 
         if student.year_of_study == 3:
@@ -228,7 +231,7 @@ class StudentService:
                 "salary_max": drive.salary_max,
                 "location": drive.location,
                 "application_deadline": drive.application_deadline.isoformat() if drive.application_deadline else None,
-                "application_status": application_status
+                "application_status": application_status if application_status else 'Not Applied'
             })
 
         return {
@@ -253,7 +256,10 @@ class StudentService:
             }, 404
         
         company = Company.query.get(drive.company_id)
-        existing_application = Application.query.filter_by(register_no = student.register_no, drive_id = drive_id).first()
+        existing_application = Application.query.filter(
+            Application.register_no == student.register_no, 
+            Application.drive_id == drive_id, 
+            Application.application_status != 'Inactive').first()
 
         return {
             "drive_id": drive.drive_id,
@@ -291,7 +297,7 @@ class StudentService:
                 for interview in drive.interviews
             ],
             "already_applied": existing_application is not None,
-            "application_status": existing_application.application_status if existing_application else None
+            "application_status": existing_application.application_status if existing_application else 'Not Applied'
         }, 200
     
     @staticmethod
