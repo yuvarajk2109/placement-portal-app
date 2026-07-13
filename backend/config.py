@@ -41,11 +41,12 @@ class Config:
     STUDENT_APPLICATION_STATUSES = [
         'Applied',
         'Shortlisted',
-        'Selected for Next Round'
+        'Selected for Next Round',
         'Selected',
         'Rejected',
         'Withdrawn',
-        'Not Applied'
+        'Inactive',
+        'Not Applied',
     ]
 
     APPLICATION_ACTIONS = [
@@ -54,3 +55,7 @@ class Config:
         'Selected', 
         'Rejected'
     ]
+
+    CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+    CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
+    REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/1')
