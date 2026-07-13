@@ -48,14 +48,14 @@
             <div class="card mb-24">
                 <div class="flex items-center justify-between mb-16">
                     <h2 class="card-title">Job Description</h2>
-                    <button v-if="canEdit" type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
+                    <button v-if="canEdit" type="button" class="btn is-secondary is-icon-only" @click="modals.jobDescEdit = true"><i class="fas fa-edit"></i></button>
                 </div>
                 <p>{{ drive.job_desc }}</p>
             </div>
             <div class="card mb-24">
                 <div class="flex items-center justify-between mb-16">
                     <h2 class="card-title">Eligible Branches</h2>
-                    <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit" @click="modals.eligibleBranchesEdit = true"><i class="fas fa-edit"></i></button>
                 </div>
                 <AppMultiSelect
                     :model-value="drive.eligible_branches.map(branch => branch.branch_id)"
@@ -68,7 +68,7 @@
             <div class="card mb-24">
                 <div class="flex items-center justify-between mb-16">
                     <h2 class="card-title">Required Skills</h2>
-                    <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit" @click="modals.requiredSkillsEdit = true"><i class="fas fa-edit"></i></button>
                 </div>
                 <AppMultiSelect
                     :model-value="drive.required_skills.map(skill => skill.skill_id)"
@@ -79,7 +79,7 @@
                 />
             </div>
             <CompanyDriveInterviews :drive-id="driveId"/>
-            <DriveDetailsEdit 
+            <EditDriveDetails 
                 v-model="modals.driveEdit"
                 @updated="fetchDrive"
                 :driveId="drive.drive_id"
@@ -88,7 +88,25 @@
                 :applicationDeadline="drive.application_deadline"
                 :salaryMin="drive.salary_min"
                 :salaryMax="drive.salary_max"
-            />   
+            />  
+            <EditJobDesc 
+                v-model="modals.jobDescEdit"
+                @updated="fetchDrive"
+                :driveId="drive.drive_id"
+                :jobDesc="drive.job_desc"
+            /> 
+            <EditEligibleBranches 
+                v-model="modals.eligibleBranchesEdit"
+                @updated="fetchDrive"
+                :driveId="drive.drive_id"
+                :eligibleBranches="drive.eligible_branches"
+            />
+            <EditRequiredSkills
+                v-model="modals.requiredSkillsEdit"
+                @updated="fetchDrive"
+                :driveId="drive.drive_id"
+                :requiredSkills="drive.required_skills"
+            />
         </template> 
     </div>
 </template>
@@ -110,7 +128,10 @@ import { formatDateTime } from '@/utils/formatters';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CompanyDriveInterviews from './CompanyDriveInterviews.vue';
-import DriveDetailsEdit from './drive-edit/DriveDetailsEdit.vue';
+import EditEligibleBranches from './drive-edit/EditEligibleBranches.vue';
+import EditRequiredSkills from './drive-edit/EditRequiredSkills.vue';
+import EditDriveDetails from './drive-edit/EditDriveDetails.vue';
+import EditJobDesc from './drive-edit/EditJobDesc.vue';
 
 const route = useRoute();
 const router = useRouter();

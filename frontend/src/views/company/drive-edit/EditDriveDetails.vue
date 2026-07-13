@@ -28,7 +28,7 @@
                     <input id="salary_max" type="text" class="form-input" v-model="updateForm.salary_max">
                 </div>
             </div>
-            <button type="submit" class="btn is-primary full-width-btn">{{ saving ? 'Saving Changes...' : 'Save Changes' }}</button>
+            <button type="submit" class="btn is-primary full-width-btn" :disabled="saving">{{ saving ? 'Saving Changes...' : 'Save Changes' }}</button>
         </form>
     </AppModal>
     
@@ -101,7 +101,6 @@ async function fetchDriveTypes() {
     try {
         const result = await api.get('/shared/drive-types');
         driveTypes.value = result.data.drive_types;
-        console.log(result.data);
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to load drive types');
     } finally {
@@ -113,7 +112,7 @@ async function updateDriveDetails() {
     saving.value = true;
     try {
         const result = await api.put(`/company/drives/${properties.driveId}`, updateForm);
-        notify.success(result.data.message);
+        notify.success(result.data.message || 'Drive details have been updated successfully. Drive requires admin approval.');
         emit('updated');
     } catch (err) {
         notify.error(err.response?.data?.error);
