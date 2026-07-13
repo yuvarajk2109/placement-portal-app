@@ -4,61 +4,33 @@
 
         <AppSpinner v-if="loading" />
         <div v-else class="stats-grid mt-32">
-            <div class="stat-card info">
-                <div class="stat-card-value info">
-                    {{  stats.total_students  }}
-                </div>
-                <div class="stat-card-label info">
-                    Total Students
-                </div>
+            <div class="stat-card is-info">
+                <div class="stat-card-value is-info">{{  stats.total_students  }}</div>
+                <div class="stat-card-label is-info">Total Students</div>
             </div>
-            <div class="stat-card info">
-                <div class="stat-card-value info">
-                    {{ stats.total_companies }}
-                </div>
-                <div class="stat-card-label info">
-                    Total Companies
-                </div>
+            <div class="stat-card is-info">
+                <div class="stat-card-value is-info">{{ stats.total_companies }}</div>
+                <div class="stat-card-label is-info">Total Companies</div>
             </div>
-            <div class="stat-card warning">
-                <div class="stat-card-value warning">
-                    {{ stats.pending_companies }}
-                </div>
-                <div class="stat-card-label warning">   
-                    Pending Companies
-                </div>
+            <div class="stat-card is-warning">
+                <div class="stat-card-value is-warning">{{ stats.pending_companies }}</div>
+                <div class="stat-card-label is-warning">Pending Companies</div>
             </div>
-            <div class="stat-card info">
-                <div class="stat-card-value info">
-                    {{ stats.total_drives }}
-                </div>
-                <div class="stat-card-label info">
-                    Total Drives
-                </div>
+            <div class="stat-card is-info">
+                <div class="stat-card-value is-info">{{ stats.total_drives }}</div>
+                <div class="stat-card-label is-info">Total Drives</div>
             </div>
-            <div class="stat-card warning">
-                <div class="stat-card-value warning">
-                    {{ stats.pending_drives }}
-                </div>
-                <div class="stat-card-label warning">
-                    Pending Drives
-                </div>
+            <div class="stat-card is-warning">
+                <div class="stat-card-value is-warning">{{ stats.pending_drives }}</div>
+                <div class="stat-card-label is-warning">Pending Drives</div>
             </div>
-            <div class="stat-card info">
-                <div class="stat-card-value info">
-                    {{ stats.total_applications }}
-                </div>
-                <div class="stat-card-label info">
-                    Total Applications
-                </div>
+            <div class="stat-card is-info">
+                <div class="stat-card-value is-info">{{ stats.total_applications }}</div>
+                <div class="stat-card-label is-info">Total Applications</div>
             </div>
-            <div class="stat-card success">
-                <div class="stat-card-value success">
-                    {{ stats.total_placements }}
-                </div>
-                <div class="stat-card-label success">
-                    Total Placements
-                </div>
+            <div class="stat-card is-success">
+                <div class="stat-card-value is-success">{{ stats.total_placements }}</div>
+                <div class="stat-card-label is-success">Total Placements</div>
             </div>
         </div>
     </div>

@@ -28,7 +28,7 @@
                     <td>{{ drive.company_name }}</td>
                     <td><span class="status is-info">{{ drive.drive_type }}</span></td>
                     <td>{{ drive.applications_count }}</td>
-                    <td><span class="status" :class="statusClass(drive.status)">{{ drive.status }}</span></td>
+                    <td><span class="status" :class="driveStatusClass(drive.status)">{{ drive.status }}</span></td>
                     <td>{{ formatDate(drive.created_at) }}</td>
                     <td class="actions-cell">
                         <button v-if="drive.status === 'Pending'" class="btn is-primary" @click="updateStatus(drive.drive_id, 'approve')">Approve</button>
@@ -56,6 +56,7 @@ import { formatDate } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
+import { driveStatusClass } from '@/utils/status';
 
 const notify = useNotificationStore();
 const loading = ref(true);
@@ -89,14 +90,5 @@ async function updateStatus(id, action) {
     } catch (err) {
         notify.error(err.response?.data?.error || `Failed to ${action} drive`);
     }
-}
-
-function statusClass(status) {
-    return {
-        Pending: 'is-warning',
-        Approved: 'is-success',
-        Rejected: 'is-error',
-        Closed: 'is-secondary'
-    } [status] || 'is-info';
 }
 </script>

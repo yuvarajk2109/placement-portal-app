@@ -21,7 +21,7 @@
                     <td>{{ application.register_no }}</td>
                     <td>{{ application.company_name }}</td>
                     <td>{{ application.job_title }}</td>
-                    <td><span class="status" :class="statusClass(application.status)">{{ application.status }}</span></td>
+                    <td><span class="status" :class="applicationStatusClass(application.status)">{{ application.status }}</span></td>
                     <td>{{ formatDate(application.applied_date) }}</td>
                 </tr>
             </tbody>
@@ -45,6 +45,7 @@ import { formatDate } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
+import { applicationStatusClass } from '@/utils/status';
 
 const notify = useNotificationStore();
 const loading = ref(true);
@@ -67,15 +68,4 @@ async function fetchData() {
         loading.value = false;
     }
 }
-
-function statusClass(status) {
-    return {
-        Applied: 'is-info',
-        Shortlisted: 'is-info',
-        Interview: 'is-info',
-        Selected: 'is-success',
-        Rejected: 'is-error',
-        Withdrawn: 'is-secondary'
-    } [status] ||'is-secondary'
-};
 </script>

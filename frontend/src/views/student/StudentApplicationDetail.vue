@@ -10,7 +10,7 @@
                 </div>
                 <div class="detail-item">
                     <div class="detail-label">Status</div>
-                    <div class="detail-value"><span class="status" :class="statusClass(application.status)">{{ application.status }}</span></div>
+                    <div class="detail-value"><span class="status" :class="applicationStatusClass(application.status)">{{ application.status }}</span></div>
                 </div>
             </div>
         </div>
@@ -94,6 +94,7 @@ import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
+import { applicationStatusClass } from '@/utils/status';
 import { onMounted, ref } from 'vue';
 
 
@@ -119,15 +120,5 @@ async function fetchApplication() {
     } finally {
         loading.value = false
     }
-}
-
-function statusClass(status) {
-    return {
-        Applied: 'is-info',
-        Shortlisted: 'is-warning',
-        Selected: 'is-success',
-        Rejected: 'is-error',
-        Withdrawn: 'is-neutral'
-    } [status] || 'is-neutral'
 }
 </script>

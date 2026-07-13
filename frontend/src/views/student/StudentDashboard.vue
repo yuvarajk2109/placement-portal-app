@@ -19,35 +19,35 @@
             </template>
               
             <div v-else class="stats-grid">
-                <div class="stat-card info">
-                    <div class="stat-card-value info">
+                <div class="stat-card is-info">
+                    <div class="stat-card-value is-info">
                         {{ stats.year_of_study }}
                     </div>
-                    <div class="stat-card-label info">
+                    <div class="stat-card-label is-info">
                         Year of Study
                     </div>
                 </div>
-                <div class="stat-card info">
-                    <div class="stat-card-value info">
+                <div class="stat-card is-info">
+                    <div class="stat-card-value is-info">
                         {{ stats.cgpa }}
                     </div>
-                    <div class="stat-card-label info">
+                    <div class="stat-card-label is-info">
                         CGPA
                     </div>
                 </div>
-                <div class="stat-card success">
-                    <div class="stat-card-value success">
+                <div class="stat-card is-success">
+                    <div class="stat-card-value is-success">
                         {{ stats.eligible_drives_count }}
                     </div>
-                    <div class="stat-card-label success">
+                    <div class="stat-card-label is-success">
                         Eligible Drives
                     </div>
                 </div>
-                <div class="stat-card" :class="stats.total_applications > 0 ? 'info' : 'warning'">
-                    <div class="stat-card-value" :class="stats.total_applications > 0 ? 'info' : 'warning'">
+                <div class="stat-card" :class="stats.total_applications > 0 ? 'is-info' : 'is-warning'">
+                    <div class="stat-card-value" :class="stats.total_applications > 0 ? 'is-info' : 'is-warning'">
                         {{ stats.total_applications }}
                     </div>
-                    <div class="stat-card-label" :class="stats.total_applications > 0 ? 'info' : 'warning'">
+                    <div class="stat-card-label" :class="stats.total_applications > 0 ? 'is-info' : 'is-warning'">
                         Total Applications
                     </div>
                 </div>
@@ -94,6 +94,7 @@ import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
 import StudentPlacement from './StudentPlacement.vue';
+import { applicationStatusClass } from '@/utils/status.js';
 
 const notify = useNotificationStore();
 const loading = ref(true);
@@ -110,15 +111,5 @@ async function getDashboard() {
     } finally {
         loading.value = false
     }
-}
-
-function applicationStatusClass(status) {
-    return {
-        Applied: 'info', 
-        Shortlisted: 'warning', 
-        Interview: 'warning',
-        Selected: 'success',
-        Rejected: 'error'
-    } [status]
 }
 </script>

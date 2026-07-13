@@ -29,7 +29,7 @@
                     <td>{{ company.industry || '-' }}</td>
                     <td>{{ company.location || '-'}}</td>
                     <td>{{ company.hr_email }}</td>
-                    <td><span class="status" :class="statusClass(company.status)">{{ company.status }}</span></td>
+                    <td><span class="status" :class="companyStatusClass(company.status)">{{ company.status }}</span></td>
                     <td><span class="status" :class="company.is_blacklisted ? 'is-error': 'is-neutral'">{{ company.is_blacklisted? 'Yes' : 'No' }}</span></td>
                     <td class="actions-cell">
                         <button v-if="company.status === 'Pending'" class="btn is-primary" @click="updateStatus(company.company_id, 'approve')">Approve</button>
@@ -60,6 +60,7 @@ import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
+import { companyStatusClass } from '@/utils/status';
 import { onMounted, ref } from 'vue';
 
 const notify = useNotificationStore();
@@ -138,12 +139,4 @@ async function removeCompany(id) {
         notify.error(err.response?.data?.error || 'Failed to remove company');
     }
 }
-
-function statusClass(status) {
-    return {
-        Pending: 'is-warning',
-        Approved: 'is-success',
-        Rejected: 'is-error',
-    } [status] ||'is-info'
-};
 </script>

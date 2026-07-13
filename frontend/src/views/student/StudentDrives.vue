@@ -42,7 +42,7 @@
                     <td>{{ drive.cgpa_requirement }}</td>
                     <td>{{ drive.location }}</td>
                     <td>{{ drive.application_deadline ? formatDateTime(drive.application_deadline) : '' }}</td>
-                    <td><span class="status" :class="statusClass(drive.application_status)">{{ drive.application_status }}</span></td>
+                    <td><span class="status" :class="applicationStatusClass(drive.application_status)">{{ drive.application_status }}</span></td>
                 </tr>
             </tbody>
         </table>                    
@@ -65,6 +65,7 @@ import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
 import { onMounted, reactive, ref } from 'vue';
+import { applicationStatusClass } from '@/utils/status';
 
 const notify = useNotificationStore();
 const loading = ref(true);
@@ -125,15 +126,4 @@ function resetFilters() {
     Object.assign(filters, emptyFilters);
     fetchDrives();
 }
-
-function statusClass(status) {
-    return {
-        Applied: 'is-info',
-        Shortlisted: 'is-warning',
-        Selected: 'is-success',
-        Rejected: 'is-error',
-        Withdrawn: 'is-neutral'
-    } [status] || 'is-neutral'
-}
-
 </script>

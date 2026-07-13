@@ -11,7 +11,7 @@
                         Go Back
                     </router-link>
                 </div>
-                <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="statusClass(drive.status)">{{ drive.status }}</span></p>
+                <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="interviewStatusClass(drive.status)">{{ drive.status }}</span></p>
             </div>
             <div class="flex gap-16 mb-24">
                 <router-link
@@ -27,21 +27,21 @@
                     <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit" @click="modals.driveEdit = true"><i class="fas fa-edit"></i></button>
                 </div>
                 <div class="stats-grid">
-                    <div class="stat-card info">
-                        <div class="stat-card-value info">{{ drive.drive_type }}</div>
-                        <div class="stat-card-label info">Type</div>
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{ drive.drive_type }}</div>
+                        <div class="stat-card-label is-info">Type</div>
                     </div>
-                    <div class="stat-card info">
-                        <div class="stat-card-value info">{{ drive.cgpa_requirement }}</div>
-                        <div class="stat-card-label info">CGPA Requirement</div>
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{ drive.cgpa_requirement }}</div>
+                        <div class="stat-card-label is-info">CGPA Requirement</div>
                     </div>
-                    <div class="stat-card warning">
-                        <div class="stat-card-value warning">{{ formatDateTime(drive.application_deadline) }}</div>
-                        <div class="stat-card-label warning">Application Deadline</div>
+                    <div class="stat-card is-warning">
+                        <div class="stat-card-value is-warning">{{ formatDateTime(drive.application_deadline) }}</div>
+                        <div class="stat-card-label is-warning">Application Deadline</div>
                     </div>
-                    <div class="stat-card success">
-                        <div class="stat-card-value success">{{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA</div>
-                        <div class="stat-card-label success">Salary</div>
+                    <div class="stat-card is-success">
+                        <div class="stat-card-value is-success">{{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA</div>
+                        <div class="stat-card-label is-success">Salary</div>
                     </div>
                 </div>
             </div>
@@ -132,6 +132,7 @@ import EditEligibleBranches from './drive-edit/EditEligibleBranches.vue';
 import EditRequiredSkills from './drive-edit/EditRequiredSkills.vue';
 import EditDriveDetails from './drive-edit/EditDriveDetails.vue';
 import EditJobDesc from './drive-edit/EditJobDesc.vue';
+import { interviewStatusClass } from '@/utils/status.js';
 
 const route = useRoute();
 const router = useRouter();
@@ -183,14 +184,5 @@ async function closeDrive(id) {
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to close drive');
     }
-}
-
-function statusClass(status) {
-    return {
-        Pending: 'is-warning',
-        Approved: 'is-success',
-        Rejected: 'is-error',
-        Closed: 'is-secondary'
-    } [status] || 'is-info'
 }
 </script>

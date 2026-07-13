@@ -17,7 +17,7 @@
                 <tr class="clickable-row" v-for="application in applications" :key="application.application_id" @click="viewApplicationDetail(application)">
                     <td>{{ application.job_title }}</td>
                     <td>{{ application.company_name }}</td>
-                    <td><span class="status" :class="statusClass(application.status)">{{ application.status }}</span></td>
+                    <td><span class="status" :class="applicationStatusClass(application.status)">{{ application.status }}</span></td>
                     <td>{{ application.feedback || 'None' }}</td>
                     <td class="actions-cell" @click.stop>
                         <button 
@@ -60,6 +60,7 @@ import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
 import StudentApplicationDetail from './StudentApplicationDetail.vue';
+import { applicationStatusClass } from '@/utils/status.js';
 
 const notify = useNotificationStore();
 const dialog = useDialogStore();
@@ -83,16 +84,6 @@ async function fetchApplications() {
     } finally {
         loading.value = false;
     }
-}
-
-function statusClass(status) {
-    return {
-        Applied: 'is-info',
-        Shortlisted: 'is-warning',
-        Selected: 'is-success',
-        Rejected: 'is-error',
-        Withdrawn: 'is-neutral'
-    } [status] || 'is-neutral'
 }
 
 async function withdraw(applicationId) {

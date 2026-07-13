@@ -29,7 +29,7 @@
                         <td>{{ application.register_no }}</td>
                         <td>{{ application.cgpa }}</td>
                         <td>{{ formatDateTime(application.applied_date) }}</td>
-                        <td><span class="status" :class="statusClass(application.application_status)">{{ application.application_status }}</span></td>
+                        <td><span class="status" :class="interviewStatusClass(application.application_status)">{{ application.application_status }}</span></td>
                         <td>{{ application.current_round || '-' }}</td>
                         <td>{{ application.feedback || 'None'}}</td>
                         <td class="actions-cell">
@@ -53,7 +53,7 @@
         </div>
 
         <AppModal v-model="showModal" size="medium">
-            <template #title>Update Status of {{ studentName }} - <span class="status" :class="statusClass(updateForm.application_status)">{{ updateForm.application_status }}</span></template>
+            <template #title>Update Status of {{ studentName }} - <span class="status" :class="interviewStatusClass(updateForm.application_status)">{{ updateForm.application_status }}</span></template>
             <form id="application-feedback-form" @submit.prevent="finaliseStatus">
                 <label for="feedback" class="form-label">Feedback <span class="required">(if any)</span></label>
                 <textarea id="feedback" v-model="updateForm.feedback" class="form-textarea"></textarea>
@@ -73,6 +73,7 @@ import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
+import { interviewStatusClass } from '@/utils/status';
 import { onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -151,17 +152,6 @@ async function finaliseStatus() {
 
 function closeModal() {
     showModal.value = false;
-}
-
-function statusClass(status) {
-    return {
-        Applied: 'is-info',
-        Shortlisted: 'is-warning',
-        Interview: 'is-warning',
-        'Selected for Next Round': 'is-success',
-        Rejected: 'is-error',
-        Withdrawn: 'is-neutral'
-    } [status] || 'is-neutral';
 }
 
 function getAvailableActions(application) {

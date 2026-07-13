@@ -3,43 +3,43 @@
         <h1 class="page-title">Company Dashboard</h1>
         <AppSpinner v-if="loading" />
         <div v-else class="stats-grid mt-32">
-            <div class="stat-card info">
-                <div class="stat-card-value info">
+            <div class="stat-card is-info">
+                <div class="stat-card-value is-info">
                     {{  stats.total_drives  }}
                 </div>
-                <div class="stat-card-label info">
+                <div class="stat-card-label is-info">
                     Total Drives
                 </div>
             </div>
-            <div class="stat-card info">
-                <div class="stat-card-value info">
+            <div class="stat-card is-info">
+                <div class="stat-card-value is-info">
                     {{ stats.active_drives }}
                 </div>
-                <div class="stat-card-label info">
+                <div class="stat-card-label is-info">
                     Active Drives
                 </div>
             </div>
-            <div class="stat-card warning">
-                <div class="stat-card-value warning">
+            <div class="stat-card is-warning">
+                <div class="stat-card-value is-warning">
                     {{ stats.pending_drives }}
                 </div>
-                <div class="stat-card-label warning">   
+                <div class="stat-card-label is-warning">   
                     Drives Pending Approval
                 </div>
             </div>
-            <div class="stat-card info">
-                <div class="stat-card-value info">
+            <div class="stat-card is-info">
+                <div class="stat-card-value is-info">
                     {{ stats.total_applications }}
                 </div>
-                <div class="stat-card-label info">
+                <div class="stat-card-label is-info">
                     Total No. of Applications
                 </div>
             </div>
-            <div class="stat-card warning">
-                <div class="stat-card-value warning">
+            <div class="stat-card is-warning">
+                <div class="stat-card-value is-warning">
                     {{ stats.total_selected }}
                 </div>
-                <div class="stat-card-label warning">
+                <div class="stat-card-label is-warning">
                     Candidates Selected
                 </div>
             </div>

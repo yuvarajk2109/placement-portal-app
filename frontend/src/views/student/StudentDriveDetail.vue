@@ -7,49 +7,33 @@
                     <h1 class="page-title mb-4">{{ drive.job_title }}</h1>
                     <div class="flex gap-16">                        
                     <button class="btn is-primary" v-if="!drive.already_applied" :disabled="applying" @click="applyForDrive">{{ applying ? 'Applying' : 'Apply for Drive' }}</button>
-                    <router-link 
+                    <router-link
                         to="/student/drives"
                         class="btn is-secondary">
                         Go Back
                     </router-link>
                     </div>
                 </div>
-                <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="statusClass(drive.application_status)">{{ drive.application_status }}</span></p>
+                <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="applicationStatusClass(drive.application_status)">{{ drive.application_status }}</span></p>
             </div>
             <div class="card mb-24">
                 <h2 class="card-title">Drive Details</h2>
                 <div class="stats-grid">
-                    <div class="stat-card info">
-                        <div class="stat-card-value info">
-                            {{ drive.drive_type }}
-                        </div>
-                        <div class="stat-card-label info">
-                            Type
-                        </div>
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{ drive.drive_type }}</div>
+                        <div class="stat-card-label is-info">Type</div>
                     </div>
-                    <div class="stat-card info">
-                        <div class="stat-card-value info">
-                            {{ drive.cgpa_requirement }}
-                        </div>
-                        <div class="stat-card-label info">
-                            CGPA Requirement
-                        </div>
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{ drive.cgpa_requirement }}</div>
+                        <div class="stat-card-label is-info">CGPA Requirement</div>
                     </div>
-                    <div class="stat-card warning">
-                        <div class="stat-card-value warning">
-                            {{ formatDateTime(drive.application_deadline) }}
-                        </div>
-                        <div class="stat-card-label warning">
-                            Application Deadline
-                        </div>
+                    <div class="stat-card is-warning">
+                        <div class="stat-card-value is-warning">{{ formatDateTime(drive.application_deadline) }}</div>
+                        <div class="stat-card-label is-warning">Application Deadline</div>
                     </div>
-                    <div class="stat-card success">
-                        <div class="stat-card-value success">
-                            {{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA
-                        </div>
-                        <div class="stat-card-label success">
-                            Salary
-                        </div>
+                    <div class="stat-card is-success">
+                        <div class="stat-card-value is-success">{{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA</div>
+                        <div class="stat-card-label is-success">Salary</div>
                     </div>
                 </div>
             </div>
@@ -97,6 +81,7 @@ import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { applicationStatusClass } from '@/utils/status';
 
 const route = useRoute();
 const router = useRouter();
@@ -132,15 +117,5 @@ async function applyForDrive() {
     } finally {
         applying.value = false;
     }
-}
-
-function statusClass(status) {
-    return {
-        Applied: 'is-info',
-        Shortlisted: 'is-warning',
-        Selected: 'is-success',
-        Rejected: 'is-error',
-        Withdrawn: 'is-neutral'
-    } [status] || 'is-neutral'
 }
 </script>

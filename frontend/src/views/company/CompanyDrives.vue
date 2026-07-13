@@ -31,7 +31,7 @@
                     <td>{{ drive.location }}</td>
                     <td>{{ drive.application_deadline ? formatDateTime(drive.application_deadline) : '' }}</td>
                     <td>{{ drive.applications_count }}</td>
-                    <td><span class="status" :class="statusClass(drive.status)">{{ drive.status }}</span></td>
+                    <td><span class="status" :class="interviewStatusClass(drive.status)">{{ drive.status }}</span></td>
                     <td>
                         <button v-if="drive.status === 'Approved'" class="btn is-warning" @click="closeDrive(drive.drive_id)">Close Drive</button>
                         <div v-else>-</div>
@@ -136,6 +136,7 @@ import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
+import { interviewStatusClass } from '@/utils/status';
 import useVuelidate from '@vuelidate/core';
 import { helpers, required } from '@vuelidate/validators';
 import { onMounted, reactive, ref } from 'vue';
@@ -268,14 +269,5 @@ async function closeDrive(id) {
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to close drive');
     }
-}
-
-function statusClass(status) {
-    return {
-        Pending: 'is-warning',
-        Approved: 'is-success',
-        Rejected: 'is-error',
-        Closed: 'is-secondary'
-    } [status] || 'is-info'
 }
 </script>

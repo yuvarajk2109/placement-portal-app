@@ -873,55 +873,55 @@ a:hover {
   margin-top: 4px;
 }
 
-.stat-card.success {
+.stat-card.is-success {
   background: var(--status-success-container-bg);
   border: 1px solid var(--status-success-container-line);
 }
 
-.stat-card-value.success {
+.stat-card-value.is-success {
   color: var(--status-success-container-fg);
 }
 
-.stat-card-label.success {
+.stat-card-label.is-success {
   color: var(--status-success-container-fg);
 }
 
-.stat-card.info {
+.stat-card.is-info {
   background: var(--status-info-container-bg);
   border: 1px solid var(--status-info-container-line);
 }
 
-.stat-card-value.info {
+.stat-card-value.is-info {
   color: var(--status-info-container-fg);
 }
 
-.stat-card-label.info {
+.stat-card-label.is-info {
   color: var(--status-info-container-fg);
 }
 
-.stat-card.error {
+.stat-card.is-error {
   background: var(--status-error-container-bg);
   border: 1px solid var(--status-error-container-line);
 }
 
-.stat-card-value.error {
+.stat-card-value.is-error {
   color: var(--status-error-container-fg);
 }
 
-.stat-card-label.error {
+.stat-card-label.is-error {
   color: var(--status-error-container-fg);
 }
 
-.stat-card.warning {
+.stat-card.is-warning {
   background: var(--status-warning-container-bg);
   border: 1px solid var(--status-warning-container-line);
 }
 
-.stat-card-value.warning {
+.stat-card-value.is-warning {
   color: var(--status-warning-container-fg);
 }
 
-.stat-card-label.warning {
+.stat-card-label.is-warning {
   color: var(--status-warning-container-fg);
 }
 

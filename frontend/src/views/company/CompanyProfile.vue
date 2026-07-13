@@ -17,7 +17,7 @@
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
                         <label class="form-label" for="status">Company Status</label>
-                        <input id="status" v-model="profile.status" class="form-input" :class="statusClass(profile.status)" readonly>
+                        <input id="status" v-model="profile.status" class="form-input" :class="interviewStatusClass(profile.status)" readonly>
                     </div>
                     <div class="flex-1">
                         <label class="form-label" for="created_at">Created At</label>
@@ -73,6 +73,7 @@ import { useNotificationStore } from '@/stores/notification';
 import { onMounted, reactive, ref } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+import { interviewStatusClass } from '@/utils/status';
 
 const authStore = useAuthStore();
 const notify = useNotificationStore();
@@ -122,15 +123,6 @@ async function saveProfile() {
         saving.value = false;
         loading.value = true;
     }
-}
-
-function statusClass(status) {
-    return {
-        Pending: 'is-warning',
-        Approved: 'is-success',
-        Rejected: 'is-error',
-        Closed: 'is-secondary'
-    } [status] || 'is-info'
 }
 
 function handleLogout() {
