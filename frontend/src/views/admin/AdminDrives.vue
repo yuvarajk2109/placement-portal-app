@@ -83,8 +83,8 @@ async function fetchData() {
 
 async function updateStatus(id, action) {
     try {
-        await api.put(`/admin/drives/${id}/${action}`);
-        notify.success(`Drive ${action} is successful`);
+        const result = await api.put(`/admin/drives/${id}/${action}`);
+        notify.success(result.data?.message || `Drive ${action} is successful`);
         fetchData();
     } catch (err) {
         notify.error(err.response?.data?.error || `Failed to ${action} drive`);

@@ -24,54 +24,38 @@
             <div class="card mb-24">
                 <div class="flex items-center justify-between mb-16">
                     <h2 class="card-title">Drive Details</h2>
-                    <button type="button" class="btn is-secondary is-icon-only" @click="modals.driveEdit = true"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit" @click="modals.driveEdit = true"><i class="fas fa-edit"></i></button>
                 </div>
                 <div class="stats-grid">
                     <div class="stat-card info">
-                        <div class="stat-card-value info">
-                            {{ drive.drive_type }}
-                        </div>
-                        <div class="stat-card-label info">
-                            Type
-                        </div>
+                        <div class="stat-card-value info">{{ drive.drive_type }}</div>
+                        <div class="stat-card-label info">Type</div>
                     </div>
                     <div class="stat-card info">
-                        <div class="stat-card-value info">
-                            {{ drive.cgpa_requirement }}
-                        </div>
-                        <div class="stat-card-label info">
-                            CGPA Requirement
-                        </div>
+                        <div class="stat-card-value info">{{ drive.cgpa_requirement }}</div>
+                        <div class="stat-card-label info">CGPA Requirement</div>
                     </div>
                     <div class="stat-card warning">
-                        <div class="stat-card-value warning">
-                            {{ formatDateTime(drive.application_deadline) }}
-                        </div>
-                        <div class="stat-card-label warning">
-                            Application Deadline
-                        </div>
+                        <div class="stat-card-value warning">{{ formatDateTime(drive.application_deadline) }}</div>
+                        <div class="stat-card-label warning">Application Deadline</div>
                     </div>
                     <div class="stat-card success">
-                        <div class="stat-card-value success">
-                            {{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA
-                        </div>
-                        <div class="stat-card-label success">
-                            Salary
-                        </div>
+                        <div class="stat-card-value success">{{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA</div>
+                        <div class="stat-card-label success">Salary</div>
                     </div>
                 </div>
             </div>
             <div class="card mb-24">
                 <div class="flex items-center justify-between mb-16">
                     <h2 class="card-title">Job Description</h2>
-                    <button type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
+                    <button v-if="canEdit" type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
                 </div>
                 <p>{{ drive.job_desc }}</p>
             </div>
             <div class="card mb-24">
                 <div class="flex items-center justify-between mb-16">
                     <h2 class="card-title">Eligible Branches</h2>
-                    <button type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit"><i class="fas fa-edit"></i></button>
                 </div>
                 <AppMultiSelect
                     :model-value="drive.eligible_branches.map(branch => branch.branch_id)"
@@ -84,7 +68,7 @@
             <div class="card mb-24">
                 <div class="flex items-center justify-between mb-16">
                     <h2 class="card-title">Required Skills</h2>
-                    <button type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
+                    <button type="button" class="btn is-secondary is-icon-only" v-if="canEdit"><i class="fas fa-edit"></i></button>
                 </div>
                 <AppMultiSelect
                     :model-value="drive.required_skills.map(skill => skill.skill_id)"
@@ -123,7 +107,7 @@ import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CompanyDriveInterviews from './CompanyDriveInterviews.vue';
 import DriveDetailsEdit from './drive-edit/DriveDetailsEdit.vue';
@@ -135,6 +119,11 @@ const dialog = useDialogStore();
 const driveId = route.params.id;
 const loading = ref(true);
 const drive = ref(null);
+
+const canEdit = computed(() => {
+    if (!drive.value) return false;
+    return new Date(drive.value.application_deadline) > new Date();
+});
 
 const modals = reactive({
     driveEdit: false,
@@ -167,8 +156,8 @@ async function closeDrive(id) {
     })
     if (!confirmed) return;
     try {
-        await api.put(`/company/drives/${id}/close`);
-        notify.success('Drive closed');
+        const result = await api.put(`/company/drives/${id}/close`);
+        notify.success(result.data?.message || 'Drive closed');
         fetchDrive();
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to close drive');

@@ -102,8 +102,8 @@ async function fetchData() {
 
 async function toggleBlacklist(regNo, action) {
     try {
-        await api.put(`/admin/students/${regNo}/${action}`);
-        notify.success(`Student ${action}ed successfully`);
+        const result = await api.put(`/admin/students/${regNo}/${action}`);
+        notify.success(result.data?.message || `Student ${action}ed successfully`);
         fetchData();
     } catch (err) {
         notify.error(err.response?.data?.error || `Failed to ${action} student`);
@@ -112,8 +112,8 @@ async function toggleBlacklist(regNo, action) {
 
 async function toggleActive(regNo, action) {
     try {
-        await api.put(`/admin/students/${regNo}/${action}`);
-        notify.success(`Student ${action}d successfully`);
+        const result = await api.put(`/admin/students/${regNo}/${action}`);
+        notify.success(result.data?.message || `Student ${action}d successfully`);
         fetchData();
     } catch (err) {
         notify.error(err.response?.data?.error || `Failed to ${action} student`);

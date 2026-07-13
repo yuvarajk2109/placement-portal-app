@@ -104,8 +104,8 @@ async function withdraw(applicationId) {
     });
     if (!confirmed) return;
     try {
-        await api.put(`/student/applications/${applicationId}/withdraw`);
-        notify.success('Application successfully withdrawn.');
+        const result = await api.put(`/student/applications/${applicationId}/withdraw`);
+        notify.success(result.data?.message || 'Application successfully withdrawn.');
         fetchApplications();
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to withdraw applications');

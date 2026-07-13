@@ -137,8 +137,8 @@ async function finaliseStatus() {
     closeModal();
     saving.value = true;
     try {
-        await api.put(`/company/applications/${updateForm.applicationId}/status`, updateForm);
-        notify.success(`Application status updated to ${updateForm.application_status}`);
+        const result = await api.put(`/company/applications/${updateForm.applicationId}/status`, updateForm);
+        notify.success(result.data?.message || `Application status updated to ${updateForm.application_status}`);
         Object.assign(updateForm, emptyForm);
         fetchApplications();
     } catch (err) {

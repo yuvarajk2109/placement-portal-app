@@ -103,8 +103,8 @@ async function fetchData() {
 
 async function updateStatus(id, action) {
     try {
-        await api.put(`/admin/companies/${id}/${action}`);
-        notify.success(`Company ${action} is successful`);
+        const result = await api.put(`/admin/companies/${id}/${action}`);
+        notify.success(result.data?.message || `Company ${action} is successful`);
         fetchData();
     } catch (err) {
         notify.error(err.response?.data?.error || `Failed to update status to ${action}`);
@@ -113,8 +113,8 @@ async function updateStatus(id, action) {
 
 async function toggleBlacklist(id, action) {
     try {
-        await api.put(`/admin/companies/${id}/${action}`);
-        notify.success(`Company ${action}ed successfully`);
+        const result = await api.put(`/admin/companies/${id}/${action}`);
+        notify.success(result.data?.message || `Company ${action}ed successfully`);
         fetchData();
     } catch (err) {
         notify.error(err.response?.data?.error || `Failed to ${action} company`);

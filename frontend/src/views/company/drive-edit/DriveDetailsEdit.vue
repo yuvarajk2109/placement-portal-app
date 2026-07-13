@@ -112,8 +112,8 @@ async function fetchDriveTypes() {
 async function updateDriveDetails() {
     saving.value = true;
     try {
-        await api.put(`/company/drives/${properties.driveId}`, updateForm);
-        notify.success('Drive details have been updated successfully');
+        const result = await api.put(`/company/drives/${properties.driveId}`, updateForm);
+        notify.success(result.data.message);
         emit('updated');
     } catch (err) {
         notify.error(err.response?.data?.error);
@@ -122,5 +122,4 @@ async function updateDriveDetails() {
         modal.value = false;
     }
 }
-
 </script>

@@ -154,11 +154,11 @@ async function submitInterview() {
     submitting.value = true;
     try {
         if (editingId.value) {
-            await api.put(`/company/interviews/${editingId.value}`, interviewForm);
-            notify.success('Interview updated successfully');
+            const result = await api.put(`/company/interviews/${editingId.value}`, interviewForm);
+            notify.success(result.data?.message || 'Interview updated successfully');
         } else {
-            await api.post(`/company/drives/${properties.driveId}/interviews`, interviewForm);
-            notify.success('Interview scheduled successfully.');
+            const result = await api.post(`/company/drives/${properties.driveId}/interviews`, interviewForm);
+            notify.success(result.data?.message || 'Interview scheduled successfully.');
         }
         closeModal();
         fetchInterviews();

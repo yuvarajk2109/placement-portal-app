@@ -139,9 +139,10 @@ async function fetchProfile() {
 async function saveProfile() {
     saving.value = true;
     try {
-        await api.put('/student/profile', studentProfile);
-        await uploadResume();
-        notify.success('Profile updated successfully');
+        const result = await api.put('/student/profile', studentProfile);        
+        notify.success(result.data?.message || 'Profile updated successfully');
+        const resumeResult = await uploadResume();
+        if (resumeResult) notify.success(resumeResult.data?.message || 'Resume updated successfully');
         fetchProfile();
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to update profile');
@@ -156,10 +157,11 @@ async function uploadResume() {
     const formData = new FormData();
     formData.append('resume', resume.value);
 
-    await api.post('/student/resume', formData, {
+    const result = await api.post('/student/resume', formData, {
         headers: {'Content-Type': 'multipart/form-data'}
     });
     resume.value = null;
+    return result;
 }
 
 async function downloadResume() {

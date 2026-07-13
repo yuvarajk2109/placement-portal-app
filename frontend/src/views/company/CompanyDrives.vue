@@ -262,8 +262,8 @@ async function closeDrive(id) {
     })
     if (!confirmed) return;
     try {
-        await api.put(`/company/drives/${id}/close`);
-        notify.success('Drive closed');
+        const result = await api.put(`/company/drives/${id}/close`);
+        notify.success(result.data?.message || 'Drive closed');
         fetchDrives();
     } catch (err) {
         notify.error(err.response?.data?.error || 'Failed to close drive');
