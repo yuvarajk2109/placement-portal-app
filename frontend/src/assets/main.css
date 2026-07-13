@@ -555,23 +555,23 @@ a:hover {
   text-transform: uppercase;
 }
 
-.status.is-success {
+.is-success {
   color: var(--status-success-container-fg);
 }
 
-.status.is-info {
+.is-info {
   color: var(--status-info-container-fg);
 }
 
-.status.is-warning {
+.is-warning {
   color: var(--status-warning-container-fg);
 }
 
-.status.is-error {
+.is-error {
   color: var(--status-error-container-fg);
 }
 
-.status.is-neutral {
+.is-neutral {
   color: var(--surface-foreground-subtle);
 }
 
