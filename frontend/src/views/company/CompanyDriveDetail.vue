@@ -1,7 +1,7 @@
 <template>
     <div class="main-page">
         <AppSpinner v-if="loading" />
-        <div v-else-if="drive">
+        <template v-else-if="drive">
             <div class="full-width mb-24">
                 <div class="flex items-center justify-between">
                     <h1 class="page-title mb-4">{{ drive.job_title }}</h1>
@@ -22,7 +22,10 @@
                 </router-link>
             </div>
             <div class="card mb-24">
-                <h2 class="card-title">Drive Details</h2>
+                <div class="flex items-center justify-between mb-16">
+                    <h2 class="card-title">Drive Details</h2>
+                    <button type="button" class="btn is-secondary is-icon-only" @click="modals.driveEdit = true"><i class="fas fa-edit"></i></button>
+                </div>
                 <div class="stats-grid">
                     <div class="stat-card info">
                         <div class="stat-card-value info">
@@ -59,11 +62,17 @@
                 </div>
             </div>
             <div class="card mb-24">
-                <h2 class="card-title">Job Description</h2>
-                <p class="text-subtle">{{ drive.job_desc }}</p>
+                <div class="flex items-center justify-between mb-16">
+                    <h2 class="card-title">Job Description</h2>
+                    <button type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
+                </div>
+                <p>{{ drive.job_desc }}</p>
             </div>
             <div class="card mb-24">
-                <h2 class="card-title">Eligible Branches</h2>
+                <div class="flex items-center justify-between mb-16">
+                    <h2 class="card-title">Eligible Branches</h2>
+                    <button type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
+                </div>
                 <AppMultiSelect
                     :model-value="drive.eligible_branches.map(branch => branch.branch_id)"
                     :options="drive.eligible_branches"
@@ -73,7 +82,10 @@
                 />
             </div>
             <div class="card mb-24">
-                <h2 class="card-title">Required Skills</h2>
+                <div class="flex items-center justify-between mb-16">
+                    <h2 class="card-title">Required Skills</h2>
+                    <button type="button" class="btn is-secondary is-icon-only"><i class="fas fa-edit"></i></button>
+                </div>
                 <AppMultiSelect
                     :model-value="drive.required_skills.map(skill => skill.skill_id)"
                     :options="drive.required_skills"
@@ -83,7 +95,17 @@
                 />
             </div>
             <CompanyDriveInterviews :drive-id="driveId"/>
-        </div>
+            <DriveDetailsEdit 
+                v-model="modals.driveEdit"
+                @updated="fetchDrive"
+                :driveId="drive.drive_id"
+                :driveType="drive.drive_type"
+                :cgpaRequirement="drive.cgpa_requirement"
+                :applicationDeadline="drive.application_deadline"
+                :salaryMin="drive.salary_min"
+                :salaryMax="drive.salary_max"
+            />   
+        </template> 
     </div>
 </template>
 
@@ -101,9 +123,10 @@ import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
-import { onMounted, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CompanyDriveInterviews from './CompanyDriveInterviews.vue';
+import DriveDetailsEdit from './drive-edit/DriveDetailsEdit.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -112,6 +135,13 @@ const dialog = useDialogStore();
 const driveId = route.params.id;
 const loading = ref(true);
 const drive = ref(null);
+
+const modals = reactive({
+    driveEdit: false,
+    jobDescEdit: false,
+    eligibleBranchesEdit: false,
+    requiredSkillsEdit: false
+})
 
 onMounted(fetchDrive);
 
