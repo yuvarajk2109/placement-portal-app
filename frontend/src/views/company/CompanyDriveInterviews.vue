@@ -5,7 +5,7 @@
                 <h2 class="card-title">Interview Rounds</h2>
                 <span class="flex gap-8">
                     <button type="button" class="btn is-primary" @click="showModal = true">
-                        <i class="fa-solid fa-plus"></i> 
+                        <i class="fas fa-plus"></i> 
                         Schedule New Interview
                     </button>
                 </span>

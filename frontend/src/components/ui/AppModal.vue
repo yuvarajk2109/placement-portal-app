@@ -8,7 +8,7 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" :class="{ 'footer-border' : $slots.footer }"> 
                 <slot></slot>
             </div>
             <div class="modal-footer" v-if="$slots.footer">
@@ -34,9 +34,13 @@
 }
 
 .modal-body {
-    margin-top: 16px;
+    padding: 12px 20px;
     max-height: 60vh;
     overflow-y: auto;
+}
+
+.modal-body.footer-border {
+  border-bottom: 1px solid var(--surface-line-subtle);
 }
 </style>
 

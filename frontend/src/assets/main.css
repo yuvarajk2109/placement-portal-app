@@ -221,11 +221,6 @@ a:hover {
   font-size: 18px;
   font-weight: 600;
   color: var(--surface-foreground);
-  margin-bottom: 16px;
-}
-
-.text-subtle {
-  color: var(--surface-foreground-subtle);
 }
 
 .text-small {
@@ -678,7 +673,6 @@ a:hover {
   padding: 32px 20px;
   color: var(--surface-foreground-subtle);
   border-top: 1px solid var(--surface-line-subtle);
-  border-bottom: 1px solid var(--surface-line-subtle);
   text-align: left;
 }
 
@@ -711,7 +705,6 @@ a:hover {
 .app-main {
   flex: 1;
   margin-left: var(--sidebar-width-closed);
-  border-left: 2px solid var(--surface-line-subtle);
   padding: 32px 40px;
   transition: margin-left 0.25s ease;
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
@@ -722,6 +715,10 @@ a:hover {
 
 .app-main.sidebar-open {
   margin-left: var(--sidebar-width-open);
+}
+
+.app-main.sidebar-line {
+  border-left: 2px solid var(--surface-line-subtle);
 }
 
 /* Utility */

@@ -1,7 +1,7 @@
 <template>
     <div class="main-page">
         <h1 class="page-title">Manage Drives</h1>
-        <div v-if="drives.length > 0" class="page-toolbar">
+        <div class="page-toolbar">
             <select class="form-select" v-model="statusFilter" @change="page = 1; fetchData();">
                 <option value="">All Statuses</option>
                 <option value="Pending">Pending</option>

@@ -55,7 +55,7 @@
             </div>
             <div class="card mb-24">
                 <h2 class="card-title">Job Description</h2>
-                <p class="text-subtle">{{ drive.job_desc }}</p>
+                <p>{{ drive.job_desc }}</p>
             </div>
             <div class="card mb-24">
                 <h2 class="card-title">Eligible Branches</h2>

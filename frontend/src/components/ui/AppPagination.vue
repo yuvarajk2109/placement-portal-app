@@ -6,7 +6,7 @@
                 :disabled="currentPage <= 1" 
                 @click="changePage(currentPage - 1)"
             >
-                <i class="fa-solid fa-arrow-left"></i>
+                <i class="fas fa-arrow-left"></i>
             </button>
             
             <span>Page {{ currentPage }} of {{ totalPages }}</span>
@@ -16,7 +16,7 @@
                 :disabled="currentPage >= totalPages" 
                 @click="changePage(currentPage + 1)"
             >
-                <i class="fa-solid fa-arrow-right"></i>
+                <i class="fas fa-arrow-right"></i>
             </button>
         </div>
     </div>

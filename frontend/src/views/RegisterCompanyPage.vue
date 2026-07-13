@@ -61,7 +61,7 @@
                 </button>
             </form>
             <div class="auth-links mt-16">
-                <p class="text-subtle">
+                <p>
                     Already have an account?
                 </p>
                 <p class="mt-4">

@@ -42,64 +42,63 @@
         <template #title>Placement Details</template>
         <div v-if="selectedPlacement" class="flex flex-col gap-12">
             <!-- Student Details -->
-            <h3 class="text-subtitle">Student Information</h3>
+            <h3 class="section-heading">Student Information</h3>
             <div class="flex justify-between">
-                <span class="text-subtle">Name</span>
-                <span class="font-medium">{{ selectedPlacement.student_name }}</span>
+                <span>Name</span>
+                <span>{{ selectedPlacement.student_name }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Register Number</span>
+                <span>Register Number</span>
                 <span>{{ selectedPlacement.register_no }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Email</span>
                 <span>{{ selectedPlacement.student_email }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Phone</span>
+                <span>Phone</span>
                 <span>{{ selectedPlacement.student_phone || '—' }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Branch</span>
+                <span>Branch</span>
                 <span>{{ selectedPlacement.student_branch }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">CGPA</span>
-                <span class="font-medium">{{ selectedPlacement.student_cgpa }}</span>
+                <span>CGPA</span>
+                <span>{{ selectedPlacement.student_cgpa }}</span>
             </div>
 
             <!-- Placement Details -->
-            <h3 class="text-subtitle mt-16">Placement Details</h3>
+            <h3 class="section-heading mt-16">Placement Details</h3>
             <div class="flex justify-between">
-                <span class="text-subtle">Company Name</span>
-                <span class="font-medium">{{ selectedPlacement.company_name }}</span>
+                <span>Company Name</span>
+                <span>{{ selectedPlacement.company_name }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Industry</span>
+                <span>Industry</span>
                 <span>{{ selectedPlacement.company_industry }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Job Title</span>
+                <span>Job Title</span>
                 <span>{{ selectedPlacement.job_title }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Position</span>
-                <span class="font-medium">{{ selectedPlacement.position }}</span>
+                <span>Position</span>
+                <span>{{ selectedPlacement.position }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Location</span>
+                <span>Location</span>
                 <span>{{ selectedPlacement.drive_location || '—' }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Drive Type</span>
-                <span class="badge is-info">{{ selectedPlacement.drive_type }}</span>
+                <span>Drive Type</span>
+                <span>{{ selectedPlacement.drive_type }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Salary (LPA)</span>
-                <span class="font-medium text-success">{{ selectedPlacement.salary || '—' }}</span>
+                <span>Salary (LPA)</span>
+                <span>{{ selectedPlacement.salary || '—' }}</span>
             </div>
             <div class="flex justify-between">
-                <span class="text-subtle">Placement Date</span>
+                <span>Placement Date</span>
                 <span>{{ formatDate(selectedPlacement.created_at) }}</span>
             </div>
         </div>

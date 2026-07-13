@@ -2,7 +2,7 @@
     <div class="main-page">
         <div class="flex items-center justify-between mb-24">
             <h1 class="page-title">Drives</h1>
-            <button class="btn is-primary" @click="showCreateModal = true"><i class="fa-solid fa-plus"></i> Create Drive</button>
+            <button class="btn is-primary" @click="showCreateModal = true"><i class="fas fa-plus"></i> Create Drive</button>
         </div>
         <AppSpinner v-if="loading" />
         <table v-else-if="drives.length > 0" class="data-table">
