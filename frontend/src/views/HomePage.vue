@@ -70,7 +70,7 @@ import { useAuthStore } from '@/stores/auth';
 import { computed } from 'vue';
 
 
-const auth = useAuthStore();
+const authStore = useAuthStore();
 
 const link_cards = {
     admin: [
@@ -185,7 +185,7 @@ const link_cards = {
     ]
 }
 
-const currentCards = computed(() => link_cards[auth.userRole] ?? link_cards.no_role);
+const currentCards = computed(() => link_cards[authStore.userRole] ?? link_cards.no_role);
 const gridStyle = computed(() => ({gridTemplateColumns: `repeat(${currentCards.value.length}, 1fr)`}));
 
 </script>

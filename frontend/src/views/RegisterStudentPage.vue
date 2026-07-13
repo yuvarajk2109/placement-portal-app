@@ -70,10 +70,12 @@
             </form>
             <div class="auth-links mt-16">
                 <p>
-                    Already have an account?
+                    Already have an account? Need to login or verify?
                 </p>
                 <p class="mt-4">
                     <router-link to="/login" class="text-link">Sign in</router-link>
+                    &middot;
+                    <router-link to="/verify-otp" class="text-link">Verify OTP</router-link>
                 </p>
             </div>
         </div>
@@ -171,8 +173,8 @@ async function handleRegister() {
     
     loading.value = true;
     try {
-        await api.post('/auth/register/student', form);
-        notify.success('Registration successful. Please check your email for OTP verification.');
+        const result = await api.post('/auth/register/student', form);
+        notify.success(result.data?.message || 'Registration successful. Please check your email for OTP verification.');
         router.push({
             name: 'verify-otp',
             query: { email: form.email }

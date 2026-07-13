@@ -15,7 +15,7 @@
 
   <main 
     class="app-main"
-    :class="{ 'sidebar-open': sidebarOpen && authStore.isLoggedIn, 'sidebar-line': authStore.isLoggedIn }">
+    :class="{ 'sidebar-open': sidebarOpen && authStore.isLoggedIn, 'sidebar-closed': !sidebarOpen && authStore.isLoggedIn, 'logged-in': authStore.isLoggedIn }">
     <router-view />
   </main>
 

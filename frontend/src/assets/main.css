@@ -704,7 +704,6 @@ a:hover {
 
 .app-main {
   flex: 1;
-  margin-left: var(--sidebar-width-closed);
   padding: 32px 40px;
   transition: margin-left 0.25s ease;
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
@@ -717,7 +716,11 @@ a:hover {
   margin-left: var(--sidebar-width-open);
 }
 
-.app-main.sidebar-line {
+.app-main.sidebar-closed {
+  margin-left: var(--sidebar-width-closed);
+}
+
+.app-main.logged-in {
   border-left: 2px solid var(--surface-line-subtle);
 }
 

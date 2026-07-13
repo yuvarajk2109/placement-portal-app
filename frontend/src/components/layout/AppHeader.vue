@@ -1,10 +1,11 @@
 <template>
     <header class="app-header">
         <div class="header-left">
-            <button 
-            class="btn is-primary is-icon-only"
-            @click="$emit('toggle-sidebar')">
+            <button v-if="authStore.isLoggedIn" class="btn is-primary is-icon-only" @click="$emit('toggle-sidebar')">
                 <i class="fas fa-bars"></i>
+            </button>
+            <button v-else class="btn is-primary is-icon-only" @click="router.push({ name: 'home'})">
+                <i class="fas fa-home"></i>
             </button>
             <router-link to="/"  class="header-logo">
                 Placement Portal
@@ -78,6 +79,6 @@ defineEmits(['toggle-sidebar']);
 function handleLogout() {
     authStore.logout();
     notify.success("Logout successful");
-    router.push({ name: 'login' });
+    router.push({ name: 'home' });
 }
 </script>

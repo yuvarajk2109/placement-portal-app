@@ -23,6 +23,18 @@
                     {{ loading ? 'Verifying...' : 'Verify OTP' }}
                 </button>
             </form>
+            <div class="auth-links mt-16">
+                <p>
+                    Don't have an account, or already registered?
+                </p>
+                <p class="mt-4">
+                <router-link to="/register/student" class="text-link">Register as Student</router-link>
+                &middot; 
+                <router-link to="/register/company" class="text-link">Register as Company</router-link>
+                &middot;
+                <router-link to="/login" class="text-link">Login</router-link>
+                </p>
+            </div>
         </div>
     </div>
 </template> 
