@@ -4,7 +4,7 @@ from models import User, Department, Branch, Skill
 
 def seed_admin():
     admin = User.query.filter_by(role='admin').first()
-    admin_email = 'admin@placement.edu'
+    admin_email = 'starspinix@gmail.com'
     if not admin:
         password_hash = bcrypt.hashpw('admin123'.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
         admin = User(
