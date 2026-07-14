@@ -33,7 +33,7 @@
                         <td>{{ application.current_round || '-' }}</td>
                         <td>{{ application.feedback || 'None'}}</td>
                         <td class="actions-cell">
-                            <select v-if="application.application_status != 'Withdrawn'" class="form-select" @change="updateStatus(application.student_name, application.application_id, $event.target?.value); $event.target.value = ''">
+                            <select v-if="application.application_status != 'Withdrawn' && getAvailableActions(application).length > 0" class="form-select" @change="updateStatus(application.student_name, application.application_id, $event.target?.value); $event.target.value = ''">
                                 <option value="">Update...</option>
                                 <option v-for="action in getAvailableActions(application)" :type="action" :value="action">{{ action }}</option>
                             </select>
@@ -55,12 +55,22 @@
         <AppModal v-model="showModal" size="medium">
             <template #title>Update Status of {{ studentName }} - <span class="status" :class="interviewStatusClass(updateForm.application_status)">{{ updateForm.application_status }}</span></template>
             <form id="application-feedback-form" @submit.prevent="finaliseStatus">
-                <label for="feedback" class="form-label">Feedback <span class="required">(if any)</span></label>
-                <textarea id="feedback" v-model="updateForm.feedback" class="form-textarea"></textarea>
+                <div class="form-group">
+                    <div v-if="updateForm.application_status === 'Selected'">
+                        <label for="joining_date" class="form-label">Joining Date <span class="required">(required)</span></label>
+                        <input id="joining_date" type="date" v-model="updateForm.joining_date" class="form-input" @blur="validator.joining_date.$touch()" :class="{ 'is-error': validator.joining_date.$error }">
+                        <span class="form-error-text" v-if="validator.joining_date.$error">{{ validator.joining_date.$errors[0].$message }}</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="feedback" class="form-label">Feedback <span class="required">(if any)</span></label>
+                    <textarea id="feedback" v-model="updateForm.feedback" class="form-textarea"></textarea>
+                </div>
             </form>
             <template #footer>
                 <button type="button" class="btn is-secondary" @click="closeModal">Cancel</button>
-                <button type="submit" form="application-feedback-form" class="btn is-primary">{{ saving ? 'Saving' : 'Save' }}</button>
+                <button type="submit" form="application-feedback-form" class="btn is-primary" :disabled="saving || validator.$invalid">{{ saving ? 'Saving' : 'Save' }}</button>
             </template>
         </AppModal>
     </div>
@@ -74,7 +84,9 @@ import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
 import { interviewStatusClass } from '@/utils/status';
-import { onMounted, reactive, ref } from 'vue';
+import useVuelidate from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
+import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -92,14 +104,24 @@ const studentName = ref('');
 const updateForm = reactive({
     applicationId: '',
     application_status: '',
-    feedback: ''
+    feedback: '',
+    joining_date: ''
 })
 
 const emptyForm = reactive({
     applicationId: '',
     application_status: '',
-    feedback: ''
+    feedback: '',
+    joining_date: ''
 })
+
+const rules = computed(() => ({
+    joining_date: {
+        required: helpers.withMessage('Joining date is required for selected candidate', required),
+    }
+}));
+
+const validator = useVuelidate(rules, updateForm);
 
 onMounted(fetchApplications);
 
@@ -135,6 +157,8 @@ async function updateStatus(student_name, application_id, updatedStatus) {
 }
 
 async function finaliseStatus() {
+    validator.value.$touch();
+    if (validator.value.$invalid) return;
     closeModal();
     saving.value = true;
     try {
@@ -155,7 +179,10 @@ function closeModal() {
 }
 
 function getAvailableActions(application) {
-    if (['Shortlisted', 'Rejected', 'Selected'].includes(application.application_status)) {
+    if (application.application_status === 'Selected') {
+        return [];
+    }
+    if (['Shortlisted', 'Rejected'].includes(application.application_status)) {
         return actions.value.filter(
             action => action !== application.application_status
         );

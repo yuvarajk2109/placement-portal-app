@@ -99,11 +99,16 @@ class ApplicationService:
         if new_status == 'Selected':
             existing_placement = Placement.query.filter_by(application_id  = application.application_id).first()
             if not existing_placement:
+                if data.get('joining_date') is None:
+                    return {
+                        "error": "Joining date is required for selected candidate's placement"
+                    }, 400
+
                 placement = Placement(
                     application_id = application.application_id,
                     position = drive.job_title,
                     drive_type = drive.drive_type,
-                    salary = drive.salary_max,
+                    salary = drive.salary_max,                    
                 )
                 db.session.add(placement)
 
@@ -230,8 +235,9 @@ Placement Portal Team
         logger.info(f"Student {student.fname} {student.lname} ({student.register_no}) has applied for drive {drive_id} - {drive.job_title} by {company.company_name}")
 
         invalidate_cache('admin_dashboard')
+        invalidate_cache('admin_drives')
         invalidate_cache('company_dashboard')
-        
+
         return {
             "message": "Application submitted successfully",
             "application_id": application.application_id
