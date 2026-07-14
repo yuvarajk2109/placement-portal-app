@@ -11,7 +11,7 @@
                 </p>
             </div>
         </div>
-        <div class="cards" :style="gridStyle">
+        <div class="cards mb-24" :style="gridStyle">
             <router-link v-for="card in currentCards" :key="card.link" :to="card.link">
                 <div class="card clickable">  
                     <i :class="card.icon"></i>
@@ -19,7 +19,26 @@
                     <p>{{ card.message }}</p>
                 </div>
             </router-link>
-        </div>        
+        </div>
+        <AppSpinner v-if="loading" />
+        <div v-else class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-value is-success">{{ stats.total_students }}</div>
+                <div class="stat-card-label">Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value is-success">{{ stats.total_companies }}</div>
+                <div class="stat-card-label">Companies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value is-success">{{ stats.total_placements }}</div>
+                <div class="stat-card-label">Placements</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-value is-success">{{ stats.avg_placement_salary }}</div>
+                <div class="stat-card-label">Average Salary</div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -63,14 +82,25 @@
     color: var(--accent-primary-background);
 }
 
+.stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
 </style>
 
 <script setup>
+import AppSpinner from '@/components/ui/AppSpinner.vue';
+import api from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
-import { computed } from 'vue';
-
+import { useNotificationStore } from '@/stores/notification';
+import { computed, onMounted, ref } from 'vue';
 
 const authStore = useAuthStore();
+const notify = useNotificationStore();
+const loading = ref(true);
+const stats = ref({});
+
+onMounted(fetchDashboard);
 
 const link_cards = {
     admin: [
@@ -188,4 +218,15 @@ const link_cards = {
 const currentCards = computed(() => link_cards[authStore.userRole] ?? link_cards.no_role);
 const gridStyle = computed(() => ({gridTemplateColumns: `repeat(${currentCards.value.length}, 1fr)`}));
 
+async function fetchDashboard() {
+    loading.value = true;
+    try {
+        const result = await api.get('/shared/dashboard');
+        stats.value = result.data;
+    } catch (err) {
+        notify.error(err.response?.data?.error || 'Failed to fetch portal statistics');
+    } finally {
+        loading.value = false;
+    }
+}
 </script>

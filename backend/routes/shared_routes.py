@@ -27,3 +27,8 @@ def list_application_statuses():
 def list_application_actions():
     result, status = SharedService.list_application_actions()
     return jsonify(result), status
+
+@shared_bp.route('/dashboard', methods=['GET'])
+def get_dashboard():
+    result, status = SharedService.get_dashboard()
+    return jsonify(result), status
