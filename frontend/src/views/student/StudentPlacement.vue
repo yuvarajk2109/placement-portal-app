@@ -36,7 +36,6 @@
 
 <style scoped>
 .stats-grid {
-    display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 24px;
 }

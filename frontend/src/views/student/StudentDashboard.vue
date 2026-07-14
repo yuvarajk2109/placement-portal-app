@@ -83,7 +83,6 @@
 }
 
 .stats-grid {
-  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 }
 </style>

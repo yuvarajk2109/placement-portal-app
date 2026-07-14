@@ -49,7 +49,6 @@
 
 <style scoped>
 .stats-grid {
-    display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-<div class="loading-spinner"><div class="spinner"></div></div>
+<div class="loading-spinner"><div class="dots"></div></div>
 </template>
 
 <style scoped>
@@ -10,18 +10,23 @@
   padding: 48px;
 }
 
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--surface-line-subtle);
-  border-top-color: var(--accent-primary-background);
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+.dots {
+   width: 4.5px;
+   height: 4.5px;
+   border-radius: 50%;
+   color: var(--accent-primary-background);
+   box-shadow: 21.3px 0 0 7.8px, 42.6px 0 0 3.4px, 63.900000000000006px 0 0 0;
+   transform: translateX(-42.6px);
+   animation: dots-ijr34dmd 0.5s infinite alternate linear;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+@keyframes dots-ijr34dmd {
+   50% {
+      box-shadow: 21.3px 0 0 3.4px, 42.6px 0 0 7.8px, 63.900000000000006px 0 0 3.4px;
+   }
+
+   100% {
+      box-shadow: 21.3px 0 0 0, 42.6px 0 0 3.4px, 63.900000000000006px 0 0 7.8px;
+   }
 }
 </style>
