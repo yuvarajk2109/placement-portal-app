@@ -1,6 +1,12 @@
 <template>
 <div class="main-page">
-    <h1 class="page-title">My Applications</h1>
+    <div class="flex justify-between mb-16">
+        <h1 class="page-title">My Applications</h1>
+        <div v-if="applications.length > 0">
+            <button type="button" class="btn is-secondary" @click="exportApplications"><i class="fas fa-file-export"></i>Export Applications as CSV</button>
+        </div>
+    </div>
+    
     <div class="card">
         <AppSpinner v-if="loading" />
         <table v-else-if="applications.length > 0" class="data-table">
@@ -110,5 +116,17 @@ function viewApplicationDetail(application) {
 
 function closeModal() {
     applicationDetailOpen.value = false;
+}
+
+async function exportApplications() {
+    loading.value = true;
+    try {
+        const result = await api.post('/student/export/applications');
+        notify.success(result.data?.message);
+    } catch (err) {
+        notify.error(err.response?.data?.message || 'Failed to initiate export, please try again alter.');
+    } finally {
+        loading.value = false;
+    }
 }
 </script>

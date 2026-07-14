@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
 from utils.decorators import role_required, validate_json
 from services.student_service import StudentService
 from services.application_service import ApplicationService
+from jobs.export_csv import export_applications_csv
 
 student_bp = Blueprint('student', __name__, url_prefix = '/api/student')
 
@@ -128,3 +128,17 @@ def withdraw_application(current_user_id, app_id):
 def get_placement(current_user_id):
     result, status = StudentService.get_placement(current_user_id)
     return jsonify(result), status
+
+# ===============================
+# EXPORTS MANAGEMENT
+
+# 1. Export Applications
+# ================================
+
+@student_bp.route('/export/applications', methods = ['POST'])
+@role_required('student')
+def export_applications(current_user_id):
+    export_applications_csv.delay(current_user_id)
+    return jsonify({
+        "message": "Export has begun. You'll receive the CSV to your university email address."
+    }), 202
