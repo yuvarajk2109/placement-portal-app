@@ -26,6 +26,8 @@ class AdminService:
         total_applications = Application.query.count()
         total_placements = Placement.query.count()
 
+        logger.info("[INFO] Admin dashboard successfully fetched.")
+
         return {
             "total_students": total_students,
             "active_students": active_students,
@@ -186,7 +188,7 @@ class AdminService:
                 "drive_type": drive.drive_type,
                 "status": drive.status,
                 "deadline": drive.application_deadline.isoformat() if drive.application_deadline else None,
-                "applications_count": Application.query.filter_by(drive_id = drive.drive_id).count(),
+                "applications_count": Application.query.filter(Application.drive_id == drive.drive_id, Application.application_status != 'Inactive').count(),
                 "created_at": drive.created_at.isoformat()
             })
 
