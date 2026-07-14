@@ -6,18 +6,18 @@
             <form @submit.prevent="handleLogin">
                 <div class="form-group">
                     <label class="form-label" for="email">Email <span class="required">(required)</span></label>
-                    <input id="email" v-model="form.email" @blur="touched.email = true" type="email" class="form-input" :class="{ 'is-error': touched.email && errors.email }" placeholder="Enter your email">
-                    <span v-if="touched.email && errors.email" class="form-error-text">{{ errors.email }}</span>
+                    <input id="email" v-model="form.email" @blur="validator.email.$touch()" type="email" class="form-input" :class="{ 'is-error': validator.email.$error }" placeholder="Enter your email">
+                    <span v-if="validator.email.$error" class="form-error-text">{{ validator.email.$errors[0].$message }}</span>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="password">Password <span class="required">(required)</span></label>
-                    <input id="password" v-model="form.password" @blur="touched.password = true" type="password" class="form-input" :class="{ 'is-error': touched.password && errors.password }" placeholder="Enter your password">
-                    <span v-if="touched.password && errors.password" class="form-error-text">{{ errors.password }}</span>
+                    <input id="password" v-model="form.password" @blur="validator.password.$touch()" type="password" class="form-input" :class="{ 'is-error': validator.password.$error }" placeholder="Enter your password">
+                    <span v-if="validator.password.$error" class="form-error-text">{{ validator.password.$errors[0].$message }}</span>
                 </div>                
                 <button
                 type="submit"
                 class="btn is-primary is-large full-width-btn"
-                :disabled="authStore.loading || !isFormValid">
+                :disabled="authStore.loading || validator.$invalid">
                     {{ authStore.loading? 'Signing in...' : 'Sign in' }}
                 </button>
             </form>
@@ -46,6 +46,8 @@
 <script setup>
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/notification';
+import useVuelidate from '@vuelidate/core';
+import { helpers, required } from '@vuelidate/validators';
 import { computed, reactive } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -54,31 +56,24 @@ const authStore = useAuthStore();
 const notify = useNotificationStore();
 
 const form = reactive({ email: '', password: '' });
-const touched = reactive({ email: false, password: false });
 
-const errors = computed(() => {
-    const e = {};
-    if (!form.email) {
-        e.email = 'Email is required';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email)) {
-        e.email = 'Enter a valid email address';
-    }
-    if (!form.password) {
-        e.password = 'Password is required';
-    }
-    return e;
-})
+const isValidEmail = helpers.regex(/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/);
 
-const isFormValid = computed(() => {
-    return Object.keys(errors.value).length === 0;
-})
+const rules = computed(() => ({
+    email: {
+        required: helpers.withMessage('Login email is required', required),
+        valid: helpers.withMessage('Invalid email address', isValidEmail)
+    },
+    password: {
+        required: helpers.withMessage('Password is required', required)
+    }
+}));
+
+const validator = useVuelidate(rules, form);
 
 async function handleLogin() {
-    // Mark all as touched on submit attempt
-    touched.email = true;
-    touched.password = true;
-
-    if (!isFormValid.value) return;
+    validator.value.$touch();
+    if (validator.value.$invalid) return;
     
     const result = await authStore.login(form.email, form.password);
     if (result.success) {
