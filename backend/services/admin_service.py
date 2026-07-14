@@ -14,18 +14,26 @@ class AdminService:
     @staticmethod
     def get_dashboard():
         total_students = Student.query.count()
+        active_students = Student.query.join(User).filter(User.is_active == True).count()
+        blacklisted_students = Student.query.join(User).filter(User.is_blacklisted == True).count()
         total_companies = Company.query.count()
         pending_companies = Company.query.filter_by(status = 'Pending').count()
+        blacklisted_companies = Company.query.join(User).filter(User.is_blacklisted == True).count()
         total_drives = PlacementDrive.query.count()
+        approved_drives = PlacementDrive.query.filter_by(status = 'Approved').count()
         pending_drives = PlacementDrive.query.filter_by(status = 'Pending').count()
         total_applications = Application.query.count()
         total_placements = Placement.query.count()
 
         return {
             "total_students": total_students,
+            "active_students": active_students,
+            "blacklisted_students": blacklisted_students,
             "total_companies": total_companies,
             "pending_companies": pending_companies,
+            "blacklisted_companies": blacklisted_companies,
             "total_drives": total_drives,
+            "approved_drives": approved_drives,
             "pending_drives": pending_drives,
             "total_applications":  total_applications,
             "total_placements": total_placements

@@ -3,43 +3,105 @@
         <div class="page-title">Welcome, Admin</div>
 
         <AppSpinner v-if="loading" />
-        <div v-else class="stats-grid mt-32">
-            <div class="stat-card is-info">
-                <div class="stat-card-value is-info">{{  stats.total_students  }}</div>
-                <div class="stat-card-label is-info">Total Students</div>
+        <template v-else>
+            <div class="custom-grid">
+                <div class="title-card stat-card">
+                    <div class="stat-card-value"><i class="fas fa-user"></i></div>
+                    <div class="stat-card-label">Students</div>
+                </div>             
+                <div class="stats-grid">
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{  stats.total_students  }}</div>
+                        <div class="stat-card-label is-info">Total Students</div>
+                    </div>
+                    <div class="stat-card is-success">
+                        <div class="stat-card-value is-success">{{  stats.active_students  }}</div>
+                        <div class="stat-card-label is-success">Active Students</div>
+                    </div>
+                    <div class="stat-card is-error">
+                        <div class="stat-card-value is-error">{{  stats.blacklisted_students  }}</div>
+                        <div class="stat-card-label is-error">Blacklisted Students</div>
+                    </div>        
+                </div>
             </div>
-            <div class="stat-card is-info">
-                <div class="stat-card-value is-info">{{ stats.total_companies }}</div>
-                <div class="stat-card-label is-info">Total Companies</div>
+            
+            <div class="custom-grid">
+                <div class="title-card stat-card">
+                    <div class="stat-card-value"><i class="fas fa-building"></i></div>
+                    <div class="stat-card-label">Companies</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{ stats.total_companies }}</div>
+                        <div class="stat-card-label is-info">Total Companies</div>
+                    </div>
+                    <div class="stat-card is-warning">
+                        <div class="stat-card-value is-warning">{{ stats.pending_companies }}</div>
+                        <div class="stat-card-label is-warning">Pending Companies</div>
+                    </div>
+                    <div class="stat-card is-error">
+                        <div class="stat-card-value is-error">{{  stats.blacklisted_companies  }}</div>
+                        <div class="stat-card-label is-error">Blacklisted Companies</div>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card is-warning">
-                <div class="stat-card-value is-warning">{{ stats.pending_companies }}</div>
-                <div class="stat-card-label is-warning">Pending Companies</div>
+            
+            <div class="custom-grid">
+                <div class="title-card stat-card">
+                    <div class="stat-card-value"><i class="fas fa-briefcase"></i></div>
+                    <div class="stat-card-label">Drives</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{ stats.total_drives }}</div>
+                        <div class="stat-card-label is-info">Total Drives</div>
+                    </div>
+                    <div class="stat-card is-success">
+                        <div class="stat-card-value is-success">{{ stats.approved_drives }}</div>
+                        <div class="stat-card-label is-success">Approved Drives</div>
+                    </div>
+                    <div class="stat-card is-warning">
+                        <div class="stat-card-value is-warning">{{ stats.pending_drives }}</div>
+                        <div class="stat-card-label is-warning">Pending Drives</div>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card is-info">
-                <div class="stat-card-value is-info">{{ stats.total_drives }}</div>
-                <div class="stat-card-label is-info">Total Drives</div>
+
+            <div class="custom-grid">
+                <div class="title-card stat-card">
+                    <div class="stat-card-value"><i class="fas fa-file-alt"></i></div>
+                    <div class="stat-card-label">Applications</div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card is-info">
+                        <div class="stat-card-value is-info">{{ stats.total_applications }}</div>
+                        <div class="stat-card-label is-info">Total Applications</div>
+                    </div>
+                    <div class="stat-card is-success">
+                        <div class="stat-card-value is-success">{{ stats.total_placements }}</div>
+                        <div class="stat-card-label is-success">Total Placements</div>
+                    </div>
+                </div>
             </div>
-            <div class="stat-card is-warning">
-                <div class="stat-card-value is-warning">{{ stats.pending_drives }}</div>
-                <div class="stat-card-label is-warning">Pending Drives</div>
-            </div>
-            <div class="stat-card is-info">
-                <div class="stat-card-value is-info">{{ stats.total_applications }}</div>
-                <div class="stat-card-label is-info">Total Applications</div>
-            </div>
-            <div class="stat-card is-success">
-                <div class="stat-card-value is-success">{{ stats.total_placements }}</div>
-                <div class="stat-card-label is-success">Total Placements</div>
-            </div>
-        </div>
+        </template>
     </div>
 </template>
 
 <style scoped>
+.custom-grid {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.title-card.stat-card {
+    text-align: center;
+    width: 125px;
+}
+
 .stats-grid {    
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  grid-template-columns: repeat(5, 1fr);
 }
 </style>
 
