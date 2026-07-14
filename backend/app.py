@@ -5,6 +5,10 @@ from extensions import db, migrate, jwt, mail, cors
 from routes import register_blueprints
 from utils.error_handlers import register_error_handlers
 from seed import run_seed
+from jobs.celery_app import make_celery
+from jobs.daily_reminder import send_daily_reminders
+from jobs.monthly_report import generate_monthly_report
+from jobs.export_csv import export_applications_csv
 
 def create_app(config_class = Config):
     app = Flask(__name__)
@@ -34,6 +38,9 @@ def create_app(config_class = Config):
 
     return app
 
+
+app = create_app()
+celery = make_celery(app)
+
 if __name__ == '__main__':
-    app = create_app()
     app.run(debug = True, port = 8443)

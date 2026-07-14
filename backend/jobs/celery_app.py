@@ -1,22 +1,25 @@
 from celery import Celery
 from celery.schedules import crontab
 
+from config import Config
+
 def make_celery(app):
     celery = Celery(
         app.import_name,
         broker = app.config['CELERY_BROKER_URL'],
-        backend = app.config['CELERY_RESULT_BACKEND']
+        backend = app.config['CELERY_RESULT_BACKEND'], 
+        include = ["jobs.daily_reminder", "jobs.monthly_export", "jobs.export_csv"]
     )
     celery.conf.update(app.config)
 
     celery.conf.beat_schedule = {
         'daily-reminder': {
             'task': 'jobs.daily_reminder.send_daily_reminders',
-            'schedule': crontab(hour = 12, minute = 0)
+            'schedule': crontab(hour = Config.DAILY_REMINDER_HOUR, minute = Config.DAILY_REMINDER_MINUTE)
         },
         'monthly-report': {
             'task': 'jobs.monthly_report.generate_monthly_report',
-            'schedule': crontab(day_of_month = 14, hour = 12, minute = 0)
+            'schedule': crontab(day_of_month = Config.MONTHLY_REPORT_DAY, hour = Config.MONTHLY_REPORT_HOUR, minute = Config.MONTHLY_REPORT_MINUTE)
         }
     }
 

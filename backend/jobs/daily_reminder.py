@@ -1,22 +1,26 @@
 import logging
+from config import Config
 from datetime import date, timedelta
+from extensions import mail
 from flask_mail import Message
 from models.application import Application
 from models.placement_drive import PlacementDrive
 from models.student import Student
 from models.user import User
+from celery import shared_task
 
 logger = logging.getLogger(__name__)
 
-def send_daily_reminders(self):
-    upcoming_date = date.today() + timedelta(days = 3)
+@shared_task(name = "jobs.daily_reminder.send_daily_reminders")
+def send_daily_reminders():
+    upcoming_date = date.today() + timedelta(days = Config.DAILY_REMINDER_DEADLINE)
     drives = PlacementDrive.query.filter(
         PlacementDrive.status == 'Approved', 
         PlacementDrive.application_deadline <= upcoming_date,
         PlacementDrive.application_deadline >= date.today()).all()
     
     if not drives:
-        logger.info("[REMINDER] No upcoming deadlines (with deadlin in 3 days)")
+        logger.info(f"[REMINDER] No upcoming deadlines (with deadline in {Config.DAILY_REMINDER_DEADLINE} days)")
         return "No reminders"
 
     students = Student.query.join(User).filter(
@@ -50,7 +54,7 @@ def send_daily_reminders(self):
                 for drive in eligible_drives
             )
             try:
-                mail = Message(
+                message = Message(
                     subject = "Placement Portal - Upcoming Drive Application Deadline Reminder",
                     recipients = [user.email],
                     body = (
