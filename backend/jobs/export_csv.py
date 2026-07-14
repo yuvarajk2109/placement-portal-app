@@ -20,7 +20,7 @@ def export_applications_csv(user_id):
     
     student = Student.query.filter_by(user_id = user_id).first()
     if not student:
-        logger.error("Student not found with user_id =", user_id)
+        logger.error(f"Student not found with user_id = {user_id}")
         return "Student not found"
     
     user = User.query.get(user_id)
@@ -54,14 +54,14 @@ def export_applications_csv(user_id):
                 application.application_status,
                 application.feedback,
                 application.applied_date.isoformat() if application.applied_date else '',
-                application.updated_date.isoformat() if application.updated_at else ''
+                application.updated_at.isoformat() if application.updated_at else ''
             ])
 
-        try:
-            message = Message(
-                subject = "Placement Portal - Application Export is Ready",
-                recipients = [user.email],
-                body = (
+    try:
+        message = Message(
+            subject = "Placement Portal - Application Export is Ready",
+            recipients = [user.email],
+            body = (
 f'''
 Hi {student.fname},
 
@@ -69,16 +69,16 @@ Your application history export is ready and attached to this email.
 
 Regards,
 Placement Portal Team'''
-                )
             )
-            with open(file_path, 'rb') as f:
-                message.attach(file_name, 'text/csv', f.read())
-            mail.send(message)
-            logger.info("[EXPORT] Applications CSV sent to", {user.email})
-        except Exception as e:
-            logger.error("Failed to send CSV export:", e)
+        )
+        with open(file_path, 'rb') as f:
+            message.attach(file_name, 'text/csv', f.read())
+        mail.send(message)
+        logger.info(f"[EXPORT] Applications CSV sent to {user.email}; CSV size = {os.path.getsize(file_path)} bytes")
+    except Exception as e:
+        logger.error(f"Failed to send CSV export: {e}")
 
-        return {
-            "file": file_name,
-            "status": "completed"
-        }
+    return {
+        "file": file_name,
+        "status": "completed"
+    }

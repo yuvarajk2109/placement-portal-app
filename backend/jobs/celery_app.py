@@ -6,11 +6,15 @@ from config import Config
 def make_celery(app):
     celery = Celery(
         app.import_name,
-        broker = app.config['CELERY_BROKER_URL'],
-        backend = app.config['CELERY_RESULT_BACKEND'], 
-        include = ["jobs.daily_reminder", "jobs.monthly_export", "jobs.export_csv"]
+        include = ["jobs.daily_reminder", "jobs.monthly_report", "jobs.export_csv"]
     )
-    celery.conf.update(app.config)
+    celery.conf.update(
+        broker_url=app.config['CELERY_BROKER_URL'],
+        result_backend=app.config['CELERY_RESULT_BACKEND'],
+        timezone='Asia/Kolkata',
+        enable_utc=True
+    )
+    celery.set_default()
 
     celery.conf.beat_schedule = {
         'daily-reminder': {

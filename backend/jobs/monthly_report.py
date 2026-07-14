@@ -32,22 +32,22 @@ def generate_monthly_report():
 
     total_applications_count = Application.query.filter(
         Application.applied_date >= previous_month_start,
-        Application.applied_date <= previous_month_end
+        Application.applied_date <= current_month_start
     ).count()
 
     active_applications_count = Application.query.filter(
         Application.applied_date >= previous_month_start,
-        Application.applied_date <= previous_month_end,
+        Application.applied_date <= current_month_start,
         Application.application_status != 'Inactive'
     ).count()
 
     placements_count = Placement.query.filter(
-        Placement.created_at <= previous_month_start,
-        Placement.created_at >= previous_month_end
-    )
+        Placement.created_at >= previous_month_start,
+        Placement.created_at <= current_month_start
+    ).count()
 
     report = {
-         'time_period': f"{previous_month_start.strftime('%d %B %Y') - {current_month_start.strftime('%d %B %Y')}}",
+         'time_period': f"{previous_month_start.strftime('%d %B %Y')} - {current_month_start.strftime('%d %B %Y')}",
          'total_drives_count': total_drives_count,
          'approved_drives_count': approved_drives_count,
          'total_applications_count': total_applications_count,
@@ -67,7 +67,7 @@ def generate_monthly_report():
                 html = html_content
             )
             mail.send(message)
-            logger.info("[REPORT] Monthly report sent to", {admin.email})
+            logger.info(f"[REPORT] Monthly report sent to {admin.email}")
         except Exception as e:
-            logger.error("Failed to send monthly report:", e)
+            logger.error(f"Failed to send monthly report: {e}")
     return report

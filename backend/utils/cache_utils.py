@@ -1,12 +1,11 @@
 from functools import wraps
 import logging
 from extensions import redis_client
-from flask import request
-import json
+from flask import request, Response
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_TTL = 30
+DEFAULT_TTL = 300
 
 def cache_response(ttl = DEFAULT_TTL, key_prefix = None):
     def decorator(fn):
@@ -19,19 +18,20 @@ def cache_response(ttl = DEFAULT_TTL, key_prefix = None):
             try:
                 cached = redis_client.get(cache_key)
                 if cached:
-                    logger.debug("Cache HIT:", cache_key)
-                    return json.loads(cached), 200
+                    logger.debug(f"Cache HIT: {cache_key}")                    
+                    return Response(cached, mimetype='application/json'), 200
             except Exception as e:
-                logger.warning("Redis READ ERROR", e)
+                logger.warning(f"Redis READ ERROR: {e}")
             result = fn(*args, **kwargs)
             if isinstance(result, tuple):
                 response_data, status_code = result
                 if status_code == 200:
                     try:
-                        redis_client.setex(cache_key, ttl, json.dumps(response_data))
+                        json_str = response_data.get_data(as_text=True)
+                        redis_client.setex(cache_key, ttl, json_str)
                         logger.debug(f"Cache SET: {cache_key}, TTL = {ttl}s")
                     except Exception as e:
-                        logger.warning("Redis WRITE ERROR:", e)
+                        logger.warning(f"Redis WRITE ERROR: {e}")
                 return response_data, status_code
             return result
         return wrapper
@@ -44,6 +44,6 @@ def invalidate_cache(pattern):
         keys = redis_client.keys(f"cache:{pattern}:*")
         if keys:
             redis_client.delete(*keys)
-            logger.info(f"Cache INVALIDATED: {len(keys)} keys matching '{pattern}")
+            logger.info(f"Cache INVALIDATED: {len(keys)} keys matching '{pattern}'")
     except Exception as e:
-        logger.warning("Redis INVALIDATION ERROR:", e)
+        logger.warning(f"Redis INVALIDATION ERROR: {e}")
