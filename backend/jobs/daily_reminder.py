@@ -50,7 +50,7 @@ def send_daily_reminders():
 
         if eligible_drives:
             drive_list = "\n".join(
-                f" - {drive.job_title} (Deadline: {drive.application_deadline.strftime('%Y-%m-%d %H:%M')})""
+                f" - {drive.job_title} (Deadline: {drive.application_deadline.strftime('%Y-%m-%d %H:%M')})"
                 for drive in eligible_drives
             )
             try:
