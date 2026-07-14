@@ -57,8 +57,8 @@ class SharedService:
     
     @staticmethod
     def get_dashboard():
-        total_students = Student.query.join(User).filter(User.is_blacklisted == False).count()
-        total_companies = Company.query.join(User).filter(User.is_blacklisted == False).count()
+        total_students = Student.query.join(User).filter(User.is_blacklisted == False, User.is_verified == True).count()
+        total_companies = Company.query.join(User).filter(User.is_blacklisted == False, User.is_active == True).count()
         total_placements = Placement.query.count()
         avg_placement_salary = db.session.query(func.avg(Placement.salary)).scalar() or 0
         return {

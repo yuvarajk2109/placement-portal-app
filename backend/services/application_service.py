@@ -1,3 +1,4 @@
+from utils.cache_utils import invalidate_cache
 from config import Config
 from extensions import db, mail
 from models.user import User
@@ -148,6 +149,11 @@ Placement Portal Team
             except Exception as e:
                 logger.warning(f"Could not send status notification to {user.email}: {e}")
 
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('company_dashboard')
+        if new_status == 'Selected':
+            invalidate_cache('home_dashboard')
+
         return  {
             "message": f"Application status updated to '{new_status}'"
         }, 200
@@ -222,6 +228,10 @@ Placement Portal Team
         company = Company.query.filter_by(company_id = drive.company_id).first()
 
         logger.info(f"Student {student.fname} {student.lname} ({student.register_no}) has applied for drive {drive_id} - {drive.job_title} by {company.company_name}")
+
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('company_dashboard')
+        
         return {
             "message": "Application submitted successfully",
             "application_id": application.application_id

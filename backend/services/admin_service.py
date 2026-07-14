@@ -1,3 +1,4 @@
+from utils.cache_utils import invalidate_cache
 from extensions import db
 from models.user import User
 from models.student import Student
@@ -96,6 +97,11 @@ class AdminService:
         db.session.commit()
 
         logger.info(f"Status of Company '{company.company_name}' updated to {new_status}.")
+
+        invalidate_cache('admin_companies')
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('home_dashboard')
+
         return {
             "message": f"Company {new_status} successfully."
         }, 200
@@ -116,6 +122,11 @@ class AdminService:
         db.session.commit()
 
         logger.info(f"Company '{company.company_name}' removed (soft-delete)")
+
+        invalidate_cache('admin_companies')
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('home_dashboard')
+
         return {
             "message": "Company removed successfully"
         }, 200
@@ -143,6 +154,11 @@ class AdminService:
 
         action = "blacklisted" if blacklist else "unblacklisted"
         logger.info(f"Company '{company.company_name}' {action}")
+
+        invalidate_cache('admin_companies')
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('home_dashboard')
+
         return {
             "message": f"Company {action} successfully"
         }, 200
@@ -193,6 +209,11 @@ class AdminService:
         db.session.commit()
 
         logger.info(f"Status of Drive '{drive.job_title} (id = {drive_id}) updated to {new_status}")
+
+        invalidate_cache('admin_drives')
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('student_drives')
+
         return {
             "message": f"Drive {new_status} successfully"
         }, 200
@@ -267,6 +288,11 @@ class AdminService:
 
         action = "blacklisted" if blacklist else "unblacklisted"
         logger.info(f'Student {student.fname} {student.lname}, with register no. {register_no} {action}')
+
+        invalidate_cache('admin_students')
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('home_dashboard')
+
         return {
             "message": f"Student {action} successfully"
         }, 200
@@ -290,6 +316,10 @@ class AdminService:
 
         action = "activated" if active else "deactivated"
         logger.info(f'Student {student.fname} {student.lname}, with register no. {register_no} {action}')
+
+        invalidate_cache('admin_students')
+        invalidate_cache('admin_dashboard')
+
         return {
             "message": f"Student {action} successfully"
         }, 200

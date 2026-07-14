@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from utils.cache_utils import cache_response
 from utils.decorators import role_required, validate_json
 from services.student_service import StudentService
 from services.application_service import ApplicationService
@@ -8,6 +9,7 @@ student_bp = Blueprint('student', __name__, url_prefix = '/api/student')
 
 @student_bp.route('/dashboard', methods = ['GET'])
 @role_required('student')
+@cache_response(key_prefix='student_dashboard')
 def dashboard(current_user_id):
     result, status = StudentService.get_dashboard(current_user_id)
     return jsonify(result), status
@@ -65,6 +67,7 @@ def download_resume(current_user_id):
 
 @student_bp.route('/drives', methods = ['GET'])
 @role_required('student')
+@cache_response(key_prefix='student_drives')
 def list_eligible_drives(current_user_id):
     search = request.args.get('search')
     location = request.args.get('location')

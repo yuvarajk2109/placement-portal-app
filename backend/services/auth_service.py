@@ -4,6 +4,7 @@ import string
 from datetime import datetime, timedelta
 from flask_jwt_extended import create_access_token, create_refresh_token
 from flask_mail import Message
+from utils.cache_utils import invalidate_cache
 from extensions import db, mail
 from models.user import User
 from models.student import Student
@@ -143,6 +144,8 @@ class AuthService:
         user.otp_code = None
         user.otp_expires_at = None
         db.session.commit()
+
+        invalidate_cache('home_dashboard')
 
         return {
             "message": "Email verified successfully"

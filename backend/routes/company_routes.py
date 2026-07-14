@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from utils.cache_utils import cache_response
 from utils.decorators import role_required, validate_json
 from services.company_service import CompanyService
 from services.drive_service import DriveService
@@ -9,6 +10,7 @@ company_bp = Blueprint('company', __name__, url_prefix='/api/company')
 
 @company_bp.route('/dashboard', methods = ['GET'])
 @role_required('company')
+@cache_response(key_prefix='company_dashboard')
 def dashboard(current_user_id):
     result, status = CompanyService.get_dashboard(current_user_id)
     return jsonify(result), status

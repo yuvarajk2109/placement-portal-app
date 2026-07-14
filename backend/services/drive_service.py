@@ -1,3 +1,4 @@
+from utils.cache_utils import invalidate_cache
 from config import Config
 from extensions import db
 from models.branch import Branch
@@ -70,6 +71,10 @@ class DriveService:
         db.session.commit()
 
         logger.info(f"Company {company.company_name} created drive '{drive.job_title}' of type {drive.drive_type}, with ID {drive.drive_id}")
+
+        invalidate_cache('admin_drives')
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('company_dashboard')
 
         return {
             "message": "Placement drive created. Awaiting admin approval.",
@@ -245,6 +250,12 @@ class DriveService:
 
         db.session.commit()
 
+        invalidate_cache('admin_drives')
+        invalidate_cache('admin_dashboard')
+        invalidate_cache('student_drives')
+        invalidate_cache('student_dashboard')
+        invalidate_cache('company_dashboard')
+
         logger.info(f"Company {company.company_name} updated drive '{drive.job_title}' (ID: {drive.drive_id})")
         return {
             "message": "Drive updated successfully, requires admin approval. All applications marked as Inactive."
@@ -264,6 +275,10 @@ class DriveService:
         db.session.commit()
 
         logger.info(f"Company {company.company_name} closed drive '{drive.job_title}' (ID: {drive.drive_id})")
+
+        invalidate_cache('admin_drives')
+        invalidate_cache('admin_dashboard')
+
         return {
             "message": "Drive closed successfully"
         }, 200

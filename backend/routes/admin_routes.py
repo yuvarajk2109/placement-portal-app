@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from utils.cache_utils import cache_response
 from utils.decorators import role_required
 from services.admin_service import AdminService
 
@@ -6,6 +7,7 @@ admin_bp = Blueprint('admin', __name__, url_prefix = '/api/admin')
 
 @admin_bp.route('/dashboard', methods = ['GET'])
 @role_required('admin')
+@cache_response(key_prefix = 'admin_dashboard')
 def dashboard():
     result, status = AdminService.get_dashboard()
     return jsonify(result), status
@@ -23,6 +25,7 @@ def dashboard():
 
 @admin_bp.route('/companies', methods = ['GET'])
 @role_required('admin')
+@cache_response(key_prefix = 'admin_companies')
 def list_companies():
     status_filter = request.args.get('status')
     search = request.args.get('search')
@@ -71,6 +74,7 @@ def unblacklist_company(company_id):
 
 @admin_bp.route('/drives', methods = ['GET'])
 @role_required('admin')
+@cache_response(key_prefix = 'admin_drives')
 def list_drives():
     status_filter = request.args.get('status')
     page = request.args.get('page', 1, type = int)
@@ -102,6 +106,7 @@ def reject_drive(drive_id):
 
 @admin_bp.route('/students', methods = ['GET'])
 @role_required('admin')
+@cache_response(key_prefix = 'admin_students')
 def list_students():
     search = request.args.get('search')
     status_filter = request.args.get('status')

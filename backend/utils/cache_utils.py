@@ -1,3 +1,4 @@
+from functools import wraps
 import logging
 from extensions import redis_client
 from flask import request
@@ -5,7 +6,7 @@ import json
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_TTL = 600
+DEFAULT_TTL = 30
 
 def cache_response(ttl = DEFAULT_TTL, key_prefix = None):
     def decorator(fn):
