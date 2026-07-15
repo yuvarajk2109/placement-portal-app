@@ -31,7 +31,7 @@ class Config:
     DATABASE_PATH = os.path.abspath(os.path.join(ROOT_DIR, "db", "placement_portal.db"))
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{DATABASE_PATH}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    ITEMS_PER_PAGE = 10
+    ITEMS_PER_PAGE = 5
 
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'yuvaraj_k_jwt_secret_key_long_secure_string_bruv')
     JWT_ACCESS_TOKEN_EXPIRES = 3600
@@ -81,6 +81,8 @@ class Config:
     CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
     CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/1')
+
+    DEFAULT_TTL = 300
     
     DAILY_REMINDER_HOUR = 19
     DAILY_REMINDER_MINUTE = 0

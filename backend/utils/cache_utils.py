@@ -1,13 +1,12 @@
 from functools import wraps
 import logging
+from config import Config
 from extensions import redis_client
 from flask import request, Response
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_TTL = 300
-
-def cache_response(ttl = DEFAULT_TTL, key_prefix = None):
+def cache_response(ttl = Config.DEFAULT_TTL, key_prefix = None):
     def decorator(fn):
         @wraps(fn)
         def wrapper(*args, **kwargs):
