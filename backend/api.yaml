@@ -1,0 +1,2143 @@
+openapi: 3.0.3
+info:
+  title: Placement Portal API
+  description: |
+    REST API for the Placement Portal application. Supports three roles: **Admin**, **Student**, and **Company**.
+    
+    Authentication is via JWT Bearer tokens. Use `/api/auth/login` to obtain tokens.
+    
+    **Test Credentials:**
+    - Admin: `admin@placement.edu` / `admin123`
+    - Student: `2023101001@university.edu` / `user123`
+    - Company (Amazon): `company01@email.com` / `com123`
+  version: 1.0.0
+  contact:
+    name: Yuvaraj K
+
+servers:
+  - url: http://localhost:8443
+    description: Local development server
+
+tags:
+  - name: Auth
+    description: Authentication & Registration
+  - name: Admin
+    description: Admin dashboard & management
+  - name: Student
+    description: Student profile, drives, applications & placement
+  - name: Company
+    description: Company profile, drives, applications & interviews
+  - name: Shared
+    description: Public/shared data endpoints (skills, branches, drive types)
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Access Token from `/api/auth/login`
+    RefreshAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT Refresh Token from `/api/auth/login`
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Something went wrong"
+
+    Message:
+      type: object
+      properties:
+        message:
+          type: string
+
+    PaginationParams:
+      type: object
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        pages:
+          type: integer
+
+    # ── Auth Schemas ──
+    StudentRegistration:
+      type: object
+      required: [email, password, register_no, fname, lname, dob, cgpa, branch_id]
+      properties:
+        email:
+          type: string
+          format: email
+          example: "2024101001@university.edu"
+        password:
+          type: string
+          example: "user123"
+        register_no:
+          type: string
+          pattern: '^\d{10}$'
+          example: "2024101001"
+          description: "Format: YYYYDDDRRR (Year + Dept ID + Serial)"
+        fname:
+          type: string
+          example: "Karthik"
+        lname:
+          type: string
+          example: "Subramanian"
+        dob:
+          type: string
+          format: date
+          example: "2003-05-15"
+        cgpa:
+          type: number
+          format: float
+          example: 8.5
+        branch_id:
+          type: integer
+          example: 1
+        phone:
+          type: string
+          example: "9876543210"
+        skill_ids:
+          type: array
+          items:
+            type: integer
+          example: [1, 5, 8]
+
+    CompanyRegistration:
+      type: object
+      required: [email, password, company_name, hr_email]
+      properties:
+        email:
+          type: string
+          format: email
+          example: "company@email.com"
+        password:
+          type: string
+          example: "com123"
+        company_name:
+          type: string
+          example: "Tech Corp"
+        hr_email:
+          type: string
+          format: email
+          example: "hr@techcorp.com"
+        industry:
+          type: string
+          example: "Technology"
+        website:
+          type: string
+          example: "https://techcorp.com"
+        location:
+          type: string
+          example: "Chennai, India"
+        description:
+          type: string
+        hr_name:
+          type: string
+          example: "Priya Sharma"
+        hr_phone:
+          type: string
+          example: "9876543210"
+
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+
+    LoginResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Login successful"
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+        user:
+          type: object
+          properties:
+            user_id:
+              type: integer
+            email:
+              type: string
+            role:
+              type: string
+              enum: [admin, student, company]
+
+    UserProfile:
+      type: object
+      properties:
+        user_id:
+          type: integer
+        email:
+          type: string
+        role:
+          type: string
+        is_active:
+          type: boolean
+        profile:
+          type: object
+          description: "Role-specific profile (student or company details)"
+
+    # ── Student Schemas ──
+    StudentProfile:
+      type: object
+      properties:
+        register_no:
+          type: string
+        email:
+          type: string
+        fname:
+          type: string
+        lname:
+          type: string
+        dob:
+          type: string
+          format: date
+        phone:
+          type: string
+        cgpa:
+          type: number
+        year_of_study:
+          type: integer
+        branch_name:
+          type: string
+        resume:
+          type: string
+          nullable: true
+        skill_ids:
+          type: array
+          items:
+            type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    StudentDashboard:
+      type: object
+      properties:
+        register_no:
+          type: string
+        student_name:
+          type: string
+        year_of_study:
+          type: integer
+        cgpa:
+          type: number
+        eligible_drives_count:
+          type: integer
+        total_applications:
+          type: integer
+        application_status_counts:
+          type: object
+          additionalProperties:
+            type: integer
+        is_placed:
+          type: boolean
+
+    # ── Company Schemas ──
+    CompanyProfile:
+      type: object
+      properties:
+        company_id:
+          type: integer
+        company_name:
+          type: string
+        industry:
+          type: string
+        website:
+          type: string
+        location:
+          type: string
+        description:
+          type: string
+        hr_name:
+          type: string
+        hr_email:
+          type: string
+        hr_phone:
+          type: string
+        status:
+          type: string
+          enum: [Pending, Approved, Rejected]
+        created_at:
+          type: string
+          format: date-time
+
+    CompanyDashboard:
+      type: object
+      properties:
+        company_name:
+          type: string
+        status:
+          type: string
+        total_drives:
+          type: integer
+        active_drives:
+          type: integer
+        pending_drives:
+          type: integer
+        total_applications:
+          type: integer
+        total_selected:
+          type: integer
+
+    # ── Drive Schemas ──
+    DriveCreate:
+      type: object
+      required: [job_title, job_desc, drive_type, cgpa_requirement, salary_max, application_deadline]
+      properties:
+        job_title:
+          type: string
+          example: "Software Engineer"
+        job_desc:
+          type: string
+          example: "Build scalable software systems."
+        drive_type:
+          type: string
+          enum:
+            - 2M Internship
+            - 5M Internship
+            - 6M Internship
+            - 5M Internship + Placement
+            - 6M Internship + Placement
+            - 5M Internship + Performance-based Placement
+            - 6M Internship + Performance-based Placement
+            - Direct Placement
+        cgpa_requirement:
+          type: number
+          example: 7.0
+        salary_min:
+          type: number
+          nullable: true
+          example: 500000
+        salary_max:
+          type: number
+          example: 1200000
+        location:
+          type: string
+          example: "Bangalore"
+        application_deadline:
+          type: string
+          format: date-time
+          example: "2026-09-15T23:59:59Z"
+        eligible_branches:
+          type: array
+          items:
+            type: integer
+          description: "Array of branch_id values"
+        skill_ids:
+          type: array
+          items:
+            type: integer
+
+    DriveDetail:
+      type: object
+      properties:
+        drive_id:
+          type: integer
+        job_title:
+          type: string
+        job_desc:
+          type: string
+        drive_type:
+          type: string
+        cgpa_requirement:
+          type: number
+        salary_min:
+          type: number
+          nullable: true
+        salary_max:
+          type: number
+        location:
+          type: string
+        application_deadline:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [Pending, Approved, Rejected, Closed]
+        company_name:
+          type: string
+        eligible_branches:
+          type: array
+          items:
+            type: object
+            properties:
+              branch_id:
+                type: integer
+              branch_name:
+                type: string
+        required_skills:
+          type: array
+          items:
+            type: object
+            properties:
+              skill_id:
+                type: integer
+              skill_name:
+                type: string
+        applications_count:
+          type: integer
+        interviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/InterviewDetail'
+
+    DriveSummary:
+      type: object
+      properties:
+        drive_id:
+          type: integer
+        job_title:
+          type: string
+        drive_type:
+          type: string
+        status:
+          type: string
+        application_deadline:
+          type: string
+          format: date-time
+        cgpa_requirement:
+          type: number
+        location:
+          type: string
+        applications_count:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+
+    # ── Application Schemas ──
+    ApplicationSummary:
+      type: object
+      properties:
+        application_id:
+          type: integer
+        drive_id:
+          type: integer
+        job_title:
+          type: string
+        company_name:
+          type: string
+        applied_date:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: [Applied, Shortlisted, Selected for Next Round, Selected, Rejected, Withdrawn, Inactive, Not Applied]
+        feedback:
+          type: string
+          nullable: true
+
+    ApplicationStatusUpdate:
+      type: object
+      required: [application_status]
+      properties:
+        application_status:
+          type: string
+          enum: [Shortlisted, Selected for Next Round, Selected, Rejected]
+        feedback:
+          type: string
+        joining_date:
+          type: string
+          format: date
+          description: "Required when status is 'Selected'"
+
+    # ── Interview Schemas ──
+    InterviewCreate:
+      type: object
+      required: [round_title, interview_date]
+      properties:
+        round_title:
+          type: string
+          example: "Technical Interview"
+        interview_date:
+          type: string
+          format: date-time
+          example: "2026-08-20T10:00:00Z"
+        location:
+          type: string
+          example: "On-Campus, Room 301"
+
+    InterviewDetail:
+      type: object
+      properties:
+        interview_id:
+          type: integer
+        round_number:
+          type: integer
+        round_title:
+          type: string
+        interview_date:
+          type: string
+          format: date-time
+        location:
+          type: string
+
+    # ── Placement Schemas ──
+    PlacementRecord:
+      type: object
+      properties:
+        placement_id:
+          type: integer
+        position:
+          type: string
+        drive_type:
+          type: string
+        salary:
+          type: number
+        joining_date:
+          type: string
+          format: date
+          nullable: true
+        job_title:
+          type: string
+        company_name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    # ── Admin Schemas ──
+    AdminDashboard:
+      type: object
+      properties:
+        total_students:
+          type: integer
+        active_students:
+          type: integer
+        blacklisted_students:
+          type: integer
+        total_companies:
+          type: integer
+        pending_companies:
+          type: integer
+        blacklisted_companies:
+          type: integer
+        total_drives:
+          type: integer
+        approved_drives:
+          type: integer
+        pending_drives:
+          type: integer
+        total_applications:
+          type: integer
+        total_placements:
+          type: integer
+
+    HomeDashboard:
+      type: object
+      properties:
+        total_students:
+          type: integer
+        total_companies:
+          type: integer
+        total_placements:
+          type: integer
+        avg_placement_salary:
+          type: number
+
+paths:
+  # ════════════════════════════════════════════════════════════════════════════
+  # AUTH ROUTES
+  # ════════════════════════════════════════════════════════════════════════════
+
+  /api/auth/register/student:
+    post:
+      tags: [Auth]
+      summary: Register a new student
+      description: |
+        Register number must be 10 digits (YYYYDDDRRR). Only 3rd and 4th year students can register.
+        Department code in the register number must match the selected branch's department.
+        An OTP is sent to the provided email for verification.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudentRegistration'
+      responses:
+        '201':
+          description: Registration successful, OTP sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user_id:
+                    type: integer
+        '400':
+          description: Validation error (invalid register number, year, branch mismatch)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: Email or register number already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /api/auth/verify-otp:
+    post:
+      tags: [Auth]
+      summary: Verify email OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, otp]
+              properties:
+                email:
+                  type: string
+                  format: email
+                otp:
+                  type: string
+                  example: "123456"
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: User not found or already verified
+        '401':
+          description: Invalid or expired OTP
+
+  /api/auth/resend-otp:
+    post:
+      tags: [Auth]
+      summary: Resend verification OTP
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email]
+              properties:
+                email:
+                  type: string
+                  format: email
+      responses:
+        '200':
+          description: New OTP sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '400':
+          description: Already verified
+        '404':
+          description: User not found
+
+  /api/auth/register/company:
+    post:
+      tags: [Auth]
+      summary: Register a new company
+      description: |
+        Company registration requires admin approval before the company can log in.
+        Companies are auto-verified (no OTP) but start with `Pending` status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRegistration'
+      responses:
+        '201':
+          description: Company registered, awaiting admin approval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  company_id:
+                    type: integer
+        '409':
+          description: Email already registered
+
+  /api/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login (all roles)
+      description: |
+        Returns JWT access and refresh tokens. Login will fail if:
+        - Account is deactivated or blacklisted
+        - Email is not verified (students)
+        - Company is not approved by admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          description: Invalid credentials
+        '403':
+          description: Account deactivated, blacklisted, or not verified
+
+  /api/auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token
+      security:
+        - RefreshAuth: []
+      responses:
+        '200':
+          description: New access token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+
+  /api/auth/profile:
+    get:
+      tags: [Auth]
+      summary: Get current user profile
+      description: Returns user info with role-specific profile data (student or company details).
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '404':
+          description: User not found
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # ADMIN ROUTES
+  # ════════════════════════════════════════════════════════════════════════════
+
+  /api/admin/dashboard:
+    get:
+      tags: [Admin]
+      summary: Get admin dashboard statistics
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminDashboard'
+
+  # ── Company Management ──
+
+  /api/admin/companies:
+    get:
+      tags: [Admin]
+      summary: List all companies
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Pending, Approved, Rejected]
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by company name or industry
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of companies
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      companies:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            company_id:
+                              type: integer
+                            company_name:
+                              type: string
+                            industry:
+                              type: string
+                            location:
+                              type: string
+                            hr_email:
+                              type: string
+                            status:
+                              type: string
+                            is_blacklisted:
+                              type: boolean
+                            created_at:
+                              type: string
+
+  /api/admin/companies/{company_id}/approve:
+    put:
+      tags: [Admin]
+      summary: Approve a company
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Company approved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '404':
+          description: Company not found
+
+  /api/admin/companies/{company_id}/reject:
+    put:
+      tags: [Admin]
+      summary: Reject a company
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Company rejected
+        '404':
+          description: Company not found
+
+  /api/admin/companies/{company_id}:
+    delete:
+      tags: [Admin]
+      summary: Remove a company (soft delete)
+      description: Sets user.is_active=False and company.status='Rejected'.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Company removed
+        '404':
+          description: Company not found
+
+  /api/admin/companies/{company_id}/blacklist:
+    put:
+      tags: [Admin]
+      summary: Blacklist a company
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Company blacklisted
+        '404':
+          description: Company not found
+
+  /api/admin/companies/{company_id}/unblacklist:
+    put:
+      tags: [Admin]
+      summary: Unblacklist a company
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: company_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Company unblacklisted
+        '404':
+          description: Company not found
+
+  # ── Drive Management ──
+
+  /api/admin/drives:
+    get:
+      tags: [Admin]
+      summary: List all drives
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Pending, Approved, Rejected, Closed]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of drives
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      drives:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DriveSummary'
+
+  /api/admin/drives/{drive_id}/approve:
+    put:
+      tags: [Admin]
+      summary: Approve a drive
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Drive approved
+        '404':
+          description: Drive not found
+
+  /api/admin/drives/{drive_id}/reject:
+    put:
+      tags: [Admin]
+      summary: Reject a drive
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Drive rejected
+        '404':
+          description: Drive not found
+
+  # ── Student Management ──
+
+  /api/admin/students:
+    get:
+      tags: [Admin]
+      summary: List all students
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [Active, Inactive, Blacklisted, Unblacklisted]
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by name or register number
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of students
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      students:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            register_no:
+                              type: string
+                            name:
+                              type: string
+                            cgpa:
+                              type: number
+                            year_of_study:
+                              type: integer
+                            branch:
+                              type: string
+                            is_active:
+                              type: boolean
+                            is_blacklisted:
+                              type: boolean
+                            created_at:
+                              type: string
+
+  /api/admin/students/{register_no}/blacklist:
+    put:
+      tags: [Admin]
+      summary: Blacklist a student
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: register_no
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student blacklisted
+        '404':
+          description: Student not found
+
+  /api/admin/students/{register_no}/unblacklist:
+    put:
+      tags: [Admin]
+      summary: Unblacklist a student
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: register_no
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student unblacklisted
+        '404':
+          description: Student not found
+
+  /api/admin/students/{register_no}/deactivate:
+    put:
+      tags: [Admin]
+      summary: Deactivate a student account
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: register_no
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student deactivated
+        '404':
+          description: Student not found
+
+  /api/admin/students/{register_no}/activate:
+    put:
+      tags: [Admin]
+      summary: Activate a student account
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: register_no
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Student activated
+        '404':
+          description: Student not found
+
+  # ── Applications & Placements ──
+
+  /api/admin/applications:
+    get:
+      tags: [Admin]
+      summary: List all applications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of all applications
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      applications:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            application_id:
+                              type: integer
+                            register_no:
+                              type: string
+                            student_name:
+                              type: string
+                            drive_id:
+                              type: integer
+                            job_title:
+                              type: string
+                            company_name:
+                              type: string
+                            status:
+                              type: string
+                            applied_date:
+                              type: string
+
+  /api/admin/placements:
+    get:
+      tags: [Admin]
+      summary: List all placements
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of all placements
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      placements:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            placement_id:
+                              type: integer
+                            application_id:
+                              type: integer
+                            register_no:
+                              type: string
+                            student_name:
+                              type: string
+                            student_email:
+                              type: string
+                            student_phone:
+                              type: string
+                            student_branch:
+                              type: string
+                            student_cgpa:
+                              type: number
+                            job_title:
+                              type: string
+                            drive_location:
+                              type: string
+                            company_name:
+                              type: string
+                            company_email:
+                              type: string
+                            company_industry:
+                              type: string
+                            position:
+                              type: string
+                            drive_type:
+                              type: string
+                            salary:
+                              type: number
+                            joining_date:
+                              type: string
+                            created_at:
+                              type: string
+
+  /api/admin/placements/{placement_id}:
+    get:
+      tags: [Admin]
+      summary: Get specific placement details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: placement_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Placement record with student and drive details
+        '404':
+          description: Placement not found
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # STUDENT ROUTES
+  # ════════════════════════════════════════════════════════════════════════════
+
+  /api/student/dashboard:
+    get:
+      tags: [Student]
+      summary: Get student dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Student dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDashboard'
+        '404':
+          description: Student not found
+
+  /api/student/profile:
+    get:
+      tags: [Student]
+      summary: Get student profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Student profile details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+        '404':
+          description: Student not found
+    put:
+      tags: [Student]
+      summary: Update student profile
+      description: "Updatable fields: fname, lname, dob, phone, cgpa, skill_ids"
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                fname:
+                  type: string
+                lname:
+                  type: string
+                dob:
+                  type: string
+                  format: date
+                phone:
+                  type: string
+                cgpa:
+                  type: number
+                skill_ids:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Profile updated
+        '400':
+          description: Invalid date format
+        '404':
+          description: Student not found
+
+  /api/student/resume:
+    post:
+      tags: [Student]
+      summary: Upload resume
+      description: "Allowed extensions: pdf, doc, docx. Max size: 5MB."
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [resume]
+              properties:
+                resume:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Resume uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  filename:
+                    type: string
+        '400':
+          description: No file or invalid extension
+        '413':
+          description: File too large
+    get:
+      tags: [Student]
+      summary: Download resume
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Resume file download
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Resume not found
+
+  /api/student/drives:
+    get:
+      tags: [Student]
+      summary: List eligible drives
+      description: |
+        Returns approved drives with future deadlines, filtered by year constraints:
+        - Year 3: only `2M Internship` drives
+        - Year 4: all drives except `2M Internship`
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Search by job title
+        - name: location
+          in: query
+          schema:
+            type: string
+        - name: drive_type
+          in: query
+          schema:
+            type: string
+        - name: min_salary
+          in: query
+          schema:
+            type: number
+        - name: application_status
+          in: query
+          schema:
+            type: string
+            enum: [Applied, Shortlisted, Selected for Next Round, Selected, Rejected, Withdrawn, Not Applied]
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of eligible drives with application status
+        '404':
+          description: Student not found
+
+  /api/student/drives/{drive_id}:
+    get:
+      tags: [Student]
+      summary: Get drive details (student view)
+      description: Returns drive info including whether the student has already applied.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Drive details with application status
+        '404':
+          description: Drive not found or not approved
+
+  /api/student/drives/{drive_id}/apply:
+    post:
+      tags: [Student]
+      summary: Apply for a drive
+      description: |
+        Business rules enforced:
+        - Drive must be `Approved` with a future deadline
+        - Student CGPA ≥ drive CGPA requirement
+        - Year 3 → only `2M Internship`; Year 4 → cannot apply to `2M Internship`
+        - Student branch must be in eligible branches
+        - Already placed students cannot apply
+        - No duplicate applications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: Application submitted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  application_id:
+                    type: integer
+        '400':
+          description: Deadline passed or CGPA too low
+        '403':
+          description: Not eligible (wrong year, branch, or already placed)
+        '409':
+          description: Already applied
+
+  /api/student/applications:
+    get:
+      tags: [Student]
+      summary: List student's applications
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Paginated list of student's applications
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      applications:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/ApplicationSummary'
+
+  /api/student/applications/{app_id}:
+    get:
+      tags: [Student]
+      summary: Get application details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: app_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Application details including current interview round
+        '403':
+          description: Application not found or not owned
+
+  /api/student/applications/{app_id}/withdraw:
+    put:
+      tags: [Student]
+      summary: Withdraw an application
+      description: "Can only withdraw if status is `Applied` or `Shortlisted`."
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: app_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Application withdrawn
+        '400':
+          description: Cannot withdraw (progressed beyond initial stages)
+        '403':
+          description: Application not found
+
+  /api/student/placement:
+    get:
+      tags: [Student]
+      summary: Get student's placement record
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Placement details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  placement:
+                    $ref: '#/components/schemas/PlacementRecord'
+        '404':
+          description: No placement found
+
+  /api/student/export/applications:
+    post:
+      tags: [Student]
+      summary: Export applications as CSV
+      description: "Triggers an async Celery task. CSV is emailed to the student's university email."
+      security:
+        - BearerAuth: []
+      responses:
+        '202':
+          description: Export started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # COMPANY ROUTES
+  # ════════════════════════════════════════════════════════════════════════════
+
+  /api/company/dashboard:
+    get:
+      tags: [Company]
+      summary: Get company dashboard
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Company dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyDashboard'
+        '404':
+          description: Company not found
+
+  /api/company/profile:
+    get:
+      tags: [Company]
+      summary: Get company profile
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Company profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanyProfile'
+        '404':
+          description: Company not found
+    put:
+      tags: [Company]
+      summary: Update company profile
+      description: |
+        Updatable: company_name, industry, website, location, description, hr_name, hr_email, hr_phone.
+        **Note:** Changing `hr_email` resets company status to `Pending` and triggers logout.
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                company_name:
+                  type: string
+                industry:
+                  type: string
+                website:
+                  type: string
+                location:
+                  type: string
+                description:
+                  type: string
+                hr_name:
+                  type: string
+                hr_email:
+                  type: string
+                hr_phone:
+                  type: string
+      responses:
+        '200':
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  logout:
+                    type: boolean
+                    description: "true if hr_email was changed, requiring re-approval"
+
+  /api/company/drives:
+    get:
+      tags: [Company]
+      summary: List company's drives
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Paginated list of drives
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      drives:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/DriveSummary'
+    post:
+      tags: [Company]
+      summary: Create a placement drive
+      description: "Only approved companies can create drives. Drive starts in `Pending` status."
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DriveCreate'
+      responses:
+        '201':
+          description: Drive created, awaiting approval
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  drive_id:
+                    type: integer
+                  drive_type:
+                    type: string
+        '400':
+          description: Invalid drive type or date format
+        '403':
+          description: Company not approved
+
+  /api/company/drives/{drive_id}:
+    get:
+      tags: [Company]
+      summary: Get drive details
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Full drive details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DriveDetail'
+        '403':
+          description: Access denied
+        '404':
+          description: Drive not found
+    put:
+      tags: [Company]
+      summary: Update a drive
+      description: |
+        Only `Pending` or `Approved` (pre-deadline) drives can be updated.
+        Updating resets status to `Pending` and marks all existing applications as `Inactive`.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                job_title:
+                  type: string
+                job_desc:
+                  type: string
+                drive_type:
+                  type: string
+                cgpa_requirement:
+                  type: number
+                salary_min:
+                  type: number
+                salary_max:
+                  type: number
+                location:
+                  type: string
+                application_deadline:
+                  type: string
+                  format: date-time
+                eligible_branch_ids:
+                  type: array
+                  items:
+                    type: integer
+                skill_ids:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: Drive updated, re-approval required
+        '400':
+          description: Drive already begun or invalid type/date
+        '403':
+          description: Access denied
+
+  /api/company/drives/{drive_id}/close:
+    put:
+      tags: [Company]
+      summary: Close a drive
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Drive closed
+        '403':
+          description: Access denied
+
+  /api/company/drives/{drive_id}/applications:
+    get:
+      tags: [Company]
+      summary: List applications for a drive
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Paginated list of applications for this drive
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationParams'
+                  - type: object
+                    properties:
+                      applications:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            application_id:
+                              type: integer
+                            register_no:
+                              type: string
+                            student_name:
+                              type: string
+                            cgpa:
+                              type: number
+                            applied_date:
+                              type: string
+                            application_status:
+                              type: string
+                            current_round:
+                              type: string
+                              nullable: true
+                            feedback:
+                              type: string
+                              nullable: true
+        '403':
+          description: Access denied
+
+  /api/company/applications/{app_id}/status:
+    put:
+      tags: [Company]
+      summary: Update application status
+      description: |
+        Valid actions: `Shortlisted`, `Selected for Next Round`, `Selected`, `Rejected`.
+        
+        **Special behaviors:**
+        - `Selected for Next Round`: auto-advances to the next interview round. If no next round exists, auto-promotes to `Selected`.
+        - `Selected`: creates a Placement record and auto-withdraws the student's other active applications.
+        - `Selected` requires a `joining_date` field.
+        
+        An email notification is sent to the student for each status change.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: app_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplicationStatusUpdate'
+      responses:
+        '200':
+          description: Application status updated
+        '400':
+          description: Invalid action or missing joining_date
+        '403':
+          description: Access denied
+        '404':
+          description: Application not found
+
+  # ── Interview Management ──
+
+  /api/company/drives/{drive_id}/interviews:
+    get:
+      tags: [Company]
+      summary: List interviews for a drive
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: List of interview rounds
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  interviews:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/InterviewDetail'
+        '403':
+          description: Access denied
+    post:
+      tags: [Company]
+      summary: Schedule an interview round
+      description: Round number is auto-incremented.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: drive_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterviewCreate'
+      responses:
+        '201':
+          description: Interview scheduled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  interview_id:
+                    type: integer
+                  round_number:
+                    type: integer
+        '400':
+          description: Invalid date format
+        '403':
+          description: Access denied
+
+  /api/company/interviews/{interview_id}:
+    put:
+      tags: [Company]
+      summary: Update an interview round
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: interview_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                round_title:
+                  type: string
+                interview_date:
+                  type: string
+                  format: date-time
+                location:
+                  type: string
+      responses:
+        '200':
+          description: Interview updated
+        '400':
+          description: Invalid date format
+        '403':
+          description: Access denied
+        '404':
+          description: Interview not found
+
+  # ════════════════════════════════════════════════════════════════════════════
+  # SHARED ROUTES (Public / No Auth Required)
+  # ════════════════════════════════════════════════════════════════════════════
+
+  /api/shared/skills:
+    get:
+      tags: [Shared]
+      summary: List all skills
+      responses:
+        '200':
+          description: List of skills
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  skills:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        skill_id:
+                          type: integer
+                        skill_name:
+                          type: string
+
+  /api/shared/branches:
+    get:
+      tags: [Shared]
+      summary: List all branches
+      responses:
+        '200':
+          description: List of branches
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  branches:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        branch_id:
+                          type: integer
+                        branch_name:
+                          type: string
+                        dept_id:
+                          type: integer
+
+  /api/shared/drive-types:
+    get:
+      tags: [Shared]
+      summary: List all valid drive types
+      responses:
+        '200':
+          description: List of drive types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  drive_types:
+                    type: array
+                    items:
+                      type: string
+
+  /api/shared/application-statuses:
+    get:
+      tags: [Shared]
+      summary: List all application statuses
+      responses:
+        '200':
+          description: List of student application statuses
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  application_statuses:
+                    type: array
+                    items:
+                      type: string
+
+  /api/shared/application-actions:
+    get:
+      tags: [Shared]
+      summary: List all application actions
+      description: "Actions a company can take on an application."
+      responses:
+        '200':
+          description: List of valid actions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  application_actions:
+                    type: array
+                    items:
+                      type: string
+
+  /api/shared/dashboard:
+    get:
+      tags: [Shared]
+      summary: Get public homepage dashboard
+      description: "Public stats shown on the landing page (no auth required)."
+      responses:
+        '200':
+          description: Homepage dashboard data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HomeDashboard'
