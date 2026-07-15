@@ -11,17 +11,21 @@
                 </div>             
                 <div class="stats-grid">
                     <div class="stat-card is-info">
-                        <div class="stat-card-value is-info">{{  stats.total_students  }}</div>
+                        <div class="stat-card-value is-info">{{ stats.total_students }}</div>
                         <div class="stat-card-label is-info">Total Students</div>
                     </div>
                     <div class="stat-card is-success">
-                        <div class="stat-card-value is-success">{{  stats.active_students  }}</div>
+                        <div class="stat-card-value is-success">{{ stats.active_students }}</div>
                         <div class="stat-card-label is-success">Active Students</div>
                     </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value">{{ stats.inactive_students }}</div>
+                        <div class="stat-card-label">Inactive Students</div>
+                    </div>   
                     <div class="stat-card is-error">
-                        <div class="stat-card-value is-error">{{  stats.blacklisted_students  }}</div>
+                        <div class="stat-card-value is-error">{{ stats.blacklisted_students }}</div>
                         <div class="stat-card-label is-error">Blacklisted Students</div>
-                    </div>        
+                    </div>       
                 </div>
             </div>
             
@@ -35,9 +39,17 @@
                         <div class="stat-card-value is-info">{{ stats.total_companies }}</div>
                         <div class="stat-card-label is-info">Total Companies</div>
                     </div>
+                    <div class="stat-card is-success">
+                        <div class="stat-card-value is-success">{{ stats.approved_companies }}</div>
+                        <div class="stat-card-label is-success">Active Companies</div>
+                    </div>
                     <div class="stat-card is-warning">
-                        <div class="stat-card-value is-warning">{{ stats.pending_companies }}</div>
+                        <div class="stat-card-value is-warning">{{ stats.rejected_companies }}</div>
                         <div class="stat-card-label is-warning">Pending Companies</div>
+                    </div>
+                    <div class="stat-card is-error">
+                        <div class="stat-card-value is-error">{{ stats.pending_companies }}</div>
+                        <div class="stat-card-label is-error">Rejected Companies</div>
                     </div>
                     <div class="stat-card is-error">
                         <div class="stat-card-value is-error">{{  stats.blacklisted_companies  }}</div>
@@ -63,6 +75,14 @@
                     <div class="stat-card is-warning">
                         <div class="stat-card-value is-warning">{{ stats.pending_drives }}</div>
                         <div class="stat-card-label is-warning">Pending Drives</div>
+                    </div>
+                    <div class="stat-card is-error">
+                        <div class="stat-card-value is-error">{{ stats.rejected_drives }}</div>
+                        <div class="stat-card-label is-error">Rejected Drives</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card-value">{{ stats.closed_drives }}</div>
+                        <div class="stat-card-label">Closed Drives</div>
                     </div>
                 </div>
             </div>

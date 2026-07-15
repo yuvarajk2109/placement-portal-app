@@ -16,13 +16,18 @@ class AdminService:
     def get_dashboard():
         total_students = Student.query.count()
         active_students = Student.query.join(User).filter(User.is_active == True).count()
+        inactive_students = Student.query.join(User).filter(User.is_active == False, User.is_blacklisted == False).count()
         blacklisted_students = Student.query.join(User).filter(User.is_blacklisted == True).count()
         total_companies = Company.query.count()
-        pending_companies = Company.query.filter_by(status = 'Pending').count()
+        approved_companies = Company.query.join(User).filter(User.is_verified == True, User.is_active == True, Company.status == 'Approved').count()
+        pending_companies = Company.query.join(User).filter(User.is_verified == False, User.is_active == False, Company.status == 'Pending').count()
+        rejected_companies = Company.query.join(User).filter(User.is_verified == False, User.is_active == False, Company.status == 'Rejected').count()
         blacklisted_companies = Company.query.join(User).filter(User.is_blacklisted == True).count()
         total_drives = PlacementDrive.query.count()
         approved_drives = PlacementDrive.query.filter_by(status = 'Approved').count()
         pending_drives = PlacementDrive.query.filter_by(status = 'Pending').count()
+        rejected_drives = PlacementDrive.query.filter_by(status = 'Rejected').count()
+        closed_drives = PlacementDrive.query.filter_by(status = 'Closed').count()
         total_applications = Application.query.count()
         total_placements = Placement.query.count()
 
@@ -31,13 +36,18 @@ class AdminService:
         return {
             "total_students": total_students,
             "active_students": active_students,
+            "inactive_students": inactive_students,
             "blacklisted_students": blacklisted_students,
             "total_companies": total_companies,
+            "approved_companies": approved_companies,
             "pending_companies": pending_companies,
+            "rejected_companies": rejected_companies,
             "blacklisted_companies": blacklisted_companies,
             "total_drives": total_drives,
             "approved_drives": approved_drives,
             "pending_drives": pending_drives,
+            "rejected_drives": rejected_drives,
+            "closed_drives": closed_drives,
             "total_applications":  total_applications,
             "total_placements": total_placements
         }, 200
@@ -90,12 +100,17 @@ class AdminService:
     @staticmethod
     def update_company_status(company_id, new_status):
         company = Company.query.get(company_id)
+        user = User.query.get(company_id)
         if not company:
             return {
                 "error": "Company not found"
             }, 404
         
         company.status = new_status
+        if company.status == 'Approved':
+            user.is_active = True
+            user.is_verified = True
+
         db.session.commit()
 
         logger.info(f"Status of Company '{company.company_name}' updated to {new_status}.")
