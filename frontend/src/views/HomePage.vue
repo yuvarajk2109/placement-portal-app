@@ -35,8 +35,8 @@
                 <div class="stat-card-label">Placements</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-value is-success">{{ stats.avg_placement_salary }}</div>
-                <div class="stat-card-label">Average Salary</div>
+                <div class="stat-card-value is-success">{{ formatSalary(stats.avg_placement_salary) }}</div>
+                <div class="stat-card-label">Average Salary (LPA)</div>
             </div>
         </div>
     </div>
@@ -93,6 +93,7 @@ import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/notification';
+import { formatSalary } from '@/utils/formatters';
 import { computed, onMounted, ref } from 'vue';
 
 const authStore = useAuthStore();

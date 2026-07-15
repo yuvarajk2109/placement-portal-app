@@ -20,3 +20,8 @@ export function formatDate(value) {
         year: 'numeric'
     });
 }
+
+export function formatSalary(value) {
+    if (!value && value !== 0) return '—';
+    return (value / 100000).toFixed(2);
+}

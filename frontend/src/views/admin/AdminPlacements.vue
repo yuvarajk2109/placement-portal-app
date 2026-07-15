@@ -1,6 +1,19 @@
 <template>
     <div class="main-page">
         <h1 class="page-title">All Placements</h1>
+        <div class="flex items-center justify-between mb-8">
+            <div class="page-toolbar">
+                <select class="form-select" v-model="driveTypeFilter" @change="page = 1; fetchData();">
+                    <option value="">All Drive Types</option>
+                    <option v-for="type in driveTypes" :key="type" :value="type">{{ type }}</option>
+                </select>                
+            </div>
+            <AppTooltip text="Reset Filters">
+                <button class="btn is-icon-only is-secondary" @click="resetCurrentFilters">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </AppTooltip>
+        </div>
         <AppSpinner v-if="loading" />
         <table v-else-if="placements.length > 0" class="data-table">
             <thead>
@@ -22,7 +35,7 @@
                     <td>{{ placement.company_name }}</td>
                     <td>{{ placement.position }}</td>
                     <td><span class="status is-info">{{ placement.drive_type }}</span></td>
-                    <td>{{ placement.salary }}</td>
+                    <td>{{ formatSalary(placement.salary) }}</td>
                     <td>{{ formatDate(placement.created_at) }}</td>
                 </tr>
             </tbody>
@@ -52,6 +65,7 @@
                 <span>{{ selectedPlacement.register_no }}</span>
             </div>
             <div class="flex justify-between">
+                <span>Student Email</span>
                 <span>{{ selectedPlacement.student_email }}</span>
             </div>
             <div class="flex justify-between">
@@ -95,7 +109,7 @@
             </div>
             <div class="flex justify-between">
                 <span>Salary (LPA)</span>
-                <span>{{ selectedPlacement.salary || '—' }}</span>
+                <span>{{ selectedPlacement.salary ? formatSalary(selectedPlacement.salary) : '—' }}</span>
             </div>
             <div class="flex justify-between">
                 <span>Placement Date</span>
@@ -112,7 +126,8 @@
 import AppModal from '@/components/ui/AppModal.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
-import { formatDate } from '@/utils/formatters';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
+import { formatDate, formatSalary } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
@@ -120,17 +135,39 @@ import { onMounted, ref } from 'vue';
 const notify = useNotificationStore();
 const loading = ref(true);
 const placements = ref([]);
+const driveTypes = ref([]);
+const driveTypeFilter = ref('');
 const page = ref(1);
 const totalPages = ref(1);
 const showDetail = ref(false);
 const selectedPlacement = ref(null);
 
-onMounted(fetchData);
+
+function resetCurrentFilters() {
+    driveTypeFilter.value = '';
+    page.value = 1;
+    fetchData();
+}
+
+onMounted(() => {
+    fetchDriveTypes();
+    fetchData();
+});
+
+async function fetchDriveTypes() {
+    try {
+        const result = await api.get('/shared/drive-types');
+        driveTypes.value = result.data.drive_types;
+    } catch (err) {
+        notify.error(err.response?.data?.error || 'Failed to load drive types');
+    }
+}
 
 async function fetchData() {
     loading.value = true;
     try {
-        const params = { page: page.value, per_page: 20 };
+        const params = { page: page.value };
+        if (driveTypeFilter.value) params.drive_type = driveTypeFilter.value;
         const result = await api.get('/admin/placements', { params });
         placements.value = result.data.placements || [];
         totalPages.value = result.data.pages;

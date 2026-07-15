@@ -26,8 +26,8 @@
                 <div class="detail-item">
                     <div class="detail-label">Salary</div>
                     <div class="detail-value">
-                        <span v-if="application.salary_min">{{ application.salary_min }} -</span>
-                        <span>{{ application.salary_max }} LPA</span>
+                        <span v-if="application.salary_min">{{ formatSalary(application.salary_min) }} - </span>
+                        <span>{{ formatSalary(application.salary_max) }} LPA</span>
                     </div>
                 </div>
                 <div class="detail-item">
@@ -93,7 +93,7 @@
 import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
-import { formatDateTime } from '@/utils/formatters';
+import { formatDateTime, formatSalary } from '@/utils/formatters';
 import { applicationStatusClass } from '@/utils/status';
 import { onMounted, ref } from 'vue';
 

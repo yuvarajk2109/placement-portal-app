@@ -1,15 +1,26 @@
 <template>
     <div class="main-page">
         <h1 class="page-title">Manage Students</h1>
-        <div v-if="students.length > 0" class="page-toolbar">
-            <input v-model="search" class="form-input search-input" placeholder="Search by name or register no..." @input="debouncedFetch">
-            <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
-                <option value="">All Statuses</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-                <option value="Blacklisted">Blacklisted</option>
-                <option value="Unblacklisted">Unblacklisted</option>
-            </select>
+        <div class="flex items-center justify-between mb-8">
+            <div class="page-toolbar">
+                <input v-model="search" class="form-input search-input" placeholder="Search by name or register no..." @input="debouncedFetch">
+                <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
+                    <option value="">All Statuses</option>
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                    <option value="Blacklisted">Blacklisted</option>
+                    <option value="Unblacklisted">Unblacklisted</option>
+                </select>
+                <select class="form-select" v-model="branchFilter" @change="page = 1; fetchData();">
+                    <option value="">All Branches</option>
+                    <option v-for="branch in branches" :key="branch.branch_id" :value="branch.branch_id">{{ branch.branch_name }}</option>
+                </select>                
+            </div>
+            <AppTooltip text="Reset Filters">
+                <button class="btn is-secondary is-icon-only" @click="resetCurrentFilters">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </AppTooltip>
         </div>
         <AppSpinner v-if="loading"/>
         <table v-else-if="students.length > 0" class="data-table">
@@ -58,6 +69,8 @@
 
 <script setup>
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
+import AppPagination from '@/components/ui/AppPagination.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { onMounted, ref } from 'vue';
@@ -65,10 +78,20 @@ import { onMounted, ref } from 'vue';
 const notify = useNotificationStore();
 const loading = ref(true);
 const students = ref([]);
+const branches = ref([]);
 const search = ref('');
 const statusFilter = ref('Active');
+const branchFilter = ref('');
 const page = ref(1);
 const totalPages = ref(1);
+
+function resetCurrentFilters() {
+    statusFilter.value = 'Active';
+    branchFilter.value = '';
+    search.value = '';
+    page.value = 1;
+    fetchData();
+}
 
 let debounceTimer = null;
 function debouncedFetch() {
@@ -79,17 +102,29 @@ function debouncedFetch() {
     }, 300);
 }
 
-onMounted(fetchData);
+onMounted(() => {
+    fetchBranches();
+    fetchData();
+});
+
+async function fetchBranches() {
+    try {
+        const result = await api.get('/shared/branches');
+        branches.value = result.data.branches;
+    } catch (err) {
+        notify.error('Failed to load branches');
+    }
+}
 
 async function fetchData() {
     loading.value = true;
     try {
         const params = {
-            page: page.value,
-            per_page: 20
+            page: page.value
         };
         if (search.value) params.search = search.value;
         if (statusFilter.value) params.status = statusFilter.value;
+        if (branchFilter.value) params.branch_id = branchFilter.value;
         const result = await api.get('/admin/students', { params });
         students.value = result.data.students;
         totalPages.value = result.data.pages;

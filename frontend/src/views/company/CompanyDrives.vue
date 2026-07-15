@@ -2,7 +2,9 @@
     <div class="main-page">
         <div class="flex items-center justify-between mb-24">
             <h1 class="page-title">Drives</h1>
-            <button class="btn is-primary" @click="showCreateModal = true"><i class="fas fa-plus"></i> Create Drive</button>
+            <AppTooltip text="Create Drive" position="left">
+                <button class="btn is-primary is-icon-only" @click="showCreateModal = true"><i class="fas fa-plus"></i></button>
+            </AppTooltip>
         </div>
         <AppSpinner v-if="loading" />
         <table v-else-if="drives.length > 0" class="data-table">
@@ -91,11 +93,11 @@
                 </div>
                 <div class="form-group flex gap-16">
                     <div class="flex-1">
-                        <label class="form-label" for="location">Min Salary (LPA)</label>
+                        <label class="form-label" for="location">Min Salary (PA)</label>
                         <input id="location" v-model="newDrive.salary_min" type="text" class="form-input">
                     </div>
                     <div class="flex-1">
-                        <label class="form-label" for="salary_max">Max Salary (LPA) <span class="required">(required)</span></label>
+                        <label class="form-label" for="salary_max">Max Salary (PA) <span class="required">(required)</span></label>
                         <input id="salary_max" v-model="newDrive.salary_max" type="text" @blur="validator.salary_max.$touch()" class="form-input" :class="{'is-error': validator.salary_max.$error}">
                         <span v-if="validator.salary_max.$error" class="form-error-text">{{ validator.salary_max.$errors[0].$message }}</span>
                     </div>
@@ -132,6 +134,7 @@
 <script setup>
 import AppModal from '@/components/ui/AppModal.vue';
 import AppMultiSelect from '@/components/ui/AppMultiSelect.vue';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';

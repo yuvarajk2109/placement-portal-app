@@ -1,13 +1,24 @@
 <template>
     <div class="main-page">
         <h1 class="page-title">Manage Drives</h1>
-        <div class="page-toolbar">
-            <select class="form-select" v-model="statusFilter" @change="page = 1; fetchData();">
-                <option value="">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="Rejected">Rejected</option>
-            </select>
+        <div class="flex items-center justify-between mb-8">
+            <div class="page-toolbar">
+                <select class="form-select" v-model="statusFilter" @change="page = 1; fetchData();">
+                    <option value="">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+                <select class="form-select" v-model="driveTypeFilter" @change="page = 1; fetchData();">
+                    <option value="">All Drive Types</option>
+                    <option v-for="type in driveTypes" :key="type" :value="type">{{ type }}</option>
+                </select>                
+            </div>
+            <AppTooltip text="Reset Filters">
+                <button class="btn is-secondary is-icon-only" @click="resetCurrentFilters">
+                    <i class="fas fa-undo"></i>
+                </button>
+            </AppTooltip>
         </div>
         <AppSpinner v-if="loading" />
         <table v-else-if="drives.length > 0" class="data-table">
@@ -52,6 +63,8 @@
 
 <script setup>
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
+import AppPagination from '@/components/ui/AppPagination.vue';
 import { formatDate } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
@@ -61,17 +74,39 @@ import { driveStatusClass } from '@/utils/status';
 const notify = useNotificationStore();
 const loading = ref(true);
 const drives = ref([]);
+const driveTypes = ref([]);
 const statusFilter = ref('');
+const driveTypeFilter = ref('');
 const page = ref(1);
 const totalPages = ref(1);
 
-onMounted(fetchData);
+function resetCurrentFilters() {
+    statusFilter.value = '';
+    driveTypeFilter.value = '';
+    page.value = 1;
+    fetchData();
+}
+
+onMounted(() => {
+    fetchDriveTypes();
+    fetchData();
+});
+
+async function fetchDriveTypes() {
+    try {
+        const result = await api.get('/shared/drive-types');
+        driveTypes.value = result.data.drive_types;
+    } catch (err) {
+        notify.error('Failed to load drive types');
+    }
+}
 
 async function fetchData() {
     loading.value = true;
     try {
-        const params = { page: page.value, per_page: 20 };
+        const params = { page: page.value };
         if (statusFilter.value) params.status = statusFilter.value;
+        if (driveTypeFilter.value) params.drive_type = driveTypeFilter.value;
         const result = await api.get('/admin/drives', { params });
         drives.value = result.data.drives;
         totalPages.value = result.data.pages;

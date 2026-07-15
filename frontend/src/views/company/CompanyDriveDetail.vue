@@ -5,11 +5,13 @@
             <div class="full-width mb-24">
                 <div class="flex items-center justify-between">
                     <h1 class="page-title mb-4">{{ drive.job_title }}</h1>
-                    <router-link 
-                        to="/company/drives"
-                        class="btn is-secondary">
-                        Go Back
-                    </router-link>
+                    <AppTooltip text="Go Back">
+                        <router-link 
+                            to="/company/drives"
+                            class="btn is-icon-only is-secondary">
+                            <i class="fa-solid fa-angles-left"></i>
+                        </router-link>
+                    </AppTooltip>
                 </div>
                 <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="interviewStatusClass(drive.status)">{{ drive.status }}</span></p>
             </div>
@@ -40,7 +42,7 @@
                         <div class="stat-card-label is-warning">Application Deadline</div>
                     </div>
                     <div class="stat-card is-success">
-                        <div class="stat-card-value is-success">{{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA</div>
+                        <div class="stat-card-value is-success">{{ drive.salary_min ? formatSalary(drive.salary_min) + ' - ' : ''}} {{ formatSalary(drive.salary_max) }} LPA</div>
                         <div class="stat-card-label is-success">Salary</div>
                     </div>
                 </div>
@@ -124,7 +126,7 @@ import AppMultiSelect from '@/components/ui/AppMultiSelect.vue';
 import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
-import { formatDateTime } from '@/utils/formatters';
+import { formatDateTime, formatSalary } from '@/utils/formatters';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import CompanyDriveInterviews from './CompanyDriveInterviews.vue';
@@ -133,6 +135,7 @@ import EditRequiredSkills from './drive-edit/EditRequiredSkills.vue';
 import EditDriveDetails from './drive-edit/EditDriveDetails.vue';
 import EditJobDesc from './drive-edit/EditJobDesc.vue';
 import { interviewStatusClass } from '@/utils/status.js';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 
 const route = useRoute();
 const router = useRouter();

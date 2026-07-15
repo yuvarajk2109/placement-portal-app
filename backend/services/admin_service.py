@@ -364,8 +364,13 @@ class AdminService:
         }, 200
     
     @staticmethod
-    def list_all_placements(page, per_page):
-        pagination = Placement.query.order_by(Placement.created_at.desc()).paginate(
+    def list_all_placements(drive_type, page, per_page):
+        query = Placement.query
+
+        if drive_type:
+            query = query.join(Application).join(PlacementDrive).filter(PlacementDrive.drive_type == drive_type)
+
+        pagination = query.order_by(Placement.created_at.desc()).paginate(
             page = page,
             per_page = per_page,
             error_out = False

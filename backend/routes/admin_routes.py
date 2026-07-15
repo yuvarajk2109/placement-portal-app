@@ -166,9 +166,10 @@ def list_all_applications():
 @admin_bp.route('/placements', methods = ['GET'])
 @role_required('admin')
 def list_all_placements():
+    drive_type = request.args.get('drive_type')
     page = request.args.get('page', 1, type = int)
     per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
-    result, status = AdminService.list_all_placements(page, per_page)
+    result, status = AdminService.list_all_placements(drive_type, page, per_page)
     return jsonify(result), status
 
 @admin_bp.route('/placements/<int:placement_id>', methods = ['GET'])

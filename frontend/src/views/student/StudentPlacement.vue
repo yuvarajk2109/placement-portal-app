@@ -12,7 +12,7 @@
                 <div class="stat-card-label">Company</div>
             </div>
             <div class="stat-card">
-                <div class="stat-card-value">{{ placement.salary }} LPA</div>
+                <div class="stat-card-value">{{ formatSalary(placement.salary) }} LPA</div>
                 <div class="stat-card-label">Annual Salary</div>
             </div>
             <div class="stat-card">
@@ -49,7 +49,7 @@
 import AppSpinner from '@/components/ui/AppSpinner.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
-import { formatDate } from '@/utils/formatters';
+import { formatDate, formatSalary } from '@/utils/formatters';
 import { onMounted, ref } from 'vue';
 
 

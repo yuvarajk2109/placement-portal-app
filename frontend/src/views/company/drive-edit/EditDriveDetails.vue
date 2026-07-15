@@ -20,11 +20,11 @@
             </div>
             <div class="form-group flex gap-16">
                 <div class="flex-1">
-                    <label class="form-label" for="salary_min">Minimum Salary (LPA)</label>
+                    <label class="form-label" for="salary_min">Minimum Salary (PA)</label>
                     <input id="salary_min" type="text" class="form-input" v-model="updateForm.salary_min">
                 </div>
                 <div class="flex-1">
-                    <label class="form-label" for="salary_max">Maximum Salary (LPA)</label>
+                    <label class="form-label" for="salary_max">Maximum Salary (PA)</label>
                     <input id="salary_max" type="text" class="form-input" v-model="updateForm.salary_max">
                 </div>
             </div>

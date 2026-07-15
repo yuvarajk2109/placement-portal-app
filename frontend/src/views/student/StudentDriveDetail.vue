@@ -7,11 +7,13 @@
                     <h1 class="page-title mb-4">{{ drive.job_title }}</h1>
                     <div class="flex gap-16">                        
                     <button class="btn is-primary" v-if="!drive.already_applied" :disabled="applying" @click="applyForDrive">{{ applying ? 'Applying' : 'Apply for Drive' }}</button>
-                    <router-link
-                        to="/student/drives"
-                        class="btn is-secondary">
-                        Go Back
-                    </router-link>
+                    <AppTooltip text="Go Back">
+                        <router-link
+                            to="/student/drives"
+                            class="btn is-icon-only is-secondary">
+                            <i class="fa-solid fa-angles-left"></i>
+                        </router-link>
+                    </AppTooltip>
                     </div>
                 </div>
                 <p class="page-subtitle">{{ drive.company_name }} &middot; <span class="status" :class="applicationStatusClass(drive.application_status)">{{ drive.application_status }}</span></p>
@@ -32,7 +34,7 @@
                         <div class="stat-card-label is-warning">Application Deadline</div>
                     </div>
                     <div class="stat-card is-success">
-                        <div class="stat-card-value is-success">{{ drive.salary_min || '' }} {{ drive.salary_min ? ' - ' : ''}} {{ drive.salary_max }} LPA</div>
+                        <div class="stat-card-value is-success">{{ drive.salary_min ? formatSalary(drive.salary_min) + ' - ' : ''}} {{ formatSalary(drive.salary_max) }} LPA</div>
                         <div class="stat-card-label is-success">Salary</div>
                     </div>
                 </div>
@@ -78,10 +80,11 @@ import AppSpinner from '@/components/ui/AppSpinner.vue';
 import AppMultiSelect from '@/components/ui/AppMultiSelect.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
-import { formatDateTime } from '@/utils/formatters';
+import { formatDateTime, formatSalary } from '@/utils/formatters';
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { applicationStatusClass } from '@/utils/status';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 
 const route = useRoute();
 const router = useRouter();

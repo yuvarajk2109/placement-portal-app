@@ -41,6 +41,7 @@
 
 <script setup>
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import AppPagination from '@/components/ui/AppPagination.vue';
 import { formatDate } from '@/utils/formatters';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
@@ -58,7 +59,7 @@ onMounted(fetchData);
 async function fetchData() {
     loading.value = true;
     try {
-        const params = { page: page.value, per_page: 20 };
+        const params = { page: page.value };
         const result = await api.get('/admin/applications', { params });
         applications.value = result.data.applications;
         totalPages.value = result.data.pages;

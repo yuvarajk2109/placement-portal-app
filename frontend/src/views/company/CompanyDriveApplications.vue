@@ -2,11 +2,15 @@
     <div class="main-page">
         <div class="flex items-center justify-between mb-16">
             <h1 class="page-title mb-4">Drive Applications</h1>
-            <router-link 
-                :to="{ name: 'company-drive-detail', params: { id: driveId } }"
-                class="btn is-secondary">
-                Go Back
-            </router-link>
+
+            <AppTooltip text="Go Back"> 
+                <router-link 
+                    :to="{ name: 'company-drive-detail', params: { id: driveId } }"
+                    class="btn is-icon-only is-secondary">
+                    <i class="fa-solid fa-angles-left"></i>
+                </router-link>
+            </AppTooltip>
+            
         </div>
         <div class="card">
             <AppSpinner v-if="loading || saving" />
@@ -80,6 +84,7 @@
 import AppModal from '@/components/ui/AppModal.vue';
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import api from '@/services/api';
 import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';

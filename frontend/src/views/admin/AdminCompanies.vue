@@ -1,14 +1,19 @@
 <template>
     <div class="main-page">
         <h1 class="page-title">Manage Companies</h1>
-        <div v-if="companies.length > 0" class="page-toolbar">
-            <input class="form-input search-input" placeholder="Search companies..." @input="debouncedFetch">
-            <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
-                <option value="">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Approved">Approved</option>
-                <option value="Rejected">Rejected</option>
-            </select>
+        <div class="flex items-center justify-between mb-8">
+            <div class="page-toolbar">
+                <input class="form-input search-input" placeholder="Search companies..." @input="debouncedFetch">
+                <select v-model="statusFilter" class="form-select" @change="page = 1; fetchData();">
+                    <option value="">All Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Approved">Approved</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
+             <AppTooltip text="Reset Filters">
+                <button type="button" class="btn is-icon-only is-secondary mb-16" @click="resetFilters"><i class="fas fa-arrow-rotate-left"></i></button>
+            </AppTooltip>
         </div>
         <AppSpinner v-if="loading" />
         <table v-else-if="companies.length" class="data-table">
@@ -57,6 +62,7 @@
 <script setup>
 import AppPagination from '@/components/ui/AppPagination.vue';
 import AppSpinner from '@/components/ui/AppSpinner.vue';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import api from '@/services/api';
 import { useDialogStore } from '@/stores/dialog';
 import { useNotificationStore } from '@/stores/notification';
@@ -87,8 +93,7 @@ async function fetchData() {
     loading.value = true;
     try {
         const params = {
-            page: page.value,
-            per_page: 20
+            page: page.value
         };
         if (search.value) params.search = search.value;
         if (statusFilter.value) params.status = statusFilter.value;
