@@ -8,6 +8,7 @@
                     <option value="Pending">Pending</option>
                     <option value="Approved">Approved</option>
                     <option value="Rejected">Rejected</option>
+                    <option value="Closed">Closed</option>
                 </select>
                 <select class="form-select" v-model="driveTypeFilter" @change="page = 1; fetchData();">
                     <option value="">All Drive Types</option>

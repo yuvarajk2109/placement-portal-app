@@ -205,7 +205,8 @@ class AuthService:
             email = email,
             password = password_hash,
             role = 'company',
-            is_verified = True
+            is_active = False,
+            is_verified = False
         )
         db.session.add(user)
         db.session.flush()

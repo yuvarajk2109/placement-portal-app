@@ -90,7 +90,7 @@ import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
 import { interviewStatusClass } from '@/utils/status';
 import useVuelidate from '@vuelidate/core';
-import { helpers, required } from '@vuelidate/validators';
+import { helpers, required, requiredIf } from '@vuelidate/validators';
 import { computed, onMounted, reactive, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -122,7 +122,7 @@ const emptyForm = reactive({
 
 const rules = computed(() => ({
     joining_date: {
-        required: helpers.withMessage('Joining date is required for selected candidate', required),
+        required: helpers.withMessage('Joining date is required for selected candidate', requiredIf(() => updateForm.application_status === 'Selected')),
     }
 }));
 

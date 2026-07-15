@@ -12,7 +12,7 @@ def cache_response(ttl = DEFAULT_TTL, key_prefix = None):
         @wraps(fn)
         def wrapper(*args, **kwargs):
             if redis_client is None:
-                return 
+                return fn(*args, **kwargs)
             prefix = key_prefix or fn.__name__
             cache_key = f"cache:{prefix}:{request.full_path}"
             try:
