@@ -4,6 +4,7 @@ from utils.decorators import role_required, validate_json
 from services.student_service import StudentService
 from services.application_service import ApplicationService
 from jobs.export_csv import export_applications_csv
+from config import Config
 
 student_bp = Blueprint('student', __name__, url_prefix = '/api/student')
 
@@ -75,7 +76,7 @@ def list_eligible_drives(current_user_id):
     min_salary = request.args.get('min_salary', type = float)
     application_status = request.args.get('application_status')
     page = request.args.get('page', 1, type = int)
-    per_page = request.args.get('per_page', 20, type = int)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
     result, status = StudentService.list_eligible_drives(current_user_id, search, location, drive_type, min_salary, application_status, page, per_page)
     return jsonify(result), status
 
@@ -92,6 +93,7 @@ def get_drive_details(current_user_id, drive_id):
 # 2. List Student's Applications
 # 3. View Specific Applicaton's Detail
 # 4. Withdraw Application
+# 5. Export Applications
 # ================================
 
 @student_bp.route('/drives/<int:drive_id>/apply', methods = ['POST'])
@@ -104,7 +106,7 @@ def apply_for_drive(current_user_id, drive_id):
 @role_required('student')
 def list_my_applications(current_user_id):
     page = request.args.get('page', 1, type = int)
-    per_page = request.args.get('per_page', 20, type = int)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
     result, status = ApplicationService.list_student_applications(current_user_id, page, per_page)
     return jsonify(result), status
 
@@ -120,6 +122,14 @@ def withdraw_application(current_user_id, app_id):
     result, status = ApplicationService.withdraw_application(current_user_id, app_id)
     return jsonify(result), status
 
+@student_bp.route('/export/applications', methods = ['POST'])
+@role_required('student')
+def export_applications(current_user_id):
+    export_applications_csv.delay(current_user_id)
+    return jsonify({
+        "message": "Export has begun. You'll receive the CSV to your university email address."
+    }), 202
+
 # ===============================
 # PLACEMENT MANAGEMENT
 
@@ -131,17 +141,3 @@ def withdraw_application(current_user_id, app_id):
 def get_placement(current_user_id):
     result, status = StudentService.get_placement(current_user_id)
     return jsonify(result), status
-
-# ===============================
-# EXPORTS MANAGEMENT
-
-# 1. Export Applications
-# ================================
-
-@student_bp.route('/export/applications', methods = ['POST'])
-@role_required('student')
-def export_applications(current_user_id):
-    export_applications_csv.delay(current_user_id)
-    return jsonify({
-        "message": "Export has begun. You'll receive the CSV to your university email address."
-    }), 202

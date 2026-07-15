@@ -11,17 +11,18 @@ class Config:
     DATABASE_PATH = os.path.abspath(os.path.join(ROOT_DIR, "db", "placement_portal.db"))
     SQLALCHEMY_DATABASE_URI = f"sqlite:///{DATABASE_PATH}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ITEMS_PER_PAGE = 10
 
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'yuvaraj_k_jwt_secret_key')
     JWT_ACCESS_TOKEN_EXPIRES = 3600
     JWT_REFRESH_TOKEN_EXPIRES = 86400
 
-    MAIL_SERVER = os.getenv('MAIL_SERVER', 'smtp.gmail.com')
-    MAIL_PORT = int(os.getenv('MAIL_PORT', 587))
-    MAIL_USE_TLS = True
-    MAIL_USERNAME = os.getenv('MAIL_USERNAME', 'Starspinix')
-    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', 'pbqd dxrv olub rqcr')
-    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'starspinix@gmail.com')
+    MAIL_SERVER = os.getenv('MAIL_SERVER', 'localhost')
+    MAIL_PORT = int(os.getenv('MAIL_PORT', 1025))
+    MAIL_USE_TLS = False
+    MAIL_USERNAME = os.getenv('MAIL_USERNAME', '')
+    MAIL_PASSWORD = os.getenv('MAIL_PASSWORD', '')
+    MAIL_DEFAULT_SENDER = os.getenv('MAIL_DEFAULT_SENDER', 'Placement Portal <[EMAIL_ADDRESS]>')
 
     RESUME_FOLDER = os.path.join(UPLOAD_FOLDER, 'resumes')
     ALLOWED_RESUME_EXTENSIONS = {'pdf', 'doc', 'docx'}
@@ -60,10 +61,10 @@ class Config:
     CELERY_RESULT_BACKEND = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost:6379/0')
     REDIS_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/1')\
     
-    DAILY_REMINDER_HOUR = 23
-    DAILY_REMINDER_MINUTE = 20
+    DAILY_REMINDER_HOUR = 14
+    DAILY_REMINDER_MINUTE = 10
     DAILY_REMINDER_DEADLINE = 3
-    MONTHLY_REPORT_DAY = 14
-    MONTHLY_REPORT_HOUR = 23
-    MONTHLY_REPORT_MINUTE = 20
+    MONTHLY_REPORT_DAY = 15
+    MONTHLY_REPORT_HOUR = 14
+    MONTHLY_REPORT_MINUTE = 15
     EXPORT_FOLDER = os.path.join(UPLOAD_FOLDER, 'exports')

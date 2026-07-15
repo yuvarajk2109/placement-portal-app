@@ -166,11 +166,14 @@ class AdminService:
         }, 200
     
     @staticmethod
-    def list_drives(status_filter, page, per_page):
+    def list_drives(status_filter, drive_type, page, per_page):
         query = PlacementDrive.query
         
         if status_filter:
             query = query.filter(PlacementDrive.status == status_filter)
+            
+        if drive_type:
+            query = query.filter(PlacementDrive.drive_type == drive_type)
 
         pagination = query.order_by(PlacementDrive.created_at.desc()).paginate(
             page = page,
@@ -221,7 +224,7 @@ class AdminService:
         }, 200
     
     @staticmethod
-    def list_students(status_filter, search, page, per_page):
+    def list_students(status_filter, search, branch_id, page, per_page):
         query = Student.query.join(User)
         
         if status_filter == 'Active':
@@ -242,6 +245,9 @@ class AdminService:
                     Student.register_no.ilike(search_term)
                 )
             )
+
+        if branch_id:
+            query = query.filter(Student.branch_id == branch_id)
 
         pagination = query.order_by(Student.created_at.desc()).paginate(
             page = page,

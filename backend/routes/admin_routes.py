@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from utils.cache_utils import cache_response
 from utils.decorators import role_required
 from services.admin_service import AdminService
+from config import Config
 
 admin_bp = Blueprint('admin', __name__, url_prefix = '/api/admin')
 
@@ -30,7 +31,7 @@ def list_companies():
     status_filter = request.args.get('status')
     search = request.args.get('search')
     page = request.args.get('page', 1, type = int)
-    per_page = request.args.get('per_page', 20, type = int)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
     result, status = AdminService.list_companies(status_filter, search, page, per_page)
     return jsonify(result), status
 
@@ -77,9 +78,10 @@ def unblacklist_company(company_id):
 @cache_response(key_prefix = 'admin_drives')
 def list_drives():
     status_filter = request.args.get('status')
+    drive_type = request.args.get('drive_type')
     page = request.args.get('page', 1, type = int)
-    per_page = request.args.get('per_page', 20, type = int)
-    result, status = AdminService.list_drives(status_filter, page, per_page)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
+    result, status = AdminService.list_drives(status_filter, drive_type, page, per_page)
     return jsonify(result), status
 
 @admin_bp.route('/drives/<int:drive_id>/approve', methods = ['PUT'])
@@ -110,9 +112,10 @@ def reject_drive(drive_id):
 def list_students():
     search = request.args.get('search')
     status_filter = request.args.get('status')
+    branch_id = request.args.get('branch_id', type=int)
     page = request.args.get('page', 1, type = int)
-    per_page = request.args.get('per_page', 20, type = int)
-    result, status = AdminService.list_students(status_filter, search, page, per_page)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
+    result, status = AdminService.list_students(status_filter, search, branch_id, page, per_page)
     return jsonify(result), status
 
 @admin_bp.route('/students/<string:register_no>/blacklist', methods = ['PUT'])
@@ -149,7 +152,7 @@ def activate_student(register_no):
 @role_required('admin')
 def list_all_applications():
     page = request.args.get('page', 1, type = int)
-    per_page = request.args.get('per_page', 20, type = int)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
     result, status = AdminService.list_all_applications(page, per_page)
     return jsonify(result), status
 
@@ -164,7 +167,7 @@ def list_all_applications():
 @role_required('admin')
 def list_all_placements():
     page = request.args.get('page', 1, type = int)
-    per_page = request.args.get('per_page', 20, type = int)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type = int)
     result, status = AdminService.list_all_placements(page, per_page)
     return jsonify(result), status
 

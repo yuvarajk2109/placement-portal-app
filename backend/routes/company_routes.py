@@ -5,6 +5,7 @@ from services.company_service import CompanyService
 from services.drive_service import DriveService
 from services.application_service import ApplicationService
 from services.interview_service import InterviewService
+from config import Config
 
 company_bp = Blueprint('company', __name__, url_prefix='/api/company')
 
@@ -49,7 +50,7 @@ def update_profile(current_user_id, data):
 @role_required('company')
 def list_company_drives(current_user_id):
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type=int)
     result, status = DriveService.list_company_drives(current_user_id, page, per_page)
     return jsonify(result), status
 
@@ -90,7 +91,7 @@ def close_drive(current_user_id, drive_id):
 @role_required('company')
 def list_drive_applications(current_user_id, drive_id):
     page = request.args.get('page', 1, type=int)
-    per_page = request.args.get('per_page', 10, type=int)
+    per_page = request.args.get('per_page', Config.ITEMS_PER_PAGE, type=int)
     result, status = ApplicationService.list_drive_applications(current_user_id, drive_id, page, per_page)
     return jsonify(result), status
 
