@@ -15,7 +15,9 @@
                     <option v-for="status in applicationStatuses" :key="status" :value="status">{{ status }}</option>
                 </select>
             </div> 
-            <button type="button" class="btn is-secondary mb-16" @click="resetFilters">Reset Filters</button>
+            <AppTooltip text="Reset Filters">
+                <button type="button" class="btn is-icon-only is-secondary mb-16" @click="resetFilters"><i class="fas fa-arrow-rotate-left"></i></button>
+            </AppTooltip>
         </div>
         
         <AppSpinner v-if="loading" />      
@@ -66,6 +68,7 @@ import { useNotificationStore } from '@/stores/notification';
 import { formatDateTime } from '@/utils/formatters';
 import { onMounted, reactive, ref } from 'vue';
 import { applicationStatusClass } from '@/utils/status';
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 
 const notify = useNotificationStore();
 const loading = ref(true);

@@ -1,23 +1,25 @@
 <template>
     <div class="paginator" v-if="totalPages > 1">
         <div class="paginator-items">
-            <button 
-                class="btn is-tertiary is-icon-only" 
-                :disabled="currentPage <= 1" 
-                @click="changePage(currentPage - 1)"
-            >
-                <i class="fas fa-arrow-left"></i>
-            </button>
+            <AppTooltip :disabled="currentPage <= 1"  text="Go to Previous Page">
+                <button 
+                    class="btn is-tertiary is-icon-only" 
+                    :disabled="currentPage <= 1" 
+                    @click="changePage(currentPage - 1)"            >
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+            </AppTooltip>
             
             <span>Page {{ currentPage }} of {{ totalPages }}</span>
             
-            <button 
-                class="btn is-tertiary is-icon-only" 
-                :disabled="currentPage >= totalPages" 
-                @click="changePage(currentPage + 1)"
-            >
-                <i class="fas fa-arrow-right"></i>
-            </button>
+            <AppTooltip :disabled="currentPage >= totalPages" text="Go to Next Page">
+                <button 
+                    class="btn is-tertiary is-icon-only" 
+                    :disabled="currentPage >= totalPages" 
+                    @click="changePage(currentPage + 1)"            >
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </AppTooltip>
         </div>
     </div>
 </template>
@@ -39,6 +41,8 @@
 </style>
 
 <script setup>
+import AppTooltip from './AppTooltip.vue';
+
 const properties = defineProps({
     currentPage: {
         type: Number,

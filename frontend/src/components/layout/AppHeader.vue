@@ -1,27 +1,38 @@
 <template>
     <header class="app-header">
         <div class="header-left">
-            <button v-if="authStore.isLoggedIn" class="btn is-primary is-icon-only" @click="$emit('toggle-sidebar')">
-                <i class="fas fa-bars"></i>
-            </button>
-            <button v-else class="btn is-primary is-icon-only" @click="router.push({ name: 'home'})">
-                <i class="fas fa-home"></i>
-            </button>
+            <AppTooltip v-if="authStore.isLoggedIn" position = "right" text="Toggle Sidebar">
+                <button v-if="authStore.isLoggedIn" class="btn is-primary is-icon-only" @click="$emit('toggle-sidebar')">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </AppTooltip>
+            <AppTooltip v-else position = "bottom" text="Go to Home Page">
+                <button  class="btn is-primary is-icon-only" @click="router.push({ name: 'home'})">
+                    <i class="fas fa-home"></i>
+                </button>
+            </AppTooltip>
+            
             <router-link to="/"  class="header-logo">
                 Placement Portal
             </router-link>
         </div>
         <div class="header-right">
-            <button class="btn is-primary is-icon-only" @click="toggleTheme()">
-                <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'"></i>
-            </button>
+            <AppTooltip :text="isDark? 'Light Mode' : 'Dark Mode'" position = "bottom">
+                <button class="btn is-primary is-icon-only" @click="toggleTheme()">
+                    <i :class="isDark ? 'fas fa-sun' : 'fas fa-moon'"></i>
+                </button>
+            </AppTooltip>
 
             <template v-if="authStore.isLoggedIn">
-                <button 
-                class="btn is-error"
-                @click="handleLogout">
-                    Logout
-                </button>
+                <AppTooltip
+                    text="Logout" position="bottom">
+                    <button 
+                    class="btn is-icon-only is-error"
+                    @click="handleLogout">
+                        <i class="fa-solid fa-power-off"></i>
+                    </button>
+                </AppTooltip>
+                
             </template>
         </div>
     </header>
@@ -68,6 +79,7 @@ import { useTheme } from '@/composables/useTheme';
 import { useAuthStore } from '@/stores/auth';
 import { useNotificationStore } from '@/stores/notification';
 import { useRouter } from 'vue-router';
+import AppTooltip from '../ui/AppTooltip.vue';
 
 const authStore = useAuthStore();
 const notify = useNotificationStore();

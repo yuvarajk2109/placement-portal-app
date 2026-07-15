@@ -1,20 +1,24 @@
 <template>
     <aside class="sidebar" :class="{ 'is-open': open }">
         <nav class="sidebar-nav">
-            <router-link
+            <AppTooltip
                 v-for="item in menuItems"
                 :key="item.route"
-                :to="{ name: item.route }"
-                class="sidebar-link"
-                :class="{ active: $route.name === item.route }"
-                :title="!open ? item.label : undefined">
-                <i :class="item.icon"></i>
-                <span 
-                    v-if="open"
-                    class="sidebar-link-text">
-                    {{ item.label }}
-                </span>
-            </router-link>
+                :text="item.label"
+                :disabled="open"
+                position="right">
+                <router-link
+                    :to="{ name: item.route }"
+                    class="sidebar-link"
+                    :class="{ active: $route.name === item.route }">
+                    <i :class="item.icon"></i>
+                    <span 
+                        v-if="open"
+                        class="sidebar-link-text">
+                        {{ item.label }}
+                    </span>
+                </router-link>
+            </AppTooltip>
         </nav>
     </aside>
 </template>
@@ -43,6 +47,7 @@
     padding: 12px 0px;
     gap: 4px;
 }
+
 
 .sidebar-link {
     display: flex;
@@ -75,6 +80,7 @@
 </style>
 
 <script setup>
+import AppTooltip from '@/components/ui/AppTooltip.vue';
 import { useAuthStore } from '@/stores/auth';
 import { computed } from 'vue';
 

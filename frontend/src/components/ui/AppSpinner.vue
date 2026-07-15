@@ -29,4 +29,6 @@
       box-shadow: 21.3px 0 0 0, 42.6px 0 0 3.4px, 63.900000000000006px 0 0 7.8px;
    }
 }
+
+/* Referred from: https://10015.io/tools/css-loader-generator */
 </style>
