@@ -82,7 +82,8 @@ onMounted(fetchApplications);
 async function fetchApplications() {
     loading.value = true;
     try {
-        const result = await api.get('/student/applications', { params: { page: page.value, per_page: 20} });
+        const params = { page: page.value };
+        const result = await api.get('/student/applications', { params });
         applications.value = result.data.applications;
         totalPages.value = result.data.pages;
     } catch (err) {

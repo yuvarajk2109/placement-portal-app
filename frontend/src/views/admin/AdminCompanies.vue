@@ -92,9 +92,7 @@ onMounted(fetchData);
 async function fetchData() {
     loading.value = true;
     try {
-        const params = {
-            page: page.value
-        };
+        const params = { page: page.value };
         if (search.value) params.search = search.value;
         if (statusFilter.value) params.status = statusFilter.value;
         const result = await api.get('/admin/companies', { params });

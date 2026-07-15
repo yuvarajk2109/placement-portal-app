@@ -133,7 +133,7 @@ onMounted(fetchApplications);
 async function fetchApplications() {
     loading.value = true;
     try {
-        const params = { page: page.value, per_page: 10 };
+        const params = { page: page.value };
         const [applicationsResult, actionsResult] = await Promise.all([
             api.get(`/company/drives/${driveId}/applications`, { params }),
             api.get('/shared/application-actions')

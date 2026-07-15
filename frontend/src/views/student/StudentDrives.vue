@@ -103,7 +103,7 @@ onMounted(fetchDrives);
 async function fetchDrives() {
     loading.value = true;
     try {
-        const params = { page: page.value, per_page: 20 };
+        const params = { page: page.value };
         if (filters.search) params.search = filters.search;
         if (filters.location) params.location = filters.location;
         if (filters.drive_type) params.drive_type = filters.drive_type;

@@ -227,7 +227,7 @@ onMounted(async () => {
 async function fetchDrives() {
     loading.value = true;
     try {
-        const params = { page: page.value, per_page: 10 };
+        const params = { page: page.value };
         const result = await api.get('/company/drives', { params });
         drives.value = result.data.drives;
         totalPages.value = result.data.pages
