@@ -15,13 +15,13 @@ class AdminService:
     @staticmethod
     def get_dashboard():
         total_students = Student.query.count()
-        active_students = Student.query.join(User).filter(User.is_active == True).count()
+        active_students = Student.query.join(User).filter(User.is_active == True, User.is_blacklisted == False).count()
         inactive_students = Student.query.join(User).filter(User.is_active == False, User.is_blacklisted == False).count()
         blacklisted_students = Student.query.join(User).filter(User.is_blacklisted == True).count()
         total_companies = Company.query.count()
         approved_companies = Company.query.join(User).filter(User.is_verified == True, User.is_active == True, Company.status == 'Approved').count()
-        pending_companies = Company.query.join(User).filter(User.is_verified == False, User.is_active == False, Company.status == 'Pending').count()
-        rejected_companies = Company.query.join(User).filter(User.is_verified == False, User.is_active == False, Company.status == 'Rejected').count()
+        pending_companies = Company.query.join(User).filter(User.is_verified == False, User.is_active == False, User.is_blacklisted == False, Company.status == 'Pending').count()
+        rejected_companies = Company.query.join(User).filter(User.is_active == False, User.is_blacklisted == False, Company.status == 'Rejected').count()
         blacklisted_companies = Company.query.join(User).filter(User.is_blacklisted == True).count()
         total_drives = PlacementDrive.query.count()
         approved_drives = PlacementDrive.query.filter_by(status = 'Approved').count()
@@ -54,9 +54,7 @@ class AdminService:
     
     @staticmethod
     def list_companies(status_filter, search, page, per_page):
-        query = Company.query.join(User).filter(
-            db.or_(User.is_active == True, User.is_blacklisted == True)
-        )
+        query = Company.query.join(User)
 
         if status_filter:
             query = query.filter(Company.status == status_filter)
@@ -135,6 +133,8 @@ class AdminService:
         
         if user:
             user.is_active = False
+            user.is_verified = False
+
         company.status = 'Rejected'
         db.session.commit()
 
@@ -165,7 +165,7 @@ class AdminService:
         user.is_blacklisted = blacklist
         if blacklist:
             user.is_active = False
-        else:
+        elif not blacklist and company.status == 'Approved':
             user.is_active = True
         db.session.commit()
 
